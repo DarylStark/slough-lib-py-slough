@@ -62,3 +62,15 @@ quote-style = 'single'
 indent-style = 'space'
 docstring-code-format = true
 exclude = ["docs/*.py"]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.14.0",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "pytest-sugar>=1.0.0",
+]
+
+[tool.pytest.ini_options]
+addopts = ['--cov=chain_of_command', '--cov-report=html', '--cov-report=lcov']
+testpaths = ['tests']
