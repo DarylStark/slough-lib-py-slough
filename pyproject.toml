@@ -72,5 +72,12 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-addopts = ['--cov=chain_of_command', '--cov-report=html', '--cov-report=lcov']
+addopts = [
+    '--cov=chain_of_responsibility',
+    '--cov-report=html',
+    '--cov-report=lcov',
+]
 testpaths = ['tests']
+
+[tool.mypy]
+python_version = '3.13'
