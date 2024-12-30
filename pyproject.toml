@@ -5,7 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Daryl Stark", email = "daryl@dstark.nl" }]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = ["typer>=0.15.1"]
 
 [project.scripts]
 slough = "slough_cli_tool:main"
@@ -74,6 +74,7 @@ dev = [
 [tool.pytest.ini_options]
 addopts = [
     '--cov=chain_of_responsibility',
+    '--cov=slough_cli_tool',
     '--cov-report=html',
     '--cov-report=lcov',
 ]
