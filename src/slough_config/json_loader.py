@@ -1,5 +1,6 @@
 """Module with a JSON configuration loader."""
 
+import json
 from pathlib import Path
 
 from .config_loader import ConfigLoader
@@ -23,4 +24,5 @@ class JSONLoader(ConfigLoader):
         Returns:
             dict: The configuration as a dictionary.
         """
-        return {}
+        with self.cfgfile.open('r') as file:
+            return json.load(file)

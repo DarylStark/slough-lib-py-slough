@@ -39,7 +39,7 @@ def test_config_lodaer_json_loader() -> None:
     assert config.model_dump() == {
         'project': {
             'name': 'project5',
-            'version': '1.0.0',
+            'version': '0.0.1',
             'authors': [
                 {'name': 'John Doe', 'email': 'johndoe@example.com'},
                 {'name': 'Daryl Stark', 'email': 'darylstark@example.com'},
