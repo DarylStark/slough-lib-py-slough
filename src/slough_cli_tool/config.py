@@ -1,22 +1,13 @@
 """Config part of the CLI tool."""
 
-from enum import Enum
-
 import typer
-import yaml
 
 from slough import Slough
 
 from .generic import raise_for_missing_config
+from .output_formatters import OutputFormatter, OutputType
 
 config = typer.Typer(no_args_is_help=True)
-
-
-class OutputType(str, Enum):
-    """Output type for the configuration."""
-
-    json = 'json'
-    yaml = 'yaml'
 
 
 @config.command(name='show')
@@ -39,13 +30,8 @@ def cli_config_show(
     console = context['console']
     config_dict = slough.config
 
-    if output == OutputType.json:
-        console.print(config_dict.model_dump_json(indent=4))
-    elif output == OutputType.yaml:
-        console.print(
-            yaml.dump(
-                config_dict.model_dump(),
-                default_flow_style=False,
-                sort_keys=False,
-            )
-        )
+    if output in OutputFormatter.formatters:
+        formatter = OutputFormatter.formatters[output](config_dict)
+        console.print(formatter.format(), end='')
+    else:
+        raise TypeError(f'Output type {output} not supported.')
