@@ -38,16 +38,16 @@ def test_correct_configuration_file_slough_root(
 ) -> None:
     """Test that the correct configuration file is set by default."""
     monkeypatch.chdir(f'tests/test_data/{directory}')
-    slough = Slough()
+    slough = Slough(max_directory_depth=0)
     assert slough.cfgfile is not None
-    assert slough.cfgfile == Path(expected_file)
+    assert slough.cfgfile == Path(expected_file).resolve()
 
 
 @pytest.mark.parametrize(
     'directory, expected_file',
     (
         ('project1', 'slough.yml'),
-        ('project3', '.slough/slough.yaml'),
+        ('project3', '.slough/slough.yml'),
     ),
     ids=[
         'project1-subdir-slough-yml',
@@ -59,6 +59,6 @@ def test_correct_configuration_file_slough_subdir(
 ) -> None:
     """Test that the correct configuration file is set by default."""
     monkeypatch.chdir(f'tests/test_data/{directory}/subdir/subdir/subdir')
-    slough = Slough()
+    slough = Slough(max_directory_depth=3)
     assert slough.cfgfile is not None
-    assert slough.cfgfile == Path(f'../../../{expected_file}')
+    assert slough.cfgfile == Path(f'../../../{expected_file}').resolve()

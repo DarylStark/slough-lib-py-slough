@@ -21,7 +21,7 @@ class FileChecker(ChainHandler[Path]):
         """
         super().__init__()
         self._filename = filename
-        self._directory = directory
+        self._directory = directory.resolve()
         self._max_depth = max_depth
 
     def _handle(self) -> Path:
@@ -32,7 +32,7 @@ class FileChecker(ChainHandler[Path]):
         """
         path_object = self._directory / Path(self._filename)
         if path_object.exists():
-            return path_object
+            return path_object.resolve()
 
         if self._max_depth == 0 or len(self._directory.parents) == 0:
             raise NotHandledError

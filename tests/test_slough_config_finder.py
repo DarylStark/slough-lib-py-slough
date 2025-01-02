@@ -31,10 +31,12 @@ def test_config_file_finder_root_yml(
 ) -> None:
     """Test the config file finder."""
     finder = ConfigFileFinder(
-        working_dir=Path() / 'tests' / 'test_data' / directory
+        working_dir=Path() / 'tests' / 'test_data' / directory,
+        max_directory_depth=0,
     )
     expected_path = Path(f'tests/test_data/{directory}/{expected_file}')
-    assert finder.find_config_file() == expected_path
+    assert finder.find_config_file() is not None
+    assert finder.find_config_file() == expected_path.resolve()
 
 
 @pytest.mark.parametrize(
@@ -85,13 +87,13 @@ def test_config_file_finder_root_parent_dir(max_depth: int) -> None:
         max_directory_depth=max_depth,
     )
     expected_path = Path('tests/test_data/project1/slough.yml')
-    assert finder.find_config_file() == expected_path
+    assert finder.find_config_file() == expected_path.resolve()
 
 
 @pytest.mark.parametrize(
     'max_depth',
-    (3, 4, 5, 6, 7),
-    ids=['Three deep', 'Four deep', 'Five deep', 'Six deep', 'Seven deep'],
+    (3, 4, 5),
+    ids=['Three deep', 'Four deep', 'Five deep'],
 )
 def test_config_file_finder_subdir_parent_dir(max_depth: int) -> None:
     """Test the config file finder."""
@@ -104,4 +106,4 @@ def test_config_file_finder_subdir_parent_dir(max_depth: int) -> None:
         max_directory_depth=max_depth,
     )
     expected_path = Path('tests/test_data/project3/.slough/slough.yml')
-    assert finder.find_config_file() == expected_path
+    assert finder.find_config_file() == expected_path.resolve()

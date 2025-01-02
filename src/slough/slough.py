@@ -8,13 +8,20 @@ from slough_config import ConfigFileFinder
 class Slough:
     """Class that represents a Slough application."""
 
-    def __init__(self, cfgfile: str | None = None) -> None:
+    def __init__(
+        self,
+        cfgfile: str | None = None,
+        max_directory_depth: int = 6,
+    ) -> None:
         """Initialize the Slough object.
 
         Args:
             cfgfile (str): Path to the configuration file. If none is given,
                 the configuration file will be searched for.
+            max_directory_depth (int): The maximum directory depth to search
+                for the configuration file.
         """
+        self._max_directory_depth = max_directory_depth
         self.cfgfile: Path | None = None
         if cfgfile:
             self.cfgfile = Path(cfgfile)
@@ -28,5 +35,7 @@ class Slough:
             cfgfile (str): Path to the configuration file.
         """
         # Configfile is not set, find one
-        finder = ConfigFileFinder()
+        finder = ConfigFileFinder(
+            max_directory_depth=self._max_directory_depth
+        )
         self.cfgfile = finder.find_config_file() or Path('.slough/slough.yml')
