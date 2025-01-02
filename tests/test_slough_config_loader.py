@@ -33,7 +33,7 @@ def test_config_file_finder_root_yml(
     finder = ConfigFileFinder(
         working_dir=Path() / 'tests' / 'test_data' / directory
     )
-    expected_path = Path('tests/test_data/{directory}/{expected_file}')
+    expected_path = Path(f'tests/test_data/{directory}/{expected_file}')
     assert finder.find_config_file() == expected_path
 
 
