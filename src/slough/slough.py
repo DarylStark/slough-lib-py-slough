@@ -29,4 +29,4 @@ class Slough:
         """
         # Configfile is not set, find one
         finder = ConfigFileFinder()
-        self.cfgfile = finder.find_config_file() or Path('.slough/config')
+        self.cfgfile = finder.find_config_file() or Path('.slough/slough.yml')
