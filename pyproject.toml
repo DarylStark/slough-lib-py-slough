@@ -76,6 +76,7 @@ addopts = [
     '--cov=chain_of_responsibility',
     '--cov=slough_cli_tool',
     '--cov=slough_config',
+    '--cov=slough',
     '--cov-report=html',
     '--cov-report=lcov',
 ]
