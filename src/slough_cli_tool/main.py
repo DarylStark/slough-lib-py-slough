@@ -26,8 +26,6 @@ def common_command_line_options(
         ctx (typer.Context): Typer context object.
         cfgfile (str): Path to the configuration file.
     """
-    # TODO: Make sure the correct configurationfile is loaded and set in the
-    # context object.
     ctx.obj = Slough(cfgfile)
 
 
