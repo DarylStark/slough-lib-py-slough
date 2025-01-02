@@ -2,6 +2,8 @@
 
 import typer
 
+from slough import Slough
+
 from .config import config
 
 app = typer.Typer(no_args_is_help=True)
@@ -26,7 +28,7 @@ def common_command_line_options(
     """
     # TODO: Make sure the correct configurationfile is loaded and set in the
     # context object.
-    ctx.obj = {'cfgfile': cfgfile, 'configuration': None}
+    ctx.obj = Slough(cfgfile)
 
 
 def main() -> None:

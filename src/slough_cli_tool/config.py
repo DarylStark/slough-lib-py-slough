@@ -9,3 +9,4 @@ config = typer.Typer(no_args_is_help=True)
 def cli_config_list(ctx: typer.Context) -> None:
     """List all configuration."""
     print('List configuration.')
+    print(ctx.obj.cfgfile)
