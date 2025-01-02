@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+import yaml
+
 from .config_loader import ConfigLoader
 
 
@@ -23,4 +25,5 @@ class YAMLLoader(ConfigLoader):
         Returns:
             dict: The configuration as a dictionary.
         """
-        return {}
+        with self.cfgfile.open('r') as file:
+            return yaml.safe_load(file)
