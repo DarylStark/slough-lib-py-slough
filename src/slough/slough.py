@@ -30,9 +30,6 @@ class Slough:
         else:
             self._set_correct_configfile()
 
-        # TODO: Remove; not needed here
-        self._load_config()
-
     def _set_correct_configfile(self) -> None:
         """Set the correct configuration file.
 
@@ -63,3 +60,10 @@ class Slough:
         self._config = ConfigLoader.loaders[extension](
             self.cfgfile
         ).load_config()
+
+    @property
+    def config(self) -> SloughConfig | None:
+        """Return the configuration."""
+        if not self._config:
+            self._load_config()
+        return self._config

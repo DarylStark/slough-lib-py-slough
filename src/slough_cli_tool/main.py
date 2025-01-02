@@ -1,6 +1,7 @@
 """Main module for slough-cli-tool."""
 
 import typer
+from rich.console import Console
 
 from slough import Slough
 
@@ -26,9 +27,13 @@ def common_command_line_options(
         ctx (typer.Context): Typer context object.
         cfgfile (str): Path to the configuration file.
     """
-    ctx.obj = Slough(cfgfile)
+    ctx.obj = {'slough': Slough(cfgfile), 'console': Console()}
 
 
 def main() -> None:
     """Entry point for the slough-cli-tool."""
-    app()
+    try:
+        app()
+    except ValueError:
+        console = Console()
+        console.print('Configuration invalid.', style='bold red')
