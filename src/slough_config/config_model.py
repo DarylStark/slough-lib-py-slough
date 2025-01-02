@@ -3,12 +3,19 @@
 from pydantic import BaseModel
 
 
+class Author(BaseModel):
+    """Model for the author information."""
+
+    name: str
+    email: str
+
+
 class ProjectInformation(BaseModel):
     """Model for the project information."""
 
     name: str
     version: str
-    authors: list[str]
+    authors: list[Author]
 
 
 class SloughConfig(BaseModel):
