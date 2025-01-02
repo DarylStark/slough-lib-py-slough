@@ -1,6 +1,39 @@
 """Main module for slough-cli-tool."""
 
+import typer
+from rich.console import Console
+
+from slough import Slough
+
+from .config import config
+
+app = typer.Typer(no_args_is_help=True)
+app.add_typer(config, name='config')
+
+
+@app.callback()
+def common_command_line_options(
+    ctx: typer.Context,
+    cfgfile: str = typer.Option(
+        None, help='Path to the configuration file.', envvar='SLOUGH_CFGFILE'
+    ),
+) -> None:
+    """Common options for all commands.
+
+    This is run for all commands, and makes sure the correct configuration file
+    is loaded.
+
+    Args:
+        ctx (typer.Context): Typer context object.
+        cfgfile (str): Path to the configuration file.
+    """
+    ctx.obj = {'slough': Slough(cfgfile), 'console': Console()}
+
 
 def main() -> None:
     """Entry point for the slough-cli-tool."""
-    print('Hello from slough-cli-tool!')
+    try:
+        app()
+    except ValueError:
+        console = Console()
+        console.print('Configuration invalid.', style='bold red')

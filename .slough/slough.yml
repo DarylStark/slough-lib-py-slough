@@ -1,0 +1,9 @@
+---
+project:
+  name: slough-lib-py-slough
+  version: 0.0.1
+  authors:
+    - name: Daryl Stark
+      email: darylstark@example.com
+    - name: John Doe
+      email: johndoe@example.com
