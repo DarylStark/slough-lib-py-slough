@@ -1,4 +1,4 @@
-"""Tests for the config loader."""
+"""Tests for the config finder."""
 
 from pathlib import Path
 
