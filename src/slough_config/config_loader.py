@@ -60,7 +60,7 @@ class ConfigLoader(ABC):
             dict: The configuration.
         """
 
-    def load_config(self) -> SloughConfig:
+    def load_config(self) -> SloughConfig | None:
         """Load the configuration and validates it.
 
         The `_load_config` method loads the configuration from a file in the
@@ -70,4 +70,7 @@ class ConfigLoader(ABC):
         Returns:
             SloughConfig: The configuration as SloughConfig object.
         """
-        return SloughConfig(**self._load_config())
+        try:
+            return SloughConfig(**self._load_config())
+        except FileNotFoundError:
+            return None

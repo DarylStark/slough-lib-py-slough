@@ -19,6 +19,7 @@ def test_config_loader_yaml_loader() -> None:
     cfgfile = Path('tests/test_data/project1/slough.yml')
     loader = YAMLLoader(cfgfile)
     config = loader.load_config()
+    assert config is not None
     assert config.model_dump() == {
         'project': {
             'name': 'project1',
@@ -36,6 +37,7 @@ def test_config_lodaer_json_loader() -> None:
     cfgfile = Path('tests/test_data/project5/slough.json')
     loader = JSONLoader(cfgfile)
     config = loader.load_config()
+    assert config is not None
     assert config.model_dump() == {
         'project': {
             'name': 'project5',
@@ -46,3 +48,19 @@ def test_config_lodaer_json_loader() -> None:
             ],
         }
     }
+
+
+def test_config_lodaer_yaml_no_file() -> None:
+    """Test that the YAMLLoader returns a empty dict on a non-existing file."""
+    cfgfile = Path('tests/test_data/non-existing.yaml')
+    loader = YAMLLoader(cfgfile)
+    config = loader.load_config()
+    assert config is None
+
+
+def test_config_lodaer_json_no_file() -> None:
+    """Test that the JSONLoader returns a empty dict on a non-existing file."""
+    cfgfile = Path('tests/test_data/non-existing.json')
+    loader = JSONLoader(cfgfile)
+    config = loader.load_config()
+    assert config is None
