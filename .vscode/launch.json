@@ -53,6 +53,17 @@
                 "--output",
                 "envvars"
             ]
+        },
+        {
+            "name": "CLI app - config - init",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "slough_cli_tool",
+            "console": "integratedTerminal",
+            "args": [
+                "config",
+                "init"
+            ]
         }
     ]
 }

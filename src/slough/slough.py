@@ -61,9 +61,19 @@ class Slough:
             self.cfgfile
         ).load_config()
 
+    def save(self) -> None:
+        """Save the configuration."""
+        # TODO: Implement
+
     @property
     def config(self) -> SloughConfig | None:
         """Return the configuration."""
         if not self._config:
             self._load_config()
         return self._config
+
+    @config.setter
+    def config(self, value: SloughConfig) -> None:
+        """Set the configuration."""
+        # TODO: Make sure that this only works when no config is set.
+        self._config = value
