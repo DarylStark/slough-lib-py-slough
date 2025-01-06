@@ -62,6 +62,16 @@ class ConfigManager(ABC):
             dict: The configuration.
         """
 
+    @abstractmethod
+    def save_config(self, config: dict) -> None:
+        """Abstract method that saves the config.
+
+        Saves the config to the configured configuration file.
+
+        Args:
+            config (dict): The configuration to save.
+        """
+
     def load_config(self) -> SloughConfig | None:
         """Load the configuration and validates it.
 

@@ -26,3 +26,11 @@ class JSONManager(ConfigManager):
         """
         with self.cfgfile.open('r') as file:
             return json.load(file)
+
+    def save_config(self, config: dict) -> None:
+        """Save the configuration to a JSON file.
+
+        Args:
+            config (dict): The configuration to save.
+        """
+        pass

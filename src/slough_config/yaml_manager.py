@@ -27,3 +27,11 @@ class YAMLManager(ConfigManager):
         """
         with self.cfgfile.open('r') as file:
             return yaml.safe_load(file)
+
+    def save_config(self, config: dict) -> None:
+        """Save the configuration to a YAML file.
+
+        Args:
+            config (dict): The configuration to save.
+        """
+        pass
