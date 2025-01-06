@@ -1,24 +1,24 @@
-"""Module with tests for the ConfigLoader."""
+"""Module with tests for the ConfigManager."""
 
 from pathlib import Path
 
-from slough_config import ConfigLoader, JSONLoader, YAMLLoader
+from slough_config import ConfigManager, JSONManager, YAMLManager
 
 
-def test_config_loader_registration() -> None:
-    """Test that the ConfigLoader has the correct loaders registered."""
-    assert ConfigLoader.loaders == {
-        'yml': YAMLLoader,
-        'yaml': YAMLLoader,
-        'json': JSONLoader,
+def test_config_manager_registration() -> None:
+    """Test that the ConfigManager has the correct managers registered."""
+    assert ConfigManager.managers == {
+        'yml': YAMLManager,
+        'yaml': YAMLManager,
+        'json': JSONManager,
     }
 
 
-def test_config_loader_yaml_loader() -> None:
-    """Test that the YAMLLoader can load a YAML file."""
+def test_config_manager_yaml_manager() -> None:
+    """Test that the YAMLManager can load a YAML file."""
     cfgfile = Path('tests/test_data/project1/slough.yml')
-    loader = YAMLLoader(cfgfile)
-    config = loader.load_config()
+    manager = YAMLManager(cfgfile)
+    config = manager.load_config()
     assert config is not None
     assert config.model_dump() == {
         'project': {
@@ -32,11 +32,11 @@ def test_config_loader_yaml_loader() -> None:
     }
 
 
-def test_config_lodaer_json_loader() -> None:
-    """Test that the JSONLoader can load a JSON file."""
+def test_config_lodaer_json_manager() -> None:
+    """Test that the JSONManager can load a JSON file."""
     cfgfile = Path('tests/test_data/project5/slough.json')
-    loader = JSONLoader(cfgfile)
-    config = loader.load_config()
+    manager = JSONManager(cfgfile)
+    config = manager.load_config()
     assert config is not None
     assert config.model_dump() == {
         'project': {
@@ -51,16 +51,16 @@ def test_config_lodaer_json_loader() -> None:
 
 
 def test_config_lodaer_yaml_no_file() -> None:
-    """Test that the YAMLLoader returns a empty dict on a non-existing file."""
+    """Test that the YAMLManager returns empty dict on a non-existing file."""
     cfgfile = Path('tests/test_data/non-existing.yaml')
-    loader = YAMLLoader(cfgfile)
-    config = loader.load_config()
+    manager = YAMLManager(cfgfile)
+    config = manager.load_config()
     assert config is None
 
 
 def test_config_lodaer_json_no_file() -> None:
-    """Test that the JSONLoader returns a empty dict on a non-existing file."""
+    """Test that the JSONManager returns empty dict on a non-existing file."""
     cfgfile = Path('tests/test_data/non-existing.json')
-    loader = JSONLoader(cfgfile)
-    config = loader.load_config()
+    manager = YAMLManager(cfgfile)
+    config = manager.load_config()
     assert config is None

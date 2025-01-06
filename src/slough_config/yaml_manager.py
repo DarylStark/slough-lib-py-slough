@@ -1,18 +1,18 @@
-"""Module with a YAML configuration loader."""
+"""Module with a YAML configuration manager."""
 
 from pathlib import Path
 
 import yaml
 
-from .config_loader import ConfigLoader
+from .config_manager import ConfigManager
 
 
-@ConfigLoader.register_loader(['yml', 'yaml'])
-class YAMLLoader(ConfigLoader):
-    """Class that loads a YAML configuration file."""
+@ConfigManager.register_manager(['yml', 'yaml'])
+class YAMLManager(ConfigManager):
+    """Class that manage a YAML configuration file."""
 
     def __init__(self, cfgfile: Path) -> None:
-        """Initialize the ConfigLoader.
+        """Initialize the ConfigManager.
 
         Args:
             cfgfile (Path): Path to the configuration file.

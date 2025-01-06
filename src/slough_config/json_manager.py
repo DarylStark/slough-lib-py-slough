@@ -1,17 +1,17 @@
-"""Module with a JSON configuration loader."""
+"""Module with a JSON configuration manager."""
 
 import json
 from pathlib import Path
 
-from .config_loader import ConfigLoader
+from .config_manager import ConfigManager
 
 
-@ConfigLoader.register_loader(['json'])
-class JSONLoader(ConfigLoader):
-    """Class that loads a JSON configuration file."""
+@ConfigManager.register_manager(['json'])
+class JSONManager(ConfigManager):
+    """Class that manages a JSON configuration file."""
 
     def __init__(self, cfgfile: Path) -> None:
-        """Initialize the ConfigLoader.
+        """Initialize the ConfigManager.
 
         Args:
             cfgfile (Path): Path to the configuration file.

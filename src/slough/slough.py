@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from slough_config import ConfigFileFinder, ConfigLoader
+from slough_config import ConfigFileFinder, ConfigManager
 from slough_config.config_model import SloughConfig
 
 
@@ -45,19 +45,21 @@ class Slough:
     def _load_config(self) -> None:
         """Load the configuration.
 
-        Uses a configloader that fits the configurationfile.
+        Uses a ConfigManager that fits the configurationfile.
         """
         if not self.cfgfile:
             return
 
         # Find the extension for the configuration file
         extension = self.cfgfile.suffix[1:].lower()
-        if extension not in ConfigLoader.loaders:
+        if extension not in ConfigManager.managers:
             # TODO: Custom exception
-            raise ValueError(f'No loader for extension {extension}')
+            raise ValueError(
+                f'No manager registered for extension {extension}'
+            )
 
         # Load the configuration
-        self._config = ConfigLoader.loaders[extension](
+        self._config = ConfigManager.managers[extension](
             self.cfgfile
         ).load_config()
 
