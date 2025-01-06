@@ -34,4 +34,5 @@ class YAMLManager(ConfigManager):
         Args:
             config (dict): The configuration to save.
         """
-        pass
+        with self.cfgfile.open('w') as file:
+            return yaml.dump(config, file)

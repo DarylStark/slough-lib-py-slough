@@ -33,4 +33,5 @@ class JSONManager(ConfigManager):
         Args:
             config (dict): The configuration to save.
         """
-        pass
+        with self.cfgfile.open('w') as file:
+            return json.dump(config, file, indent=4)
