@@ -42,30 +42,40 @@ class Slough:
         )
         self.cfgfile = finder.find_config_file() or Path('.slough/slough.yml')
 
-    def _load_config(self) -> None:
-        """Load the configuration.
+    def _get_config_manager(self) -> ConfigManager:
+        """Get the correct configuration manager.
 
-        Uses a ConfigManager that fits the configurationfile.
+        Returns the correct configuration manager based on the extension of the
+        configuration file.
+
+        Returns:
+            ConfigManager: The configuration manager.
         """
         if not self.cfgfile:
-            return
+            # TODO: Custom exception
+            raise ValueError('No configuration file set.')
 
-        # Find the extension for the configuration file
         extension = self.cfgfile.suffix[1:].lower()
         if extension not in ConfigManager.managers:
             # TODO: Custom exception
             raise ValueError(
                 f'No manager registered for extension {extension}'
             )
+        return ConfigManager.managers[extension](self.cfgfile)
 
-        # Load the configuration
-        self._config = ConfigManager.managers[extension](
-            self.cfgfile
-        ).load_config()
+    def _load_config(self) -> None:
+        """Load the configuration."""
+        cfg_manager = self._get_config_manager()
+        self._config = cfg_manager.load_config()
 
     def save(self) -> None:
         """Save the configuration."""
-        # TODO: Implement
+        if not self._config:
+            # TODO: Custom exception
+            raise ValueError('No configuration file set.')
+
+        cfg_manager = self._get_config_manager()
+        cfg_manager.save_config(self._config.model_dump())
 
     @property
     def config(self) -> SloughConfig | None:
