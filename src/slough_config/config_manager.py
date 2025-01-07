@@ -1,4 +1,4 @@
-"""Module with a interface for a ConfigLoader."""
+"""Module with a interface for a ConfigManager."""
 
 from abc import ABC, abstractmethod
 from collections.abc import Callable
@@ -7,43 +7,45 @@ from pathlib import Path
 from slough_config.config_model import SloughConfig
 
 
-class ConfigLoader(ABC):
-    """Interface for a ConfigLoader."""
+class ConfigManager(ABC):
+    """Interface for a ConfigManager."""
 
-    loaders: dict[str, type['ConfigLoader']] = {}
+    managers: dict[str, type['ConfigManager']] = {}
 
     @classmethod
-    def register_loader(
+    def register_manager(
         cls, extensions: list[str]
-    ) -> Callable[[type['ConfigLoader']], type['ConfigLoader']]:
-        """Register a loader.
+    ) -> Callable[[type['ConfigManager']], type['ConfigManager']]:
+        """Register a ConfigManager.
 
         Args:
-            extensions (list[str]): List of extensions that the loader should
+            extensions (list[str]): List of extensions that the manager should
                 be registered for.
 
         Returns:
-            Callable[[type['ConfigLoader']], type['ConfigLoader']]:
+            Callable[[type['ConfigManager']], type['ConfigManager']]:
                 The decorator.
         """
 
-        def decorator(subclass: type['ConfigLoader']) -> type['ConfigLoader']:
-            """Decorator that registers the loader.
+        def decorator(
+            subclass: type['ConfigManager'],
+        ) -> type['ConfigManager']:
+            """Decorator that registers the manager.
 
             Args:
-                subclass (type['ConfigLoader']): The subclass to register.
+                subclass (type['ConfigManager']): The subclass to register.
 
             Returns:
-                type['ConfigLoader']: The subclass.
+                type['ConfigManager']: The subclass.
             """
             for extension in extensions:
-                cls.loaders[extension] = subclass
+                cls.managers[extension] = subclass
             return subclass
 
         return decorator
 
     def __init__(self, cfgfile: Path) -> None:
-        """Initialize the ConfigLoader.
+        """Initialize the ConfigManager.
 
         Args:
             cfgfile (Path): Path to the configuration file.
@@ -58,6 +60,16 @@ class ConfigLoader(ABC):
 
         Returns:
             dict: The configuration.
+        """
+
+    @abstractmethod
+    def save_config(self, config: dict) -> None:
+        """Abstract method that saves the config.
+
+        Saves the config to the configured configuration file.
+
+        Args:
+            config (dict): The configuration to save.
         """
 
     def load_config(self) -> SloughConfig | None:

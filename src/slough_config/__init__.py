@@ -6,15 +6,17 @@ project.
 """
 
 from .config_file_finder import ConfigFileFinder
-from .config_loader import ConfigLoader
-from .config_model import SloughConfig
-from .json_loader import JSONLoader
-from .yaml_loader import YAMLLoader
+from .config_manager import ConfigManager
+from .config_model import Author, ProjectInformation, SloughConfig
+from .json_manager import JSONManager
+from .yaml_manager import YAMLManager
 
 __all__ = [
-    'ConfigLoader',
+    'Author',
     'ConfigFileFinder',
+    'ConfigManager',
+    'JSONManager',
+    'ProjectInformation',
     'SloughConfig',
-    'YAMLLoader',
-    'JSONLoader',
+    'YAMLManager',
 ]

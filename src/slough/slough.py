@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from slough_config import ConfigFileFinder, ConfigLoader
+from slough_config import ConfigFileFinder, ConfigManager
 from slough_config.config_model import SloughConfig
 
 
@@ -42,24 +42,40 @@ class Slough:
         )
         self.cfgfile = finder.find_config_file() or Path('.slough/slough.yml')
 
-    def _load_config(self) -> None:
-        """Load the configuration.
+    def _get_config_manager(self) -> ConfigManager:
+        """Get the correct configuration manager.
 
-        Uses a configloader that fits the configurationfile.
+        Returns the correct configuration manager based on the extension of the
+        configuration file.
+
+        Returns:
+            ConfigManager: The configuration manager.
         """
         if not self.cfgfile:
-            return
-
-        # Find the extension for the configuration file
-        extension = self.cfgfile.suffix[1:].lower()
-        if extension not in ConfigLoader.loaders:
             # TODO: Custom exception
-            raise ValueError(f'No loader for extension {extension}')
+            raise ValueError('No configuration file set.')
 
-        # Load the configuration
-        self._config = ConfigLoader.loaders[extension](
-            self.cfgfile
-        ).load_config()
+        extension = self.cfgfile.suffix[1:].lower()
+        if extension not in ConfigManager.managers:
+            # TODO: Custom exception
+            raise ValueError(
+                f'No manager registered for extension {extension}'
+            )
+        return ConfigManager.managers[extension](self.cfgfile)
+
+    def _load_config(self) -> None:
+        """Load the configuration."""
+        cfg_manager = self._get_config_manager()
+        self._config = cfg_manager.load_config()
+
+    def save(self) -> None:
+        """Save the configuration."""
+        if not self._config:
+            # TODO: Custom exception
+            raise ValueError('No configuration file set.')
+
+        cfg_manager = self._get_config_manager()
+        cfg_manager.save_config(self._config.model_dump())
 
     @property
     def config(self) -> SloughConfig | None:
@@ -67,3 +83,9 @@ class Slough:
         if not self._config:
             self._load_config()
         return self._config
+
+    @config.setter
+    def config(self, value: SloughConfig) -> None:
+        """Set the configuration."""
+        # TODO: Make sure that this only works when no config is set.
+        self._config = value

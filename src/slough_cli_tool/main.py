@@ -6,9 +6,11 @@ from rich.console import Console
 from slough import Slough
 
 from .config import config
+from .project import project
 
 app = typer.Typer(no_args_is_help=True)
 app.add_typer(config, name='config')
+app.add_typer(project, name='project')
 
 
 @app.callback()
