@@ -1,5 +1,9 @@
 """File with the required fixtures."""
 
+import shutil
+from collections.abc import Generator
+from pathlib import Path
+
 import pytest
 
 from chain_of_responsibility import ChainHandler, NotHandledError
@@ -107,3 +111,17 @@ def chain_of_responsibility_failure_success(
     success = chain_of_responsibility_handlers['failure']()
     success.set_next(chain_of_responsibility_handlers['success']())
     return success
+
+
+@pytest.fixture(scope='function')
+def empty_test_dir(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator[Path]:
+    """Fixture that creates and removes a empty directory."""
+    path = Path('tests/test_data/empty_test_dir').resolve()
+    path.mkdir(parents=True, exist_ok=True)
+    monkeypatch.chdir(path)
+    yield path
+
+    # Cleanup; remove the directory and all files in it
+    shutil.rmtree(path)

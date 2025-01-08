@@ -23,3 +23,9 @@ class ConfigNotSetError(SloughError):
     """Exception raised when the configuration is not set."""
 
     pass
+
+
+class ConfigAlreadySetError(SloughError):
+    """Exception raised when the configuration is already set."""
+
+    pass

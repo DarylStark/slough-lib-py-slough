@@ -6,6 +6,7 @@ from slough_config import ConfigFileFinder, ConfigManager
 from slough_config.config_model import SloughConfig
 
 from .exceptions import (
+    ConfigAlreadySetError,
     ConfigFileNotSetError,
     ConfigManagerNotRegisteredError,
     ConfigNotSetError,
@@ -90,5 +91,6 @@ class Slough:
     @config.setter
     def config(self, value: SloughConfig) -> None:
         """Set the configuration."""
-        # TODO: Make sure that this only works when no config is set.
+        if self.config is not None:
+            raise ConfigAlreadySetError('Configuration already set.')
         self._config = value
