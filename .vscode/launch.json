@@ -61,7 +61,7 @@
             "module": "slough_cli_tool",
             "console": "integratedTerminal",
             "args": [
-                "config",
+                "project",
                 "init"
             ]
         }

@@ -1,11 +1,15 @@
 """Main module for slough-cli-tool."""
 
+import sys
+
 import typer
 from rich.console import Console
 
 from slough import Slough
+from slough.exceptions import SloughError
 
 from .config import config
+from .exceptions import SloughCLIError
 from .project import project
 
 app = typer.Typer(no_args_is_help=True)
@@ -36,6 +40,13 @@ def main() -> None:
     """Entry point for the slough-cli-tool."""
     try:
         app()
-    except ValueError:
+    except SloughError as exc:
         console = Console()
-        console.print('Configuration invalid.', style='bold red')
+        console.print(f'[b][u]Slough error:[/u][/b] {str(exc)}', style='red')
+        sys.exit(1)
+    except SloughCLIError as exc:
+        console = Console()
+        console.print(
+            f'[b][u]Slough CLI error:[/u][/b] {str(exc)}', style='red'
+        )
+        sys.exit(2)
