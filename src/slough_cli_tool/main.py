@@ -4,6 +4,7 @@ import typer
 from rich.console import Console
 
 from slough import Slough
+from slough.exceptions import SloughError
 
 from .config import config
 from .project import project
@@ -36,6 +37,6 @@ def main() -> None:
     """Entry point for the slough-cli-tool."""
     try:
         app()
-    except ValueError:
+    except SloughError as exc:
         console = Console()
-        console.print('Configuration invalid.', style='bold red')
+        console.print(f'Slough error: {str(exc)}', style='bold red')

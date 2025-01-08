@@ -5,6 +5,12 @@ from pathlib import Path
 from slough_config import ConfigFileFinder, ConfigManager
 from slough_config.config_model import SloughConfig
 
+from .exceptions import (
+    ConfigFileNotSetError,
+    ConfigManagerNotRegisteredError,
+    ConfigNotSetError,
+)
+
 
 class Slough:
     """Class that represents a Slough application."""
@@ -52,13 +58,11 @@ class Slough:
             ConfigManager: The configuration manager.
         """
         if not self.cfgfile:
-            # TODO: Custom exception
-            raise ValueError('No configuration file set.')
+            raise ConfigFileNotSetError('No configuration file set.')
 
         extension = self.cfgfile.suffix[1:].lower()
         if extension not in ConfigManager.managers:
-            # TODO: Custom exception
-            raise ValueError(
+            raise ConfigManagerNotRegisteredError(
                 f'No manager registered for extension {extension}'
             )
         return ConfigManager.managers[extension](self.cfgfile)
@@ -71,8 +75,7 @@ class Slough:
     def save(self) -> None:
         """Save the configuration."""
         if not self._config:
-            # TODO: Custom exception
-            raise ValueError('No configuration file set.')
+            raise ConfigNotSetError('No configuration file set.')
 
         cfg_manager = self._get_config_manager()
         cfg_manager.save_config(self._config.model_dump())
