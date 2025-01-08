@@ -1,5 +1,7 @@
 """Main module for slough-cli-tool."""
 
+import sys
+
 import typer
 from rich.console import Console
 
@@ -41,8 +43,10 @@ def main() -> None:
     except SloughError as exc:
         console = Console()
         console.print(f'[b][u]Slough error:[/u][/b] {str(exc)}', style='red')
+        sys.exit(1)
     except SloughCLIError as exc:
         console = Console()
         console.print(
             f'[b][u]Slough CLI error:[/u][/b] {str(exc)}', style='red'
         )
+        sys.exit(2)
