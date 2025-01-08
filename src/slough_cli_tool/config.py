@@ -4,6 +4,7 @@ import typer
 
 from slough import Slough
 
+from .exceptions import ConfigMissingError
 from .generic import raise_for_missing_config
 from .output_formatters import OutputFormatter, OutputType
 
@@ -24,8 +25,7 @@ def cli_config_show(
     slough: Slough = context['slough']
     raise_for_missing_config(slough)
     if not isinstance(slough, Slough) or not slough.config:
-        # TODO: Custom exception
-        return
+        raise ConfigMissingError('Configuration is missing.')
 
     console = context['console']
     config_dict = slough.config
