@@ -5,6 +5,13 @@ from pathlib import Path
 import pytest
 
 from slough import Slough
+from slough.exceptions import (
+    ConfigAlreadySetError,
+    ConfigFileNotSetError,
+    ConfigManagerNotRegisteredError,
+    ConfigNotSetError,
+)
+from slough_config.config_model import ProjectInformation, SloughConfig
 
 
 def test_correct_configuration_file_static() -> None:
@@ -62,3 +69,102 @@ def test_correct_configuration_file_slough_subdir(
     slough = Slough(max_directory_depth=3)
     assert slough.cfgfile is not None
     assert slough.cfgfile == Path(f'../../../{expected_file}').resolve()
+
+
+def test_config_retrieval(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test that the configuration is loaded."""
+    monkeypatch.chdir('tests/test_data/project1')
+    slough = Slough(max_directory_depth=0)
+    assert slough.config is not None
+    assert slough.config.project.name == 'project1'
+    assert slough.config.project.version == '0.0.1'
+
+
+def test_config_retrieval_empty_file(empty_test_dir: Path) -> None:
+    """Test if we get a None object when no configu exists."""
+    slough = Slough(max_directory_depth=0)
+    assert slough.config is None
+
+
+def test_config_set_config_empty_project(empty_test_dir: Path) -> None:
+    """Test if we can set a config when there is None."""
+    slough = Slough(max_directory_depth=0)
+    slough.config = SloughConfig(
+        project=ProjectInformation(
+            name='empty_project', version='0.0.1', authors=[]
+        )
+    )
+    assert slough.config.project.name == 'empty_project'
+    assert slough.config.project.version == '0.0.1'
+
+
+def test_config_set_config(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Test if we can get an error when overwriting a config."""
+    monkeypatch.chdir('tests/test_data/project1')
+    slough = Slough(max_directory_depth=0)
+    with pytest.raises(ConfigAlreadySetError):
+        slough.config = SloughConfig(
+            project=ProjectInformation(
+                name='empty_project', version='0.0.1', authors=[]
+            )
+        )
+
+
+def test_config_save_config_empty_project(empty_test_dir: Path) -> None:
+    """Test if we get on error on saving a empty config."""
+    slough = Slough(max_directory_depth=0)
+    with pytest.raises(ConfigNotSetError):
+        slough.save()
+
+
+def test_config_save_config_yaml(empty_test_dir: Path) -> None:
+    """Test if saving the config works for YAML files."""
+    # Save the config
+    slough = Slough(cfgfile='test-config.yml')
+    slough.config = SloughConfig(
+        project=ProjectInformation(
+            name='empty_project', version='0.0.1', authors=[]
+        )
+    )
+    slough.save()
+
+    # Load the config
+    slough = Slough(cfgfile='test-config.yml')
+    assert slough.config is not None
+    assert slough.config.project.name == 'empty_project'
+    assert slough.config.project.version == '0.0.1'
+
+
+def test_config_save_config_json(empty_test_dir: Path) -> None:
+    """Test if saving the config works for JSON files."""
+    # Save the config
+    slough = Slough(cfgfile='test-config.json')
+    slough.config = SloughConfig(
+        project=ProjectInformation(
+            name='empty_project', version='0.0.1', authors=[]
+        )
+    )
+    slough.save()
+
+    # Load the config
+    slough = Slough(cfgfile='test-config.json')
+    assert slough.config is not None
+    assert slough.config.project.name == 'empty_project'
+    assert slough.config.project.version == '0.0.1'
+
+
+def test_wrong_configfile_extensions() -> None:
+    """Test if we get an error when the cfg file extension is not supported."""
+    slough = Slough(cfgfile='test-config.wrong-extension')
+    with pytest.raises(ConfigManagerNotRegisteredError):
+        _ = slough.config
+
+
+def test_error_when_no_config_file_is_set() -> None:
+    """Test if we get an error when the cfg file extension is not supported."""
+    slough = Slough()
+    slough.cfgfile = None
+    with pytest.raises(ConfigFileNotSetError):
+        _ = slough.config
