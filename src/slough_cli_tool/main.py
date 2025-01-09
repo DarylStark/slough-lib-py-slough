@@ -6,6 +6,7 @@ import typer
 from rich.console import Console
 
 from slough import Slough
+from slough import __version__ as slough_version
 from slough.exceptions import SloughError
 
 from .config import config
@@ -34,6 +35,13 @@ def common_command_line_options(
         cfgfile (str): Path to the configuration file.
     """
     ctx.obj = {'slough': Slough(cfgfile), 'console': Console()}
+
+
+@app.command('version')
+def version(ctx: typer.Context) -> None:
+    """Print the version of slough-cli-tool."""
+    console = ctx.obj['console']
+    console.print(f'[b]slough-cli-tool[/b] version: [u]{slough_version}[/u]')
 
 
 def main() -> None:
