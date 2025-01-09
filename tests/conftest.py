@@ -5,6 +5,7 @@ from collections.abc import Generator
 from pathlib import Path
 
 import pytest
+from typer.testing import CliRunner
 
 from chain_of_responsibility import ChainHandler, NotHandledError
 
@@ -125,3 +126,16 @@ def empty_test_dir(
 
     # Cleanup; remove the directory and all files in it
     shutil.rmtree(path)
+
+
+@pytest.fixture
+def cli_runner() -> CliRunner:
+    """Fixture with a Typer CLI runner.
+
+    This fixture returns a Typer CLI runner instance that can be used to test
+    CLI applications.
+
+    Returns:
+        CliRunner: A Typer CLI runner instance.
+    """
+    return CliRunner()
