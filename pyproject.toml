@@ -69,7 +69,7 @@ exclude = ["docs/*.py"]
 
 [dependency-groups]
 dev = [
-    "mypy>=1.14.0",
+    "mypy==1.14.1",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
     "pytest-sugar>=1.0.0",
