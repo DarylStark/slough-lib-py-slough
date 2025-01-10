@@ -55,7 +55,7 @@
             ]
         },
         {
-            "name": "CLI app - config - init",
+            "name": "CLI app - project - init",
             "type": "debugpy",
             "request": "launch",
             "module": "slough_cli_tool",
@@ -63,6 +63,30 @@
             "args": [
                 "project",
                 "init"
+            ]
+        },
+        {
+            "name": "CLI app - config - convert - yaml",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "slough_cli_tool",
+            "console": "integratedTerminal",
+            "args": [
+                "config",
+                "convert",
+                "yml"
+            ]
+        },
+        {
+            "name": "CLI app - config - convert - json",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "slough_cli_tool",
+            "console": "integratedTerminal",
+            "args": [
+                "config",
+                "convert",
+                "json"
             ]
         }
     ]
