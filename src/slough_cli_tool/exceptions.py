@@ -11,3 +11,9 @@ class ConfigMissingError(SloughCLIError):
     """Error raised when the configuration is missing."""
 
     pass
+
+
+class ConfigConvertionAlreadyCorrectSufficError(SloughCLIError):
+    """Error raised when the configuration is already in the correct suffix."""
+
+    pass
