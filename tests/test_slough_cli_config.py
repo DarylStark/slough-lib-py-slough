@@ -11,16 +11,28 @@ from slough_cli_tool.exceptions import (
 )
 
 
-def test_slough_cli_config_show(
+def test_slough_cli_config_env(
     monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
 ) -> None:
-    """Test the `config show --output envvar` command."""
+    """Test the `config env` command."""
     monkeypatch.chdir('tests/test_data/project1/')
-    result = cli_runner.invoke(app, ['config', 'show', '--output', 'envvars'])
+    result = cli_runner.invoke(app, ['config', 'env'])
     assert 'SLOUGH_PROJECT_NAME="project1"' in result.stdout
     assert 'SLOUGH_PROJECT_VERSION="0.0.1"' in result.stdout
     assert 'SLOUGH_PROJECT_AUTHORS_0_NAME="John Doe"' in result.stdout
     assert 'SLOUGH_PROJECT_AUTHORS_1_NAME="Daryl Stark"' in result.stdout
+
+
+def test_slough_cli_config_env_different_prefix(
+    monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
+) -> None:
+    """Test the `config env` command."""
+    monkeypatch.chdir('tests/test_data/project1/')
+    result = cli_runner.invoke(app, ['config', 'env', '--prefix', 'TEST'])
+    assert 'TEST_PROJECT_NAME="project1"' in result.stdout
+    assert 'TEST_PROJECT_VERSION="0.0.1"' in result.stdout
+    assert 'TEST_PROJECT_AUTHORS_0_NAME="John Doe"' in result.stdout
+    assert 'TEST_PROJECT_AUTHORS_1_NAME="Daryl Stark"' in result.stdout
 
 
 @pytest.mark.parametrize(
@@ -49,14 +61,7 @@ def test_slough_cli_config_convert(
     new_config_file = initial_file.split('.')[0] + f'.{target}'
     result = cli_runner.invoke(
         app,
-        [
-            '--cfgfile',
-            new_config_file,
-            'config',
-            'show',
-            '--output',
-            'envvars',
-        ],
+        ['--cfgfile', new_config_file, 'config', 'env'],
     )
     assert 'SLOUGH_PROJECT_NAME="test_project"' in result.stdout
     assert 'SLOUGH_PROJECT_VERSION="1.2.3"' in result.stdout

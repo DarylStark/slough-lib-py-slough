@@ -28,9 +28,7 @@ def test_slough_cli_project_init_prompt_input(
     )
     assert result.exit_code == 0
 
-    result = cli_runner.invoke(
-        app, ['--cfgfile', configfile, 'config', 'show', '--output', 'envvars']
-    )
+    result = cli_runner.invoke(app, ['--cfgfile', configfile, 'config', 'env'])
     assert 'SLOUGH_PROJECT_NAME="test_project"' in result.stdout
     assert 'SLOUGH_PROJECT_VERSION="0.1.0"' in result.stdout
     assert 'SLOUGH_PROJECT_AUTHORS_0_NAME="John Doe"' in result.stdout
@@ -66,9 +64,7 @@ def test_slough_cli_project_init_cmdline_input(
     )
     assert result.exit_code == 0
 
-    result = cli_runner.invoke(
-        app, ['--cfgfile', configfile, 'config', 'show', '--output', 'envvars']
-    )
+    result = cli_runner.invoke(app, ['--cfgfile', configfile, 'config', 'env'])
     assert 'SLOUGH_PROJECT_NAME="test_project"' in result.stdout
     assert 'SLOUGH_PROJECT_VERSION="0.1.0"' in result.stdout
     assert 'SLOUGH_PROJECT_AUTHORS_0_NAME="John Doe"' in result.stdout

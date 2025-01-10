@@ -11,7 +11,6 @@ from .exceptions import (
     ConfigMissingError,
 )
 from .generic import raise_for_missing_config
-from .output_formatters import OutputFormatter, OutputType
 
 config = typer.Typer(no_args_is_help=True)
 
@@ -23,15 +22,41 @@ class ConvertTarget(str, Enum):
     YAML = 'yml'
 
 
-@config.command(name='show')
-def cli_config_show(
-    ctx: typer.Context, output: OutputType = typer.Option(OutputType.yaml)
+def convert_to_envvars(data: dict, prefix: str) -> str:
+    """Format dictionary to environment variables.
+
+    Args:
+        data (dict): Dictionary to format.
+        prefix (str): Prefix for the environment variables.
+
+    Returns:
+        str: Formatted data.
+    """
+    output = ''
+    for key, value in data.items():
+        var_name = f'{prefix}_{key}'.upper()
+
+        if type(value) in [str, int, float]:
+            output += f'{var_name}="{value}"\n'
+        elif type(value) is dict:
+            output += convert_to_envvars(value, f'{prefix}_{key}')
+        elif type(value) is list:
+            output += f'{var_name}_COUNT={len(value)}\n'
+            for i, item in enumerate(value):
+                output += convert_to_envvars(item, f'{var_name}_{i}')
+    return output
+
+
+@config.command(name='env')
+def cli_config_env(
+    ctx: typer.Context,
+    prefix: str = typer.Option(default='SLOUGH'),
 ) -> None:
-    """Show configuration in specific output formats.
+    """Show configuration as environment variables.
 
     Args:
         ctx (typer.Context): Typer context.
-        output (OutputType, optional): Output format. Defaults to YAML.
+        prefix (str): Prefix for the environment variables
     """
     context = ctx.obj
     slough: Slough = context['slough']
@@ -41,12 +66,7 @@ def cli_config_show(
 
     console = context['console']
     config_dict = slough.config
-
-    if output in OutputFormatter.formatters:
-        formatter = OutputFormatter.formatters[output](config_dict)
-        console.print(formatter.format(), end='')
-    else:
-        raise TypeError(f'Output type {output} not supported.')
+    console.print(convert_to_envvars(config_dict.model_dump(), prefix), end='')
 
 
 @config.command(name='convert')
