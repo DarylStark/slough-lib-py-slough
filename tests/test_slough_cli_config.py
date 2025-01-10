@@ -8,6 +8,7 @@ from typer.testing import CliRunner
 from slough_cli_tool import app
 from slough_cli_tool.exceptions import (
     ConfigConvertionAlreadyCorrectSufficError,
+    ConfigMissingError,
 )
 
 
@@ -76,3 +77,16 @@ def test_slough_cli_config_convert_same_extension(
     # Convert to YAML
     result = cli_runner.invoke(app, ['config', 'convert', 'yml'])
     assert type(result.exception) is ConfigConvertionAlreadyCorrectSufficError
+
+
+def test_slough_cli_config_convert_missing_config(
+    monkeypatch: pytest.MonkeyPatch,
+    cli_runner: CliRunner,
+    empty_test_dir: Path,
+) -> None:
+    """Test the converting when there is no configfile."""
+    monkeypatch.setenv('MAX_DIR_DEPTH', '0')
+    result = cli_runner.invoke(
+        app, ['--cfgfile', '', 'config', 'convert', 'yml']
+    )
+    assert type(result.exception) is ConfigMissingError

@@ -1,5 +1,6 @@
 """Main module for slough-cli-tool."""
 
+import os
 import sys
 
 import typer
@@ -34,7 +35,13 @@ def common_command_line_options(
         ctx (typer.Context): Typer context object.
         cfgfile (str): Path to the configuration file.
     """
-    ctx.obj = {'slough': Slough(cfgfile), 'console': Console()}
+    ctx.obj = {
+        'slough': Slough(
+            cfgfile,
+            max_directory_depth=int(os.environ.get('MAX_DIR_DEPTH', '6')),
+        ),
+        'console': Console(),
+    }
 
 
 @app.command('version')

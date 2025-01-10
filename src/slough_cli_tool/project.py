@@ -2,8 +2,9 @@
 
 import typer
 
-from slough import Slough
 from slough_config import Author, ProjectInformation, SloughConfig
+
+from .generic import get_context_data
 
 project = typer.Typer(no_args_is_help=True)
 
@@ -41,8 +42,7 @@ def cli_project_init(
         author_name (str): The author name.
         author_email (str): The author
     """
-    context = ctx.obj
-    slough: Slough = context['slough']
+    _, slough = get_context_data(ctx)
 
     # Create a new Slough object
     slough_config = SloughConfig(
