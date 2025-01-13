@@ -6,40 +6,46 @@ from chain_of_responsibility import ChainHandler, NotHandledError
 
 
 class FileChecker(ChainHandler[Path]):
-    """Class that checks if a file exists.
+    """Class that searches for a file in a directory.
 
     Can be used as a chain.
     """
 
-    def __init__(self, filename: str, directory: Path, max_depth: int) -> None:
-        """Constructor for the FileChecker class.
+    def __init__(
+        self,
+        filename: str,
+        directory: Path,
+        subdirectory: Path,
+        extensions: list[str],
+    ) -> None:
+        """Constructor for the FileChecker2 class.
 
         Args:
             filename (str): The filename to check.
             directory (Path): The directory to check.
-            max_depth (int): The maximum directory depth to check.
+            subdirectory (Path): The subdirectory to check.
+            extensions (list[str]): The extensions to check.
         """
         super().__init__()
         self._filename = filename
         self._directory = directory.resolve()
-        self._max_depth = max_depth
+        self._subdirectory = (directory / subdirectory).resolve()
+        self._extensions = extensions
 
     def _handle(self) -> Path:
-        """Method that checks if the file exists.
+        """Method that searches for the file in the directory.
 
         Returns:
-            bool: True if the file exists, False otherwise.
+            Path: The path to the file if found.
         """
-        path_object = self._directory / Path(self._filename)
-        if path_object.exists():
-            return path_object.resolve()
+        paths = [self._directory, self._subdirectory]
+        for path in paths:
+            for extension in self._extensions:
+                path_object = path / Path(f'{self._filename}.{extension}')
+                if path_object.is_file():
+                    return path_object.resolve()
 
-        if self._max_depth == 0 or len(self._directory.parents) == 0:
-            raise NotHandledError
-
-        self._max_depth -= 1
-        self._directory = self._directory.parent
-        return self._handle()
+        raise NotHandledError
 
 
 class ConfigFileFinder:
@@ -74,42 +80,28 @@ class ConfigFileFinder:
         Returns:
             str: The configuration file path if found, None otherwise.
         """
-        # Create a chain of checkers
-        file_checker_yml = FileChecker(
-            f'{self._filename}.yml',
-            self._working_dir,
-            self._max_directory_depth,
-        )
-        file_checker_yml_slough_dir = FileChecker(
-            f'{self._subdir}/{self._filename}.yml',
-            self._working_dir,
-            self._max_directory_depth,
-        )
-        file_checker_yaml = FileChecker(
-            f'{self._filename}.yaml',
-            self._working_dir,
-            self._max_directory_depth,
-        )
-        file_checker_yaml_slough_dir = FileChecker(
-            f'{self._subdir}/{self._filename}.yaml',
-            self._working_dir,
-            self._max_directory_depth,
-        )
-        file_checker_json = FileChecker(
-            f'{self._filename}.json',
-            self._working_dir,
-            self._max_directory_depth,
-        )
-        file_checker_json_slough_dir = FileChecker(
-            f'{self._subdir}/{self._filename}.json',
-            self._working_dir,
-            self._max_directory_depth,
-        )
+        search_path = self._working_dir.resolve()
+        extensions = ['yml', 'yaml', 'json']
 
-        file_checker_yml.set_next(file_checker_yml_slough_dir)
-        file_checker_yml_slough_dir.set_next(file_checker_yaml)
-        file_checker_yaml.set_next(file_checker_yaml_slough_dir)
-        file_checker_yaml_slough_dir.set_next(file_checker_json)
-        file_checker_json.set_next(file_checker_json_slough_dir)
+        file_checkers: list[ChainHandler[Path]] = [
+            FileChecker(
+                f'{self._filename}',
+                search_path,
+                Path(self._subdir),
+                extensions=extensions,
+            )
+        ]
 
-        return file_checker_yml.handle()
+        for _ in range(0, self._max_directory_depth):
+            if len(search_path.parents) > 0:
+                search_path = search_path.parent.resolve()
+                next_checker = FileChecker(
+                    f'{self._filename}',
+                    search_path,
+                    Path(self._subdir),
+                    extensions=extensions,
+                )
+                file_checkers[-1].set_next(next_checker)
+                file_checkers.append(next_checker)
+
+        return file_checkers[0].handle()
