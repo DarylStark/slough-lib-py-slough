@@ -34,5 +34,6 @@ class YAMLManager(ConfigManager):
         Args:
             config (dict): The configuration to save.
         """
+        self._create_parent_directory()
         with self.cfgfile.open('w') as file:
             return yaml.dump(config, file)
