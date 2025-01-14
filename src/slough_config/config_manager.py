@@ -52,6 +52,10 @@ class ConfigManager(ABC):
         """
         self.cfgfile = cfgfile
 
+    def _create_parent_directory(self) -> None:
+        """Create the parent directory of the configuration file."""
+        self.cfgfile.resolve().parent.mkdir(parents=True, exist_ok=True)
+
     @abstractmethod
     def _load_config(self) -> dict:
         """Abstract method that loads the config.

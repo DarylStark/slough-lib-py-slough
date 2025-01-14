@@ -10,7 +10,14 @@ from slough_cli_tool import app
 
 @pytest.mark.parametrize(
     'configfile',
-    ['test.yml', 'test.json'],
+    [
+        'test.yml',
+        'test.json',
+        'subdir/test.yml',
+        'subdir/test.json',
+        'subdir/subdir/test.yml',
+        'subdir/subdir/test.json',
+    ],
 )
 def test_slough_cli_project_init_prompt_input(
     cli_runner: CliRunner, empty_test_dir: Path, configfile: str
@@ -39,7 +46,14 @@ def test_slough_cli_project_init_prompt_input(
 
 @pytest.mark.parametrize(
     'configfile',
-    ['test.yml', 'test.json'],
+    [
+        'test.yml',
+        'test.json',
+        'subdir/test.yml',
+        'subdir/test.json',
+        'subdir/subdir/test.yml',
+        'subdir/subdir/test.json',
+    ],
 )
 def test_slough_cli_project_init_cmdline_input(
     cli_runner: CliRunner, empty_test_dir: Path, configfile: str

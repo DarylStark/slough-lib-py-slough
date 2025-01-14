@@ -33,5 +33,6 @@ class JSONManager(ConfigManager):
         Args:
             config (dict): The configuration to save.
         """
+        self._create_parent_directory()
         with self.cfgfile.open('w') as file:
             return json.dump(config, file, indent=4)
