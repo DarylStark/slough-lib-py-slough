@@ -43,7 +43,13 @@ def test_correct_configuration_file_static() -> None:
 def test_correct_configuration_file_slough_root(
     monkeypatch: pytest.MonkeyPatch, directory: str, expected_file: str
 ) -> None:
-    """Test that the correct configuration file is set by default."""
+    """Test that the correct configuration file is set by default.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        directory (str): Test data directory.
+        expected_file (str): Expected config file name.
+    """
     monkeypatch.chdir(f'tests/test_data/{directory}')
     slough = Slough(max_directory_depth=0)
     assert slough.cfgfile is not None
@@ -64,7 +70,13 @@ def test_correct_configuration_file_slough_root(
 def test_correct_configuration_file_slough_subdir(
     monkeypatch: pytest.MonkeyPatch, directory: str, expected_file: str
 ) -> None:
-    """Test that the correct configuration file is set by default."""
+    """Test that the correct configuration file is set by default.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        directory (str): Test data directory.
+        expected_file (str): Expected config file name.
+    """
     monkeypatch.chdir(f'tests/test_data/{directory}/subdir/subdir/subdir')
     slough = Slough(max_directory_depth=3)
     assert slough.cfgfile is not None
@@ -72,7 +84,11 @@ def test_correct_configuration_file_slough_subdir(
 
 
 def test_config_retrieval(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Test that the configuration is loaded."""
+    """Test that the configuration is loaded.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+    """
     monkeypatch.chdir('tests/test_data/project1')
     slough = Slough(max_directory_depth=0)
     assert slough.config is not None
@@ -81,13 +97,21 @@ def test_config_retrieval(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 def test_config_retrieval_empty_file(empty_test_dir: Path) -> None:
-    """Test if we get a None object when no configu exists."""
+    """Test if we get a None object when no configu exists.
+
+    Args:
+        empty_test_dir (Path): Path to the empty test directory
+    """
     slough = Slough(max_directory_depth=0)
     assert slough.config is None
 
 
 def test_config_set_config_empty_project(empty_test_dir: Path) -> None:
-    """Test if we can set a config when there is None."""
+    """Test if we can set a config when there is None.
+
+    Args:
+        empty_test_dir (Path): Path to the empty test directory
+    """
     slough = Slough(max_directory_depth=0)
     slough.config = SloughConfig(
         project=ProjectInformation(
@@ -101,7 +125,11 @@ def test_config_set_config_empty_project(empty_test_dir: Path) -> None:
 def test_config_set_config(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Test if we can get an error when overwriting a config."""
+    """Test if we can get an error when overwriting a config.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+    """
     monkeypatch.chdir('tests/test_data/project1')
     slough = Slough(max_directory_depth=0)
     with pytest.raises(ConfigAlreadySetError):
@@ -113,14 +141,22 @@ def test_config_set_config(
 
 
 def test_config_save_config_empty_project(empty_test_dir: Path) -> None:
-    """Test if we get on error on saving a empty config."""
+    """Test if we get on error on saving a empty config.
+
+    Args:
+        empty_test_dir (Path): Path to the empty test directory
+    """
     slough = Slough(max_directory_depth=0)
     with pytest.raises(ConfigNotSetError):
         slough.save()
 
 
 def test_config_save_config_yaml(empty_test_dir: Path) -> None:
-    """Test if saving the config works for YAML files."""
+    """Test if saving the config works for YAML files.
+
+    Args:
+        empty_test_dir (Path): Path to the empty test directory
+    """
     # Save the config
     slough = Slough(cfgfile='test-config.yml')
     slough.config = SloughConfig(
@@ -138,7 +174,11 @@ def test_config_save_config_yaml(empty_test_dir: Path) -> None:
 
 
 def test_config_save_config_json(empty_test_dir: Path) -> None:
-    """Test if saving the config works for JSON files."""
+    """Test if saving the config works for JSON files.
+
+    Args:
+        empty_test_dir (Path): Path to the empty test directory
+    """
     # Save the config
     slough = Slough(cfgfile='test-config.json')
     slough.config = SloughConfig(
@@ -156,14 +196,22 @@ def test_config_save_config_json(empty_test_dir: Path) -> None:
 
 
 def test_wrong_configfile_extensions() -> None:
-    """Test if we get an error when the cfg file extension is not supported."""
+    """Test if we get an error when the cfg file extension is not supported.
+
+    Args:
+        empty_test_dir (Path): Path to the empty test directory
+    """
     slough = Slough(cfgfile='test-config.wrong-extension')
     with pytest.raises(ConfigManagerNotRegisteredError):
         _ = slough.config
 
 
 def test_error_when_no_config_file_is_set() -> None:
-    """Test if we get an error when the cfg file extension is not supported."""
+    """Test if we get an error when the cfg file extension is not supported.
+
+    Args:
+        empty_test_dir (Path): Path to the empty test directory
+    """
     slough = Slough()
     slough.cfgfile = None
     with pytest.raises(ConfigFileNotSetError):

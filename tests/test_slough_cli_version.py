@@ -7,6 +7,10 @@ from slough_cli_tool import app
 
 
 def test_slough_cli_version(cli_runner: CliRunner) -> None:
-    """Test the `config show --output envvar` command."""
+    """Test the `config show --output envvar` command.
+
+    Args:
+        cli_runner (CliRunner): Typer CLI runner.
+    """
     result = cli_runner.invoke(app, ['version'])
     assert f'slough-cli-tool version: {slough_version}' in result.stdout
