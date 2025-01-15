@@ -44,7 +44,12 @@ def convert_to_envvars(data: dict, prefix: str) -> str:
     return output
 
 
-@config.command(name='env')
+@config.command(
+    name='env',
+    help='Display the configuration as environment variables. This can be '
+    + 'used in automations to get the configuration for the project.',
+    short_help='Display the configuration as environment variables.',
+)
 def cli_config_env(
     ctx: typer.Context,
     prefix: str = typer.Option(default='SLOUGH'),
@@ -59,7 +64,12 @@ def cli_config_env(
     console.print(convert_to_envvars(config.model_dump(), prefix), end='')
 
 
-@config.command(name='convert')
+@config.command(
+    name='convert',
+    help='Convert the configurationfile to a different format. This can be '
+    + 'useful when you need to convert a YAML file to JSON or visa versa.',
+    short_help='Convert the configuration to a different format.',
+)
 def cli_config_convert(ctx: typer.Context, target: ConvertTarget) -> None:
     """Convert configuration to specific output formats.
 
