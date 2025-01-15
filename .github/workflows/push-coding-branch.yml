@@ -1,0 +1,31 @@
+---
+on:
+  push:
+
+jobs:
+  linting:
+    name: Code linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+      - uses: actions/checkout@v2
+      - name: Type testing
+        run: |
+          uv run --frozen mypy .
+      - uses: astral-sh/ruff-action@v3
+
+  unit-testing:
+    name: Unit Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: |
+          uv run --frozen pytest
