@@ -4,6 +4,7 @@ import typer
 
 from slough_config import Author, ProjectInformation, SloughConfig
 
+from .exceptions import ConfigAlreadySetError
 from .generic import get_context_data
 
 project = typer.Typer(no_args_is_help=True)
@@ -54,9 +55,10 @@ def cli_project_init(
     )
 
     # Set the configuration in the `Slough` object
-    # TODO: Make sure it is only done when there is no configurationfile
-    #       yet.
-    slough.config = slough_config
+    if not slough.config:
+        slough.config = slough_config
+    else:
+        raise ConfigAlreadySetError('Configuration already set')
 
     # Save the configuration
     slough.save()
