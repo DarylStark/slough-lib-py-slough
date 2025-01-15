@@ -17,3 +17,9 @@ class ConfigConvertionAlreadyCorrectSufficError(SloughCLIError):
     """Error raised when the configuration is already in the correct suffix."""
 
     pass
+
+
+class ConfigAlreadySetError(SloughCLIError):
+    """Error raised when the configuration is already set."""
+
+    pass

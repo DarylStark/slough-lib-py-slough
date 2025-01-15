@@ -97,3 +97,31 @@ def test_slough_cli_project_init_cmdline_input(
     assert (
         'SLOUGH_PROJECT_AUTHORS_0_EMAIL="johndoe@example.com"' in result.stdout
     )
+
+
+def test_slough_cli_project_init_config_already_present(
+    monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
+) -> None:
+    """Test the `project init` command when there is already a config.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        cli_runner (CliRunner): Typer CLI runner.
+    """
+    monkeypatch.chdir('tests/test_data/project1/')
+    result = cli_runner.invoke(
+        app,
+        [
+            'project',
+            'init',
+            '--title',
+            'test_project',
+            '--version',
+            '0.1.0',
+            '--author-name',
+            'John Doe',
+            '--author-email',
+            'johndoe@example.com',
+        ],
+    )
+    assert result.exit_code == 1
