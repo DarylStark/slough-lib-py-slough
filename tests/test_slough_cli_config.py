@@ -15,7 +15,12 @@ from slough_cli_tool.exceptions import (
 def test_slough_cli_config_env(
     monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
 ) -> None:
-    """Test the `config env` command."""
+    """Test the `config env` command.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        cli_runner (CliRunner): Typer CLI runner.
+    """
     monkeypatch.chdir('tests/test_data/project1/')
     result = cli_runner.invoke(app, ['config', 'env'])
     assert 'SLOUGH_PROJECT_NAME="project1"' in result.stdout
@@ -27,7 +32,12 @@ def test_slough_cli_config_env(
 def test_slough_cli_config_env_different_prefix(
     monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
 ) -> None:
-    """Test the `config env` command."""
+    """Test the `config env` command.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        cli_runner (CliRunner): Typer CLI runner.
+    """
     monkeypatch.chdir('tests/test_data/project1/')
     result = cli_runner.invoke(app, ['config', 'env', '--prefix', 'TEST'])
     assert 'TEST_PROJECT_NAME="project1"' in result.stdout
@@ -45,7 +55,14 @@ def test_slough_cli_config_convert(
     initial_file: str,
     target: str,
 ) -> None:
-    """Test the commando to convert configuration to specific target."""
+    """Test the commando to convert configuration to specific target.
+
+    Args:
+        cli_runner (CliRunner): Typer CLI runner.
+        empty_test_dir (Path): Path to the empty test directory.
+        initial_file (str): Initial config file.
+        target (str): Target format.
+    """
     # Create a new project
     cli_runner.invoke(
         app,
@@ -72,7 +89,12 @@ def test_slough_cli_config_convert(
 def test_slough_cli_config_convert_same_extension(
     monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
 ) -> None:
-    """Test the converting to the already used format."""
+    """Test the converting to the already used format.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        cli_runner (CliRunner): Typer CLI runner.
+    """
     monkeypatch.chdir('tests/test_data/project1/')
     # Convert to YAML
     result = cli_runner.invoke(app, ['config', 'convert', 'yml'])
@@ -84,7 +106,13 @@ def test_slough_cli_config_convert_missing_config(
     cli_runner: CliRunner,
     empty_test_dir: Path,
 ) -> None:
-    """Test the converting when there is no configfile."""
+    """Test the converting when there is no configfile.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        cli_runner (CliRunner): Typer CLI runner.
+        empty_test_dir (Path): Path to the empty test directory.
+    """
     monkeypatch.setenv('MAX_DIR_DEPTH', '0')
     result = cli_runner.invoke(
         app, ['--cfgfile', '', 'config', 'convert', 'yml']

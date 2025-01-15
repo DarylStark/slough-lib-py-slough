@@ -12,20 +12,32 @@ from chain_of_responsibility import ChainHandler, NotHandledError
 
 @pytest.fixture
 def chain_of_responsibility_handlers() -> dict[str, type[ChainHandler[str]]]:
-    """Fixture that returns a dictionary with ChainHandlers."""
+    """Fixture that returns a dictionary with ChainHandlers.
+
+    Returns:
+        dict[str, type[ChainHandler[str]]]: A dictionary with ChainHandlers.
+    """
 
     class SuccessFullHandler(ChainHandler[str]):
         """ChainHandler that "processes" the request."""
 
         def _handle(self) -> str:
-            """Handle the command."""
+            """Handle the command.
+
+            Returns:
+                str: A string with the result of the processing.
+            """
             return 'processed'
 
     class FailingHandler(ChainHandler[str]):
         """ChainHandler that doesn't process the request."""
 
         def _handle(self) -> str:
-            """Handle the command."""
+            """Handle the command.
+
+            Returns:
+                str: A string with the result of the processing.
+            """
             raise NotHandledError
 
     return {
@@ -118,7 +130,14 @@ def chain_of_responsibility_failure_success(
 def empty_test_dir(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Generator[Path]:
-    """Fixture that creates and removes a empty directory."""
+    """Fixture that creates and removes a empty directory.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+
+    Yields:
+        Generator[Path]: A Path object with the path to the created directory.
+    """
     path = Path('tests/test_data/empty_test_dir').resolve()
     path.mkdir(parents=True, exist_ok=True)
     monkeypatch.chdir(path)

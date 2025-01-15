@@ -22,7 +22,13 @@ from slough_cli_tool import app
 def test_slough_cli_project_init_prompt_input(
     cli_runner: CliRunner, empty_test_dir: Path, configfile: str
 ) -> None:
-    """Test the `project init` command."""
+    """Test the `project init` command.
+
+    Args:
+        cli_runner (CliRunner): Typer CLI runner.
+        empty_test_dir (Path): Path to the empty test directory.
+        configfile (str): Configuration file name.
+    """
     result = cli_runner.invoke(
         app,
         ['--cfgfile', configfile, 'project', 'init'],
@@ -58,7 +64,13 @@ def test_slough_cli_project_init_prompt_input(
 def test_slough_cli_project_init_cmdline_input(
     cli_runner: CliRunner, empty_test_dir: Path, configfile: str
 ) -> None:
-    """Test the `project init` command."""
+    """Test the `project init` command.
+
+    Args:
+        cli_runner (CliRunner): Typer CLI runner.
+        empty_test_dir (Path): Path to the empty test directory.
+        configfile (str): Configuration
+    """
     result = cli_runner.invoke(
         app,
         [

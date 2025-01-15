@@ -29,7 +29,12 @@ from slough_config import ConfigFileFinder
 def test_config_file_finder_root_yml(
     directory: str, expected_file: str
 ) -> None:
-    """Test the config file finder."""
+    """Test the config file finder.
+
+    Args:
+        directory (str): Test data directory.
+        expected_file (str): Expected config file name.
+    """
     finder = ConfigFileFinder(
         working_dir=Path() / 'tests' / 'test_data' / directory,
         max_directory_depth=0,
@@ -43,7 +48,11 @@ def test_config_file_finder_root_yml(
     'max_depth', (0, 1, 2), ids=['Current dir', 'One deep', 'Two deep']
 )
 def test_config_file_finder_root_parent_dir_too_deep(max_depth: int) -> None:
-    """Test the config file finder."""
+    """Test the config file finder.
+
+    Args:
+        max_depth (int): Maximum directory depth.
+    """
     finder = ConfigFileFinder(
         working_dir=Path()
         / 'tests'
@@ -59,7 +68,11 @@ def test_config_file_finder_root_parent_dir_too_deep(max_depth: int) -> None:
     'max_depth', (0, 1, 2), ids=['Current dir', 'One deep', 'Two deep']
 )
 def test_config_file_finder_subdir_parent_dir_too_deep(max_depth: int) -> None:
-    """Test the config file finder."""
+    """Test the config file finder.
+
+    Args:
+        max_depth (int): Maximum directory
+    """
     finder = ConfigFileFinder(
         working_dir=Path()
         / 'tests'
@@ -77,7 +90,11 @@ def test_config_file_finder_subdir_parent_dir_too_deep(max_depth: int) -> None:
     ids=['Three deep', 'Four deep', 'Five deep', 'Six deep', 'Seven deep'],
 )
 def test_config_file_finder_root_parent_dir(max_depth: int) -> None:
-    """Test the config file finder."""
+    """Test the config file finder.
+
+    Args:
+        max_depth (int): Maximum directory depth.
+    """
     finder = ConfigFileFinder(
         working_dir=Path()
         / 'tests'
@@ -96,7 +113,11 @@ def test_config_file_finder_root_parent_dir(max_depth: int) -> None:
     ids=['Three deep', 'Four deep', 'Five deep'],
 )
 def test_config_file_finder_subdir_parent_dir(max_depth: int) -> None:
-    """Test the config file finder."""
+    """Test the config file finder.
+
+    Args:
+        max_depth (int): Maximum directory depth.
+    """
     finder = ConfigFileFinder(
         working_dir=Path()
         / 'tests'
