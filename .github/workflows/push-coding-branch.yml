@@ -6,9 +6,23 @@ on:
       - dev
 
 jobs:
-  test:
+  linting:
+    name: Code linting
     runs-on: ubuntu-latest
+    steps:
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+      - uses: actions/checkout@v2
+      - name: Type testing
+        run: |
+          uv run --frozen pytest
+      - uses: astral-sh/ruff-action@v3
 
+  unit-testing:
+    name: Unit Testing
+    runs-on: ubuntu-latest
     steps:
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v5
