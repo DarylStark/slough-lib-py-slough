@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Type testing
         run: |
-          uv run --frozen pytest
+          uv run --frozen mypy .
       - uses: astral-sh/ruff-action@v3
 
   unit-testing:
