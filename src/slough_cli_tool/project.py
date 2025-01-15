@@ -10,7 +10,13 @@ from .generic import get_context_data
 project = typer.Typer(no_args_is_help=True)
 
 
-@project.command(name='init')
+@project.command(
+    name='init',
+    help='Initialize a new project configuration. This command will prompt'
+    + ' you for the project title, version, author name, and author email. If'
+    + 'the configuration already exists, this command will fail.',
+    short_help='Initialize a new project configuration.',
+)
 def cli_project_init(
     ctx: typer.Context,
     title: str = typer.Option(
