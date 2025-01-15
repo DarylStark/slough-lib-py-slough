@@ -5,53 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "CLI app - config - show (default)",
+            "name": "CLI app - config - env",
             "type": "debugpy",
             "request": "launch",
             "module": "slough_cli_tool",
             "console": "integratedTerminal",
             "args": [
                 "config",
-                "show"
+                "env"
             ]
         },
         {
-            "name": "CLI app - config - show (as YAML)",
+            "name": "CLI app - config - env - prefix:TEST",
             "type": "debugpy",
             "request": "launch",
             "module": "slough_cli_tool",
             "console": "integratedTerminal",
             "args": [
                 "config",
-                "show",
-                "--output",
-                "yaml"
-            ]
-        },
-        {
-            "name": "CLI app - config - show (as JSON)",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "slough_cli_tool",
-            "console": "integratedTerminal",
-            "args": [
-                "config",
-                "show",
-                "--output",
-                "json"
-            ]
-        },
-        {
-            "name": "CLI app - config - show (as ENVVARS)",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "slough_cli_tool",
-            "console": "integratedTerminal",
-            "args": [
-                "config",
-                "show",
-                "--output",
-                "envvars"
+                "env",
+                "--prefix",
+                "TEST"
             ]
         },
         {
