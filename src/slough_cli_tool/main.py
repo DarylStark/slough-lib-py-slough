@@ -55,7 +55,7 @@ def common_command_line_options(
     )
 
     local_logger = logging.getLogger('common_command_line_options')
-    local_logger.debug('Given configuration file: %s', cfgfile)
+    local_logger.debug('Given configuration file: "%s"', cfgfile)
 
     # Create a context aware object that can be used by all commands.
     ctx.obj = {
@@ -67,7 +67,7 @@ def common_command_line_options(
     }
     local_logger.debug('Created context object')
     local_logger.info(
-        'Configuration file in context: %s', ctx.obj['slough'].cfgfile
+        'Configuration file in context: "%s"', ctx.obj['slough'].cfgfile
     )
 
 
