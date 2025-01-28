@@ -1,10 +1,12 @@
 """Main module for slough-cli-tool."""
 
+import logging
 import os
 import sys
 
 import typer
 from rich.console import Console
+from rich.logging import RichHandler
 
 from slough import Slough
 from slough import __version__ as slough_version
@@ -25,6 +27,14 @@ def common_command_line_options(
     cfgfile: str = typer.Option(
         None, help='Path to the configuration file.', envvar='SLOUGH_CFGFILE'
     ),
+    verbosity: int = typer.Option(
+        0,
+        '--verbosity',
+        '-v',
+        count=True,
+        help='Increase output verbosity.',
+        max=2,
+    ),
 ) -> None:
     """Common options for all commands.
 
@@ -34,7 +44,17 @@ def common_command_line_options(
     Args:
         ctx (typer.Context): Typer context object.
         cfgfile (str): Path to the configuration file.
+        verbosity (int): Verbosity level
     """
+    # Set up logging
+    logging.basicConfig(
+        level=logging.WARNING - (verbosity * 10),
+        format='%(message)s',
+        datefmt='[%X]',
+        handlers=[RichHandler()],
+    )
+
+    # Create a context aware object that can be used by all commands.
     ctx.obj = {
         'slough': Slough(
             cfgfile,
