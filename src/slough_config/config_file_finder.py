@@ -46,9 +46,9 @@ class FileChecker(ChainHandler[Path]):
                 path_object = path / Path(f'{self._filename}.{extension}')
                 self._logger.debug('Checking path: "%s"', path_object)
                 if path_object.is_file():
-                    self._logger.info('Found file: "%s"', path_object)
+                    self._logger.debug('Found file: "%s"', path_object)
                     return path_object.resolve()
-                self._logger.info('File "%s" not found', path_object)
+                self._logger.debug('File "%s" not found', path_object)
 
         raise NotHandledError
 

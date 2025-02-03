@@ -1,5 +1,6 @@
 """Module with the Slough class."""
 
+import logging
 from pathlib import Path
 
 from slough_config import ConfigFileFinder, ConfigManager
@@ -29,6 +30,7 @@ class Slough:
             max_directory_depth (int): The maximum directory depth to search
                 for the configuration file.
         """
+        self._logger = logging.getLogger('Slough')
         self._config: SloughConfig | None = None
         self._max_directory_depth = max_directory_depth
         self.cfgfile: Path | None = None
@@ -48,6 +50,7 @@ class Slough:
             max_directory_depth=self._max_directory_depth
         )
         self.cfgfile = finder.find_config_file() or Path('.slough/slough.yml')
+        self._logger.info(f'Configuration file set to {self.cfgfile}')
 
     def _get_config_manager(self) -> ConfigManager:
         """Get the correct configuration manager.
@@ -66,12 +69,18 @@ class Slough:
             raise ConfigManagerNotRegisteredError(
                 f'No manager registered for extension {extension}'
             )
+        self._logger.debug(
+            f'Using "{ConfigManager.managers[extension].__name__}" class '
+            + f'for extension "{extension}"'
+        )
         return ConfigManager.managers[extension](self.cfgfile)
 
     def _load_config(self) -> None:
         """Load the configuration."""
         cfg_manager = self._get_config_manager()
+        self._logger.info(f'Loading configuration from {self.cfgfile}')
         self._config = cfg_manager.load_config()
+        self._logger.info(f'Loaded configuration from {self.cfgfile}')
 
     def save(self) -> None:
         """Save the configuration."""
@@ -79,7 +88,9 @@ class Slough:
             raise ConfigNotSetError('No configuration file set.')
 
         cfg_manager = self._get_config_manager()
+        self._logger.info(f'Saving configuration to {self.cfgfile}')
         cfg_manager.save_config(self._config.model_dump())
+        self._logger.info(f'Saved configuration to {self.cfgfile}')
 
     @property
     def config(self) -> SloughConfig | None:
