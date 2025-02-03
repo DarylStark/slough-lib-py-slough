@@ -1,5 +1,6 @@
 """Module that contains the ConfigFileFinder class."""
 
+import logging
 from pathlib import Path
 
 from chain_of_responsibility import ChainHandler, NotHandledError
@@ -31,6 +32,7 @@ class FileChecker(ChainHandler[Path]):
         self._directory = directory.resolve()
         self._subdirectory = (directory / subdirectory).resolve()
         self._extensions = extensions
+        self._logger = logging.getLogger('FileChecker')
 
     def _handle(self) -> Path:
         """Method that searches for the file in the directory.
@@ -42,8 +44,11 @@ class FileChecker(ChainHandler[Path]):
         for path in paths:
             for extension in self._extensions:
                 path_object = path / Path(f'{self._filename}.{extension}')
+                self._logger.debug('Checking path: "%s"', path_object)
                 if path_object.is_file():
+                    self._logger.info('Found file: "%s"', path_object)
                     return path_object.resolve()
+                self._logger.info('File "%s" not found', path_object)
 
         raise NotHandledError
 
@@ -73,6 +78,7 @@ class ConfigFileFinder:
         self._max_directory_depth = max_directory_depth
         self._filename = filename
         self._subdir = subdir
+        self._logger = logging.getLogger('ConfigFileFinder')
 
     def find_config_file(self) -> Path | None:
         """Method that finds the configuration file.
@@ -94,6 +100,7 @@ class ConfigFileFinder:
 
         for _ in range(0, self._max_directory_depth):
             if len(search_path.parents) > 0:
+                self._logger.debug('Checking path: "%s"', search_path)
                 search_path = search_path.parent.resolve()
                 next_checker = FileChecker(
                     f'{self._filename}',
