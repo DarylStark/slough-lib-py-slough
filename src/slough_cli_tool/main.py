@@ -49,7 +49,7 @@ def common_command_line_options(
     # Set up logging
     logging.basicConfig(
         level=logging.WARNING - (verbosity * 10),
-        format='%(message)s',
+        format='"%(name)s": %(message)s',
         datefmt='[%X]',
         handlers=[RichHandler()],
     )
