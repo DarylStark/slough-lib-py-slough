@@ -1,6 +1,7 @@
 """Module with a JSON configuration manager."""
 
 import json
+import logging
 from pathlib import Path
 
 from .config_manager import ConfigManager
@@ -17,6 +18,8 @@ class JSONManager(ConfigManager):
             cfgfile (Path): Path to the configuration file.
         """
         super().__init__(cfgfile)
+        self._logger = logging.getLogger('JSONManager')
+        self._logger.debug(f'JSONManager initialized for "{cfgfile}"')
 
     def _load_config(self) -> dict:
         """Load the configuration from a JSON file.
@@ -24,6 +27,7 @@ class JSONManager(ConfigManager):
         Returns:
             dict: The configuration as a dictionary.
         """
+        self._logger.debug('Loading configuration')
         with self.cfgfile.open('r') as file:
             return json.load(file)
 
@@ -33,6 +37,7 @@ class JSONManager(ConfigManager):
         Args:
             config (dict): The configuration to save.
         """
+        self._logger.debug('Saving configuration')
         self._create_parent_directory()
         with self.cfgfile.open('w') as file:
             return json.dump(config, file, indent=4)

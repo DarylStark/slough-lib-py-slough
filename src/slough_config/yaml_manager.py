@@ -1,5 +1,6 @@
 """Module with a YAML configuration manager."""
 
+import logging
 from pathlib import Path
 
 import yaml
@@ -18,6 +19,8 @@ class YAMLManager(ConfigManager):
             cfgfile (Path): Path to the configuration file.
         """
         super().__init__(cfgfile)
+        self._logger = logging.getLogger('YAMLManager')
+        self._logger.debug(f'YAMLManager initialized for "{cfgfile}"')
 
     def _load_config(self) -> dict:
         """Load the configuration from a YAML file.
@@ -25,6 +28,7 @@ class YAMLManager(ConfigManager):
         Returns:
             dict: The configuration as a dictionary.
         """
+        self._logger.debug('Loading configuration')
         with self.cfgfile.open('r') as file:
             return yaml.safe_load(file)
 
@@ -34,6 +38,7 @@ class YAMLManager(ConfigManager):
         Args:
             config (dict): The configuration to save.
         """
+        self._logger.debug('Saving configuration')
         self._create_parent_directory()
         with self.cfgfile.open('w') as file:
             return yaml.dump(config, file)

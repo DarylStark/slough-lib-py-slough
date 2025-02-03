@@ -1,5 +1,7 @@
 """Config part of the CLI tool."""
 
+import logging
+
 import typer
 
 from slough_config import Author, ProjectInformation, SloughConfig
@@ -61,8 +63,10 @@ def cli_project_init(
     )
 
     # Set the configuration in the `Slough` object
+    local_logger = logging.getLogger('cli_project_init')
     if not slough.config:
         slough.config = slough_config
+        local_logger.info('Created configuration')
     else:
         raise ConfigAlreadySetError('Configuration already set')
 

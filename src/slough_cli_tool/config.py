@@ -1,5 +1,6 @@
 """Config part of the CLI tool."""
 
+import logging
 from enum import Enum
 
 import typer
@@ -29,6 +30,7 @@ def convert_to_envvars(data: dict, prefix: str) -> str:
     Returns:
         str: Formatted data.
     """
+    local_logger = logging.getLogger('convert_to_envvars')
     output = ''
     for key, value in data.items():
         var_name = f'{prefix}_{key}'.upper()
@@ -41,6 +43,11 @@ def convert_to_envvars(data: dict, prefix: str) -> str:
             output += f'{var_name}_COUNT={len(value)}\n'
             for i, item in enumerate(value):
                 output += convert_to_envvars(item, f'{var_name}_{i}')
+        else:
+            local_logger.warning(
+                'Cannot convert "%s", invalid type: "%s"', key, type(key)
+            )
+
     return output
 
 
@@ -91,6 +98,8 @@ def cli_config_convert(ctx: typer.Context, target: ConvertTarget) -> None:
     # Convert configuration
     oldfile = cfgfile
     slough.cfgfile = cfgfile.with_suffix(f'.{target.value}')
+    local_logger = logging.getLogger('cli_config_convert')
+    local_logger.info('Converting configuration to "%s"', slough.cfgfile)
     slough.save()
 
     # Remove old file

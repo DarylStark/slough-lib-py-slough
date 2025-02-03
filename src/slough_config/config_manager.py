@@ -1,5 +1,6 @@
 """Module with a interface for a ConfigManager."""
 
+import logging
 from abc import ABC, abstractmethod
 from collections.abc import Callable
 from pathlib import Path
@@ -51,9 +52,12 @@ class ConfigManager(ABC):
             cfgfile (Path): Path to the configuration file.
         """
         self.cfgfile = cfgfile
+        self._logger = logging.getLogger('ConfigManager')
+        self._logger.debug(f'ConfigManager initialized for "{cfgfile}"')
 
     def _create_parent_directory(self) -> None:
         """Create the parent directory of the configuration file."""
+        self._logger.debug(f'Creating parent directory for "{self.cfgfile}"')
         self.cfgfile.resolve().parent.mkdir(parents=True, exist_ok=True)
 
     @abstractmethod
@@ -87,6 +91,7 @@ class ConfigManager(ABC):
             SloughConfig: The configuration as SloughConfig object.
         """
         try:
+            self._logger.debug(f'Loading configuration from "{self.cfgfile}"')
             return SloughConfig(**self._load_config())
         except FileNotFoundError:
             return None
