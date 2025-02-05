@@ -4,6 +4,7 @@ import logging
 from enum import Enum
 
 import typer
+import yaml
 
 from .exceptions import (
     ConfigConvertionAlreadyCorrectSufficError,
@@ -15,6 +16,13 @@ config = typer.Typer(no_args_is_help=True)
 
 class ConvertTarget(str, Enum):
     """Targets for the convert command."""
+
+    JSON = 'json'
+    YAML = 'yml'
+
+
+class SchemaTarget(str, Enum):
+    """Targets for the generate-schema command."""
 
     JSON = 'json'
     YAML = 'yml'
@@ -104,3 +112,29 @@ def cli_config_convert(ctx: typer.Context, target: ConvertTarget) -> None:
 
     # Remove old file
     oldfile.unlink()
+
+
+@config.command(
+    name='generate-schema',
+    help='Generate a schema for the configuration file. This can be used to '
+    + 'validate the configuration file.',
+    short_help='Generate a schema for the configuration file.',
+)
+def cli_config_generate_schema(
+    ctx: typer.Context,
+    target_format: SchemaTarget = typer.Option(
+        SchemaTarget.JSON, help='Output format for the schema.'
+    ),
+) -> None:
+    """Generate a schema for the configuration file.
+
+    Args:
+        ctx (typer.Context): Typer context.
+        target_format (SchemaTarget): Target format.
+    """
+    console, _, config, _ = get_context_data_config(ctx)
+    schema = config.model_json_schema()
+    if target_format == SchemaTarget.JSON:
+        console.print_json(data=schema)
+    else:
+        console.print(yaml.dump(config.model_json_schema()))

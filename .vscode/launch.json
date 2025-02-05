@@ -72,6 +72,17 @@
                 "convert",
                 "json"
             ]
+        },
+        {
+            "name": "CLI app - config - generate-schema",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "slough_cli_tool",
+            "console": "integratedTerminal",
+            "args": [
+                "config",
+                "generate-schema"
+            ]
         }
     ]
 }
