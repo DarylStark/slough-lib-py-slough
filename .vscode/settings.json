@@ -5,5 +5,8 @@
     "python.testing.pytestArgs": [
         "--no-cov",
         "tests",
-    ]
+    ],
+    "yaml.schemas": {
+        ".slough/slough-schema.yml": ".slough/slough.yml"
+    },
 }

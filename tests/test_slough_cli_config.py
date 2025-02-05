@@ -118,3 +118,33 @@ def test_slough_cli_config_convert_missing_config(
         app, ['--cfgfile', '', 'config', 'convert', 'yml']
     )
     assert type(result.exception) is ConfigMissingError
+
+
+def test_slough_cli_config_generate_schema_json(
+    monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
+) -> None:
+    """Test creating a JSON schema.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        cli_runner (CliRunner): Typer CLI runner.
+    """
+    result = cli_runner.invoke(
+        app, ['config', 'generate-schema', '--target-format', 'json']
+    )
+    assert '$defs' in result.stdout
+
+
+def test_slough_cli_config_generate_schema_yaml(
+    monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
+) -> None:
+    """Test creating a YAML schema.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        cli_runner (CliRunner): Typer CLI runner.
+    """
+    result = cli_runner.invoke(
+        app, ['config', 'generate-schema', '--target-format', 'yml']
+    )
+    assert '$defs' in result.stdout
