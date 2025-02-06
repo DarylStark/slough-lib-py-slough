@@ -43,17 +43,21 @@ def convert_to_envvars(data: dict, prefix: str) -> str:
     for key, value in data.items():
         var_name = f'{prefix}_{key}'.upper()
 
-        if type(value) in [str, int, float]:
-            output += f'{var_name}="{value}"\n'
-        elif type(value) is dict:
+        if isinstance(value, Enum):
+            output += f'{var_name}="{str(value.value)}"\n'
+        elif isinstance(value, str | int | float):
+            output += f'{var_name}="{str(value)}"\n'
+        elif isinstance(value, dict):
             output += convert_to_envvars(value, f'{prefix}_{key}')
-        elif type(value) is list:
+        elif isinstance(value, list):
             output += f'{var_name}_COUNT={len(value)}\n'
             for i, item in enumerate(value):
                 output += convert_to_envvars(item, f'{var_name}_{i}')
+        elif isinstance(value, Enum):
+            output += f'{var_name}="{value.name}"\n'
         else:
             local_logger.warning(
-                'Cannot convert "%s", invalid type: "%s"', key, type(key)
+                'Cannot convert "%s", invalid type: "%s"', key, type(value)
             )
 
     return output

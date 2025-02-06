@@ -1,5 +1,7 @@
 """Module with the model for the configuration file."""
 
+from enum import Enum
+
 from pydantic import BaseModel, Field
 
 
@@ -18,7 +20,15 @@ class ProjectInformation(BaseModel):
     authors: list[Author]
 
 
+class DevelopmentEnvironment(str, Enum):
+    """Enum for the development environment."""
+
+    GENERIC_PYTHON = 'generic-python'
+    GENERIC_NODEJS = 'generic-nodejs'
+
+
 class SloughConfig(BaseModel):
     """Model for the configuration file."""
 
     project: ProjectInformation
+    development_environment: DevelopmentEnvironment | None = None
