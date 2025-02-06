@@ -23,8 +23,8 @@ class ProjectInformation(BaseModel):
 class DevelopmentEnvironment(str, Enum):
     """Enum for the development environment."""
 
-    GENERIC_PYTHON = 'generic-python'
-    GENERIC_NODEJS = 'generic-nodejs'
+    PYTHON_GENERIC = 'python-generic'
+    NODEJS_GENERIC = 'nodejs-generic'
 
 
 class SloughConfig(BaseModel):
