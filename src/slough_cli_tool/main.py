@@ -13,12 +13,14 @@ from slough import __version__ as slough_version
 from slough.exceptions import SloughError
 
 from .config import config
+from .dev_container import dev_container
 from .exceptions import SloughCLIError
 from .project import project
 
 app = typer.Typer(no_args_is_help=True)
 app.add_typer(config, name='config')
 app.add_typer(project, name='project')
+app.add_typer(dev_container, name='dev-container')
 
 
 @app.callback()
