@@ -53,8 +53,6 @@ def convert_to_envvars(data: dict, prefix: str) -> str:
             output += f'{var_name}_COUNT={len(value)}\n'
             for i, item in enumerate(value):
                 output += convert_to_envvars(item, f'{var_name}_{i}')
-        elif isinstance(value, Enum):
-            output += f'{var_name}="{value.name}"\n'
         else:
             local_logger.warning(
                 'Cannot convert "%s", invalid type: "%s"', key, type(value)
