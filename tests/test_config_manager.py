@@ -28,7 +28,8 @@ def test_config_manager_yaml_manager() -> None:
                 {'name': 'John Doe', 'email': 'johndoe@example.com'},
                 {'name': 'Daryl Stark', 'email': 'darylstark@example.com'},
             ],
-        }
+        },
+        'development_environment': 'python-generic',
     }
 
 
@@ -46,7 +47,8 @@ def test_config_lodaer_json_manager() -> None:
                 {'name': 'John Doe', 'email': 'johndoe@example.com'},
                 {'name': 'Daryl Stark', 'email': 'darylstark@example.com'},
             ],
-        }
+        },
+        'development_environment': 'nodejs-generic',
     }
 
 

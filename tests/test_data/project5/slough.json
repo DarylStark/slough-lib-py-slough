@@ -12,5 +12,6 @@
                 "email": "darylstark@example.com"
             }
         ]
-    }
+    },
+    "development_environment": "nodejs-generic"
 }
