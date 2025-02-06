@@ -18,9 +18,24 @@ from .exceptions import SloughCLIError
 from .project import project
 
 app = typer.Typer(no_args_is_help=True)
-app.add_typer(config, name='config')
-app.add_typer(project, name='project')
-app.add_typer(dev_container, name='dev-container')
+app.add_typer(
+    config,
+    name='config',
+    help='Commands to work with configuration.',
+    short_help='Configuration related commands.',
+)
+app.add_typer(
+    project,
+    name='project',
+    help='Manage the project.',
+    short_help='Project related commands.',
+)
+app.add_typer(
+    dev_container,
+    name='dev-container',
+    help='Generate and manage dev container configuration.',
+    short_help='Dev container commands.',
+)
 
 
 @app.callback()
