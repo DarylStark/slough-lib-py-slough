@@ -83,6 +83,17 @@
                 "config",
                 "generate-schema"
             ]
+        },
+        {
+            "name": "CLI app - dev-container - generate-config",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "slough_cli_tool",
+            "console": "integratedTerminal",
+            "args": [
+                "dev-container",
+                "generate-config"
+            ]
         }
     ]
 }

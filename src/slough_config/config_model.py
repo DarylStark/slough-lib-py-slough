@@ -43,8 +43,10 @@ class DevelopmentEnvironment(str, Enum):
             environment.
     """
 
-    PYTHON_GENERIC = 'python-generic'
+    CPP_GENERIC = 'cpp-generic'
     NODEJS_GENERIC = 'nodejs-generic'
+    PYTHON_GENERIC = 'python-generic'
+    RUST_GENERIC = 'rust-generic'
 
 
 class SloughConfig(BaseModel):
