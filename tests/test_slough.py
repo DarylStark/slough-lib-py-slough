@@ -50,10 +50,12 @@ def test_correct_configuration_file_slough_root(
         directory (str): Test data directory.
         expected_file (str): Expected config file name.
     """
-    monkeypatch.chdir(f'tests/test_data/{directory}')
+    project_directory = Path(f'tests/test_data/{directory}').resolve()
+    monkeypatch.chdir(project_directory)
     slough = Slough(max_directory_depth=0)
     assert slough.cfgfile is not None
     assert slough.cfgfile == Path(expected_file).resolve()
+    assert slough.project_folder == project_directory
 
 
 @pytest.mark.parametrize(
