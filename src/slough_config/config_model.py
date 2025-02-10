@@ -44,6 +44,7 @@ class DevelopmentEnvironment(str, Enum):
     """
 
     CPP_GENERIC = 'cpp-generic'
+    GENERIC = 'generic'
     NODEJS_GENERIC = 'nodejs-generic'
     PYTHON_GENERIC = 'python-generic'
     RUST_GENERIC = 'rust-generic'

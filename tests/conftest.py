@@ -158,3 +158,13 @@ def cli_runner() -> CliRunner:
         CliRunner: A Typer CLI runner instance.
     """
     return CliRunner()
+
+
+@pytest.fixture(scope='function')
+def remove_dev_container() -> Generator[None]:
+    """Fixture that removes the dev container folder."""
+    yield None
+
+    # Cleanup; remove the directory and all files in it
+    path = '.devcontainer'
+    shutil.rmtree(path)
