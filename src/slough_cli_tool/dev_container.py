@@ -4,7 +4,9 @@ import json
 
 import typer
 
-from slough_cli_tool.exceptions import ConfigMissingError
+from slough_cli_tool.exceptions import (
+    DevelopmentEnvironmentNotSetError,
+)
 from slough_config import DevelopmentEnvironment as DevEnv
 
 from .generic import get_context_data
@@ -59,7 +61,9 @@ def cli_dev_container_generate_config(
     console, slough = get_context_data(ctx)
 
     if slough.config is None or slough.config.development_environment is None:
-        raise ConfigMissingError('Configuration is missing.')
+        raise DevelopmentEnvironmentNotSetError(
+            'Development environment is not set in the Slough configuration.'
+        )
 
     dev_container_folder = (
         slough.project_folder / '.devcontainer' / 'devcontainer.json'
