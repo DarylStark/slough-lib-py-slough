@@ -5,11 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 authors = [{ name = "Daryl Stark", email = "daryl@dstark.nl" }]
 requires-python = ">=3.13"
-dependencies = [
-    "pydantic>=2.10.4",
-    "pyyaml>=6.0.2",
-    "typer>=0.15.1",
-]
+dependencies = ["pydantic>=2.10.4", "pyyaml>=6.0.2", "typer>=0.15.1"]
 
 [project.scripts]
 slough = "slough_cli_tool:main"
@@ -84,6 +80,8 @@ addopts = [
     '--cov=slough',
     '--cov-report=html',
     '--cov-report=lcov',
+    '--cov-context=test',
+    '--cov-branch',
 ]
 testpaths = ['tests']
 
