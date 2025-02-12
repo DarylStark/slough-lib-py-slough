@@ -86,6 +86,8 @@ def test_slough_cli_project_init_cmdline_input(
             'John Doe',
             '--author-email',
             'johndoe@example.com',
+            '--development-environment',
+            'python-generic',
         ],
     )
     assert result.exit_code == 0
@@ -97,6 +99,7 @@ def test_slough_cli_project_init_cmdline_input(
     assert (
         'SLOUGH_PROJECT_AUTHORS_0_EMAIL="johndoe@example.com"' in result.stdout
     )
+    assert 'SLOUGH_DEVELOPMENT_ENVIRONMENT="python-generic"' in result.stdout
 
 
 def test_slough_cli_project_init_config_already_present(

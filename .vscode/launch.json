@@ -47,6 +47,8 @@
                 "Example User",
                 "--author-email",
                 "example@example.com",
+                "--development-environment",
+                "python-generic"
             ]
         },
         {

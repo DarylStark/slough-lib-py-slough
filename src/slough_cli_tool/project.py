@@ -4,7 +4,12 @@ import logging
 
 import typer
 
-from slough_config import Author, ProjectInformation, SloughConfig
+from slough_config import (
+    Author,
+    DevelopmentEnvironment,
+    ProjectInformation,
+    SloughConfig,
+)
 
 from .exceptions import ConfigAlreadySetError
 from .generic import get_context_data
@@ -41,6 +46,10 @@ def cli_project_init(
         prompt='📧 Please enter the email of the author',
         help='The project author email',
     ),
+    development_environment: DevelopmentEnvironment | None = typer.Option(
+        default=None,
+        help='The development environment',
+    ),
 ) -> None:
     """Initialize a configuration file for a project.
 
@@ -49,7 +58,9 @@ def cli_project_init(
         title (str): The project title.
         version (str): The project version.
         author_name (str): The author name.
-        author_email (str): The author
+        author_email (str): The author.
+        development_environment (DevelopmentEnvironment): The development
+            environment.
     """
     _, slough = get_context_data(ctx)
 
@@ -59,7 +70,8 @@ def cli_project_init(
             name=title,
             version=version,
             authors=[Author(name=author_name, email=author_email)],
-        )
+        ),
+        development_environment=development_environment,
     )
 
     # Set the configuration in the `Slough` object
