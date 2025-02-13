@@ -69,7 +69,9 @@ def convert_to_envvars(data: dict, prefix: str) -> str:
 )
 def cli_config_env(
     ctx: typer.Context,
-    prefix: str = typer.Option(default='SLOUGH'),
+    prefix: str = typer.Option(
+        default='SLOUGH', help='The prefix for the variables.'
+    ),
 ) -> None:
     """Show configuration as environment variables.
 
@@ -87,7 +89,12 @@ def cli_config_env(
     + 'useful when you need to convert a YAML file to JSON or visa versa.',
     short_help='Convert the configuration to a different format.',
 )
-def cli_config_convert(ctx: typer.Context, target: ConvertTarget) -> None:
+def cli_config_convert(
+    ctx: typer.Context,
+    target: ConvertTarget = typer.Argument(
+        help='Target format to convert to.'
+    ),
+) -> None:
     """Convert configuration to specific output formats.
 
     Args:
