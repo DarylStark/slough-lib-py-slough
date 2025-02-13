@@ -95,7 +95,7 @@ def version(ctx: typer.Context) -> None:
     console.print(f'[b]slough-cli-tool[/b] version: [u]{slough_version}[/u]')
 
 
-def main() -> None:
+def main() -> None:  # pragma: no cover
     """Entry point for the slough-cli-tool."""
     try:
         app()
