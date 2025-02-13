@@ -208,8 +208,10 @@ def test_wrong_configfile_extensions() -> None:
         _ = slough.config
 
 
-def test_error_when_no_config_file_is_set() -> None:
+def test_error_on_config_when_no_config_file_is_set() -> None:
     """Test if we get an error when the cfg file extension is not supported.
+
+    This is for the `config` attribute.
 
     Args:
         empty_test_dir (Path): Path to the empty test directory
@@ -218,3 +220,17 @@ def test_error_when_no_config_file_is_set() -> None:
     slough.cfgfile = None
     with pytest.raises(ConfigFileNotSetError):
         _ = slough.config
+
+
+def test_error_on_project_folder_when_no_config_file_is_set() -> None:
+    """Test if we get an error when the cfg file extension is not supported.
+
+    This is for the `project_folder` attribute.
+
+    Args:
+        empty_test_dir (Path): Path to the empty test directory
+    """
+    slough = Slough()
+    slough.cfgfile = None
+    with pytest.raises(ConfigFileNotSetError):
+        _ = slough.project_folder
