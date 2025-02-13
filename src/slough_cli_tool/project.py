@@ -12,7 +12,7 @@ from slough_config import (
 )
 
 from .exceptions import ConfigAlreadySetError
-from .generic import get_context_data
+from .generic import get_context_data, get_context_data_config
 
 project = typer.Typer(no_args_is_help=True)
 
@@ -81,6 +81,37 @@ def cli_project_init(
         local_logger.info('Created configuration')
     else:
         raise ConfigAlreadySetError('Configuration already set')
+
+    # Save the configuration
+    slough.save()
+
+
+@project.command(
+    name='set-development-environment',
+    help='Set the development environment for the project configuration. '
+    + 'The development environment is used to generate the development'
+    + 'container.',
+    short_help='Set the development environment for the project'
+    + ' configuration.',
+)
+def cli_set_development_environment(
+    ctx: typer.Context,
+    development_environment: DevelopmentEnvironment | None = typer.Argument(
+        help='The development environment'
+    ),
+) -> None:
+    """Set the development environment for the project configuration.
+
+    This either updates the DevelopmentEnvironment in the configuration or
+    sets it if it isn't set before.
+
+    Args:
+        ctx (typer.Context): Typer context.
+        development_environment (DevelopmentEnvironment): The development
+            environment.
+    """
+    _, slough, config, _ = get_context_data_config(ctx)
+    config.development_environment = development_environment
 
     # Save the configuration
     slough.save()
