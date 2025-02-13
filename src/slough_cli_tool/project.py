@@ -4,10 +4,15 @@ import logging
 
 import typer
 
-from slough_config import Author, ProjectInformation, SloughConfig
+from slough_config import (
+    Author,
+    DevelopmentEnvironment,
+    ProjectInformation,
+    SloughConfig,
+)
 
 from .exceptions import ConfigAlreadySetError
-from .generic import get_context_data
+from .generic import get_context_data, get_context_data_config
 
 project = typer.Typer(no_args_is_help=True)
 
@@ -41,6 +46,10 @@ def cli_project_init(
         prompt='📧 Please enter the email of the author',
         help='The project author email',
     ),
+    development_environment: DevelopmentEnvironment | None = typer.Option(
+        default=None,
+        help='The development environment',
+    ),
 ) -> None:
     """Initialize a configuration file for a project.
 
@@ -49,7 +58,9 @@ def cli_project_init(
         title (str): The project title.
         version (str): The project version.
         author_name (str): The author name.
-        author_email (str): The author
+        author_email (str): The author.
+        development_environment (DevelopmentEnvironment): The development
+            environment.
     """
     _, slough = get_context_data(ctx)
 
@@ -59,7 +70,8 @@ def cli_project_init(
             name=title,
             version=version,
             authors=[Author(name=author_name, email=author_email)],
-        )
+        ),
+        development_environment=development_environment,
     )
 
     # Set the configuration in the `Slough` object
@@ -69,6 +81,37 @@ def cli_project_init(
         local_logger.info('Created configuration')
     else:
         raise ConfigAlreadySetError('Configuration already set')
+
+    # Save the configuration
+    slough.save()
+
+
+@project.command(
+    name='set-development-environment',
+    help='Set the development environment for the project configuration. '
+    + 'The development environment is used to generate the development'
+    + 'container.',
+    short_help='Set the development environment for the project'
+    + ' configuration.',
+)
+def cli_set_development_environment(
+    ctx: typer.Context,
+    development_environment: DevelopmentEnvironment | None = typer.Argument(
+        help='The development environment'
+    ),
+) -> None:
+    """Set the development environment for the project configuration.
+
+    This either updates the DevelopmentEnvironment in the configuration or
+    sets it if it isn't set before.
+
+    Args:
+        ctx (typer.Context): Typer context.
+        development_environment (DevelopmentEnvironment): The development
+            environment.
+    """
+    _, slough, config, _ = get_context_data_config(ctx)
+    config.development_environment = development_environment
 
     # Save the configuration
     slough.save()

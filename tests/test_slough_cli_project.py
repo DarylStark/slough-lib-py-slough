@@ -1,4 +1,4 @@
-"""Module with unit tests for the CLI app."""
+"""Module with unit tests for the `project` portion of the CLI app."""
 
 from pathlib import Path
 
@@ -86,6 +86,8 @@ def test_slough_cli_project_init_cmdline_input(
             'John Doe',
             '--author-email',
             'johndoe@example.com',
+            '--development-environment',
+            'python-generic',
         ],
     )
     assert result.exit_code == 0
@@ -97,6 +99,7 @@ def test_slough_cli_project_init_cmdline_input(
     assert (
         'SLOUGH_PROJECT_AUTHORS_0_EMAIL="johndoe@example.com"' in result.stdout
     )
+    assert 'SLOUGH_DEVELOPMENT_ENVIRONMENT="python-generic"' in result.stdout
 
 
 def test_slough_cli_project_init_config_already_present(
@@ -125,3 +128,94 @@ def test_slough_cli_project_init_config_already_present(
         ],
     )
     assert result.exit_code == 1
+
+
+def test_slough_cli_project_set_development_environment_when_empty(
+    cli_runner: CliRunner, empty_test_dir: Path
+) -> None:
+    """Test the `project set-development-environment` command.
+
+    Assumes the development environment is not set.
+
+    Args:
+        cli_runner (CliRunner): Typer CLI runner.
+        empty_test_dir (Path): Path to the empty test directory.
+    """
+    # First, we create a new project configuration
+    result = cli_runner.invoke(
+        app,
+        ['--cfgfile', 'slough.yml', 'project', 'init'],
+        input=(
+            'test_project\n'
+            + '0.1.0\n'
+            + 'John Doe\n'
+            + 'johndoe@example.com\n'
+        ),
+    )
+
+    # Set the development environment
+    result = cli_runner.invoke(
+        app,
+        [
+            '--cfgfile',
+            'slough.yml',
+            'project',
+            'set-development-environment',
+            'python-generic',
+        ],
+    )
+
+    # Check the new value
+    result = cli_runner.invoke(
+        app, ['--cfgfile', 'slough.yml', 'config', 'env']
+    )
+    assert 'SLOUGH_DEVELOPMENT_ENVIRONMENT="python-generic"' in result.stdout
+
+
+def test_slough_cli_project_set_development_environment_when_not_empty(
+    cli_runner: CliRunner, empty_test_dir: Path
+) -> None:
+    """Test the `project set-development-environment` command.
+
+    Assumes the development environment is already set.
+
+    Args:
+        cli_runner (CliRunner): Typer CLI runner.
+        empty_test_dir (Path): Path to the empty test directory.
+    """
+    # First, we create a new project configuration
+    result = cli_runner.invoke(
+        app,
+        [
+            '--cfgfile',
+            'slough.yml',
+            'project',
+            'init',
+            '--development-environment',
+            'python-generic',
+        ],
+        input=(
+            'test_project\n'
+            + '0.1.0\n'
+            + 'John Doe\n'
+            + 'johndoe@example.com\n'
+        ),
+    )
+
+    # Set the development environment
+    result = cli_runner.invoke(
+        app,
+        [
+            '--cfgfile',
+            'slough.yml',
+            'project',
+            'set-development-environment',
+            'nodejs-generic',
+        ],
+    )
+
+    # Check the new value
+    result = cli_runner.invoke(
+        app, ['--cfgfile', 'slough.yml', 'config', 'env']
+    )
+    assert 'SLOUGH_DEVELOPMENT_ENVIRONMENT="nodejs-generic"' in result.stdout

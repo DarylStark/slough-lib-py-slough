@@ -8,6 +8,7 @@ import pytest
 from typer.testing import CliRunner
 
 from chain_of_responsibility import ChainHandler, NotHandledError
+from slough_cli_tool import app
 
 
 @pytest.fixture
@@ -158,3 +159,34 @@ def cli_runner() -> CliRunner:
         CliRunner: A Typer CLI runner instance.
     """
     return CliRunner()
+
+
+@pytest.fixture(scope='function')
+def remove_dev_container() -> Generator[None]:
+    """Fixture that removes the dev container folder."""
+    yield None
+
+    # Cleanup; remove the directory and all files in it
+    path = '.devcontainer'
+    shutil.rmtree(path)
+
+
+@pytest.fixture(scope='function')
+def dev_container(
+    monkeypatch: pytest.MonkeyPatch, remove_dev_container: None
+) -> None:
+    """Fixture that creates a dev container configuration file."""
+    # First we create the initial code
+    monkeypatch.chdir('tests/test_data/project2/')
+    runner = CliRunner()
+    runner.invoke(
+        app,
+        [
+            'dev-container',
+            'generate-config',
+            '--name',
+            'test-container',
+            '--container-tag',
+            'latest',
+        ],
+    )

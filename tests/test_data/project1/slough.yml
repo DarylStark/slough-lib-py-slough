@@ -7,3 +7,4 @@ project:
       email: johndoe@example.com
     - name: Daryl Stark
       email: darylstark@example.com
+development_environment: python-generic

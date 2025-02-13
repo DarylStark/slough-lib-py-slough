@@ -105,3 +105,21 @@ class Slough:
         if self.config is not None:
             raise ConfigAlreadySetError('Configuration already set.')
         self._config = value
+
+    @property
+    def project_folder(self) -> Path:
+        """Return the project folder.
+
+        This can be the folder where the configuration file is located, or if
+        the configuration file is in a `.slough` folder, the directory above
+        that.
+
+        Returns:
+            Path: The project folder.
+        """
+        if not self.cfgfile:
+            raise ConfigFileNotSetError('No configuration file set.')
+
+        if self.cfgfile.parent.name == '.slough':
+            return self.cfgfile.parent.parent.resolve()
+        return self.cfgfile.parent.resolve()

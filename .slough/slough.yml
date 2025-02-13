@@ -5,3 +5,4 @@ project:
   authors:
     - name: Daryl Stark
       email: darylstark@example.com
+development_environment: python-generic

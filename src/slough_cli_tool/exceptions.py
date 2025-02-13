@@ -23,3 +23,9 @@ class ConfigAlreadySetError(SloughCLIError):
     """Error raised when the configuration is already set."""
 
     pass
+
+
+class DevelopmentEnvironmentNotSetError(SloughCLIError):
+    """Error raised when the development environment is not set."""
+
+    pass
