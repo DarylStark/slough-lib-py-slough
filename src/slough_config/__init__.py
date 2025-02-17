@@ -9,6 +9,8 @@ from .config_file_finder import ConfigFileFinder
 from .config_manager import ConfigManager
 from .config_model import (
     Author,
+    ConfigProfile,
+    ContainerConfiguration,
     DevelopmentEnvironment,
     ProjectInformation,
     SloughConfig,
@@ -20,6 +22,8 @@ __all__ = [
     'Author',
     'ConfigFileFinder',
     'ConfigManager',
+    'ConfigProfile',
+    'ContainerConfiguration',
     'DevelopmentEnvironment',
     'JSONManager',
     'ProjectInformation',
