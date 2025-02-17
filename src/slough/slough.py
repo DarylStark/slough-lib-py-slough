@@ -4,7 +4,11 @@ import logging
 from pathlib import Path
 
 from slough_config import ConfigFileFinder, ConfigManager
-from slough_config.config_model import SloughConfig
+from slough_config.config_model import (
+    ConfigProfile,
+    ContainerConfiguration,
+    SloughConfig,
+)
 
 from .exceptions import (
     ConfigAlreadySetError,
@@ -123,3 +127,29 @@ class Slough:
         if self.cfgfile.parent.name == '.slough':
             return self.cfgfile.parent.parent.resolve()
         return self.cfgfile.parent.resolve()
+
+    def add_container_tag(
+        self, tag: str, *, profile_name: str = '_default'
+    ) -> None:
+        """Add a container tag to the configuration.
+
+        If the given profile does not exist, it will be created.
+
+        Args:
+            tag (str): The tag to add.
+            profile_name (str): The profile to add the tag to.
+        """
+        if not self._config:
+            self._load_config()
+        if not self._config:
+            raise ConfigNotSetError('No configuration set.')
+
+        # Create the profile if it doesn't exist
+        if profile_name not in self._config.cfg_profiles:
+            self._config.cfg_profiles[profile_name] = ConfigProfile()
+
+        # Retrieve and update the profile
+        profile = self._config.cfg_profiles[profile_name]
+        if not profile.container:
+            profile.container = ContainerConfiguration()
+        profile.container.tags.append(tag)
