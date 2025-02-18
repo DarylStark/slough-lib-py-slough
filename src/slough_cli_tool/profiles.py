@@ -45,3 +45,21 @@ def remove_profile(
         profile_name (str): The profile to remove.
     """
     pass
+
+
+@profiles.command(
+    name='rename',
+    help='Rename a profile.',
+    short_help='Rename a profile.',
+)
+def rename_profile(
+    profile_name: str = typer.Argument(help='The profile to rename'),
+    new_name: str = typer.Argument(help='The new name for the profile'),
+) -> None:
+    """Rename a profile.
+
+    Args:
+        profile_name (str): The profile to remove.
+        new_name (str): The new name for the profile.
+    """
+    pass
