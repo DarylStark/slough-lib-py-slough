@@ -1,0 +1,27 @@
+---
+project:
+  authors:
+    - email: darylstark@example.com
+      name: Daryl Stark
+  name: project7
+  version: 0.0.1
+development_environment: python-generic
+cfg_profiles:
+  production:
+    container:
+      tags:
+        - latest
+        - my_application
+        - 1.0.0
+  acceptance:
+    container:
+      tags:
+        - latest-rc
+        - my_application
+        - 1.0.0-rc1
+  development:
+    container:
+      tags:
+        - latest-alpha
+        - my_application
+        - 1.0.0-a0
