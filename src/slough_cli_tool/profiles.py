@@ -1,6 +1,10 @@
 """Profile part of the CLI tool."""
 
 import typer
+from rich import box
+from rich.table import Table
+
+from slough_cli_tool.generic import get_context_data_config
 
 profiles = typer.Typer(no_args_is_help=True)
 
@@ -26,9 +30,18 @@ def add_profile(
     help='List all available profiles.',
     short_help='List all available profiles.',
 )
-def list_profiles() -> None:
-    """List all available profiles."""
-    pass
+def list_profiles(ctx: typer.Context) -> None:
+    """List all available profiles.
+
+    Args:
+        ctx (typer.Context): Typer context
+    """
+    console, _, config, _ = get_context_data_config(ctx)
+    table = Table(box=box.SIMPLE)
+    table.add_column('Profile name')
+    for profile in config.cfg_profiles:
+        table.add_row(profile)
+    console.print(table)
 
 
 @profiles.command(
