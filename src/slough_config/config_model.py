@@ -111,3 +111,18 @@ class SloughConfig(BaseModel):
                 'dashes, and underscores are allowed.'
             )
         self.cfg_profiles[profile_name] = ConfigProfile()
+
+    def remove_profile(self, profile_name: str) -> None:
+        """Remove a configuration profile.
+
+        Will remove the profile with the specified name if it exists.
+
+        Args:
+            profile_name (str): The name of the profile to remove.
+
+        Raises:
+            ValueError: If the profile does not exist.
+        """
+        if profile_name not in self.cfg_profiles:
+            raise ValueError(f'Profile "{profile_name}" does not exist.')
+        del self.cfg_profiles[profile_name]

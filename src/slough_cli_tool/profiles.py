@@ -54,14 +54,18 @@ def list_profiles(ctx: typer.Context) -> None:
     short_help='Remove a profile.',
 )
 def remove_profile(
+    ctx: typer.Context,
     profile_name: str = typer.Argument(help='The profile to remove'),
 ) -> None:
     """Removes a profile from the CLI tool.
 
     Args:
+        ctx (typer.Context): Typer context
         profile_name (str): The profile to remove.
     """
-    pass
+    _, slough, config, _ = get_context_data_config(ctx)
+    config.remove_profile(profile_name)
+    slough.save()
 
 
 @profiles.command(
@@ -70,13 +74,18 @@ def remove_profile(
     short_help='Rename a profile.',
 )
 def rename_profile(
+    ctx: typer.Context,
     profile_name: str = typer.Argument(help='The profile to rename'),
     new_name: str = typer.Argument(help='The new name for the profile'),
 ) -> None:
     """Rename a profile.
 
     Args:
+        ctx (typer.Context): Typer context
         profile_name (str): The profile to remove.
         new_name (str): The new name for the profile.
     """
-    pass
+    _, slough, config, _ = get_context_data_config(ctx)
+    config.cfg_profiles[new_name] = config.cfg_profiles.pop(profile_name)
+    slough.save()
+    typer.echo(f'Profile "{profile_name}" renamed to "{new_name}".')

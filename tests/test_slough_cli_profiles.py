@@ -33,6 +33,8 @@ def test_slough_cli_profiles_add(
     cli_runner.invoke(
         app,
         [
+            '--cfgfile',
+            'slough.yml',
             'project',
             'init',
             '--title',
@@ -94,6 +96,8 @@ def test_slough_cli_profiles_remove(
     cli_runner.invoke(
         app,
         [
+            '--cfgfile',
+            'slough.yml',
             'project',
             'init',
             '--title',
