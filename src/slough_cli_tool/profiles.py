@@ -15,14 +15,18 @@ profiles = typer.Typer(no_args_is_help=True)
     short_help='Add a profile.',
 )
 def add_profile(
+    ctx: typer.Context,
     profile_name: str = typer.Argument(help='The profile to add'),
 ) -> None:
     """Adds a profile to the CLI tool.
 
     Args:
+        ctx (typer.Context): Typer context
         profile_name (str): The profile to add.
     """
-    pass
+    _, slough, config, _ = get_context_data_config(ctx)
+    config.create_profile(profile_name)
+    slough.save()
 
 
 @profiles.command(
