@@ -86,6 +86,9 @@ def rename_profile(
         new_name (str): The new name for the profile.
     """
     _, slough, config, _ = get_context_data_config(ctx)
+    if new_name in config.cfg_profiles:
+        raise ValueError(f'Profile "{new_name}" already exists.')
+
     config.cfg_profiles[new_name] = config.cfg_profiles.pop(profile_name)
     slough.save()
     typer.echo(f'Profile "{profile_name}" renamed to "{new_name}".')
