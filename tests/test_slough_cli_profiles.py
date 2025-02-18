@@ -109,6 +109,8 @@ def test_slough_cli_profiles_remove(
 
     # Add a profile
     cli_runner.invoke(app, ['profiles', 'add', profile_name])
+    result = cli_runner.invoke(app, ['profiles', 'list'])
+    assert profile_name in result.stdout
 
     # Remove the profile
     cli_runner.invoke(app, ['profiles', 'remove', profile_name])
@@ -141,7 +143,8 @@ def test_slough_cli_profiles_rename(
         new_name (str): New profile name.
     """
     monkeypatch.chdir('tests/test_data/project7/')
-    cli_runner.invoke(app, ['profiles', 'rename', 'production', 'prod'])
+    cli_runner.invoke(app, ['profiles', 'rename', profile_name, new_name])
     result = cli_runner.invoke(app, ['profiles', 'list'])
-    assert 'prod' in result.stdout
-    cli_runner.invoke(app, ['profiles', 'rename', 'prod', 'production'])
+    assert new_name in result.stdout
+
+    cli_runner.invoke(app, ['profiles', 'rename', new_name, profile_name])
