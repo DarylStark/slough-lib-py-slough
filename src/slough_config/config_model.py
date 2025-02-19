@@ -125,4 +125,6 @@ class SloughConfig(BaseModel):
         """
         if profile_name not in self.cfg_profiles:
             raise ValueError(f'Profile "{profile_name}" does not exist.')
+        if profile_name in ['_default', '_all']:
+            raise ValueError(f'Profile "{profile_name}" cannot be removed.')
         del self.cfg_profiles[profile_name]
