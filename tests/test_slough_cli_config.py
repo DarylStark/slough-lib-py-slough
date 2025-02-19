@@ -29,6 +29,26 @@ def test_slough_cli_config_env(
     assert 'SLOUGH_PROJECT_AUTHORS_1_NAME="Daryl Stark"' in result.stdout
 
 
+@pytest.mark.xfail
+def test_slough_cli_config_env_with_container_tags(
+    monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
+) -> None:
+    """Test the `config env` command with container tags.
+
+    This runs the command on a project with container tags.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        cli_runner (CliRunner): Typer CLI runner.
+    """
+    monkeypatch.chdir('tests/test_data/project7/')
+    result = cli_runner.invoke(app, ['config', 'env'])
+    assert 'SLOUGH_PROJECT_NAME="project7"' in result.stdout
+    assert 'SLOUGH_PROJECT_VERSION="0.0.1"' in result.stdout
+    assert 'SLOUGH_PROJECT_AUTHORS_0_NAME="Daryl Stark"' in result.stdout
+    # TODO: Add test for the container tags
+
+
 def test_slough_cli_config_env_different_prefix(
     monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
 ) -> None:
