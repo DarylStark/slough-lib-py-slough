@@ -22,7 +22,7 @@ cfg_profiles:
   production:
     container:
       tags:
-      - latest
+      - latest-prd
       - my_application
       - 1.0.0
 development_environment: python-generic
