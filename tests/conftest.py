@@ -190,3 +190,41 @@ def dev_container(
             'latest',
         ],
     )
+
+
+@pytest.fixture(scope='function')
+def empty_test_dir_with_config(
+    empty_test_dir: Path,
+    cli_runner: CliRunner,
+) -> Generator[Path]:
+    """Fixture that creates a empty testdir with a config file.
+
+    In the cleanup, the directory and all files in it are removed.
+
+    Args:
+        empty_test_dir (Path): Path to the empty test directory.
+        cli_runner (CliRunner): Typer CLI runner.
+
+    Yields:
+        Generator[Path]: A Path object with the path to the created directory.
+    """
+    cli_runner.invoke(
+        app,
+        [
+            '--cfgfile',
+            'slough.yml',
+            'project',
+            'init',
+            '--title',
+            'test_project',
+            '--version',
+            '1.0.0',
+            '--author-name',
+            'test_author',
+            '--author-email',
+            'test@example.com',
+        ],
+    )
+    yield empty_test_dir
+
+    pass

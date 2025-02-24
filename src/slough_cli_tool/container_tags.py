@@ -16,8 +16,9 @@ tags = typer.Typer(no_args_is_help=True)
     short_help='Add container tags.',
 )
 def add_container_tags(
+    ctx: typer.Context,
     tags: list[str] = typer.Argument(help='The tags to add to the profile.'),
-    profile: str | None = typer.Option(
+    profile: str = typer.Option(
         default='_default',
         help='The profile to add the container tag to.',
     ),
@@ -25,11 +26,16 @@ def add_container_tags(
     """Adds tags to a profile.
 
     Args:
+        ctx (typer.Context): Typer context
         tags (list[str]): The tags to add to the profile.
         profile (str, optional): The profile to add container tags for.
             Defaults to the default profile.
     """
-    pass
+    console, slough, _, _ = get_context_data_config(ctx)
+    for tag in tags:
+        slough.add_container_tag(tag, profile_name=profile)
+        console.print(f'Tag "{tag}" added to profile "{profile}".')
+    slough.save()
 
 
 @tags.command(

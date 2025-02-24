@@ -152,4 +152,6 @@ class Slough:
         profile = self._config.cfg_profiles[profile_name]
         if not profile.container:
             profile.container = ContainerConfiguration()
+        if tag in profile.container.tags:
+            raise ValueError(f'Tag "{tag}" already exists in profile.')
         profile.container.tags.append(tag)
