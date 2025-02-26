@@ -13,8 +13,10 @@ from slough import __version__ as slough_version
 from slough.exceptions import SloughError
 
 from .config import config
+from .container import container
 from .dev_container import dev_container
 from .exceptions import SloughCLIError
+from .profiles import profiles
 from .project import project
 
 app = typer.Typer(no_args_is_help=True)
@@ -35,6 +37,18 @@ app.add_typer(
     name='dev-container',
     help='Generate and manage dev container configuration.',
     short_help='Dev container commands.',
+)
+app.add_typer(
+    container,
+    name='container',
+    help='Manage container configuration.',
+    short_help='Container commands.',
+)
+app.add_typer(
+    profiles,
+    name='profiles',
+    help='Manage configuration profiles.',
+    short_help='Configuration profiles.',
 )
 
 

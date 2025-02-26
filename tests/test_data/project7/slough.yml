@@ -1,0 +1,34 @@
+cfg_profiles:
+  _all:
+    container:
+      tags:
+      - latest-image
+  _default:
+    container:
+      tags:
+      - latest
+  acceptance:
+    container:
+      tags:
+      - latest-rc
+      - my_application
+      - 1.0.0-rc1
+  development:
+    container:
+      tags:
+      - latest-alpha
+      - my_application
+      - 1.0.0-a0
+  production:
+    container:
+      tags:
+      - latest-prd
+      - my_application
+      - 1.0.0
+development_environment: python-generic
+project:
+  authors:
+  - email: darylstark@example.com
+    name: Daryl Stark
+  name: project7
+  version: 0.0.1

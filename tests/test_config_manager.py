@@ -30,6 +30,10 @@ def test_config_manager_yaml_manager() -> None:
             ],
         },
         'development_environment': 'python-generic',
+        'cfg_profiles': {
+            '_default': {'container': None},
+            '_all': {'container': None},
+        },
     }
 
 
@@ -49,6 +53,10 @@ def test_config_lodaer_json_manager() -> None:
             ],
         },
         'development_environment': 'nodejs-generic',
+        'cfg_profiles': {
+            '_default': {'container': None},
+            '_all': {'container': None},
+        },
     }
 
 

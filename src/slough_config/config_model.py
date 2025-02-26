@@ -1,5 +1,6 @@
 """Module with the model for the configuration file."""
 
+import re
 from enum import Enum
 
 from pydantic import BaseModel, Field
@@ -50,6 +51,28 @@ class DevelopmentEnvironment(str, Enum):
     RUST_GENERIC = 'rust-generic'
 
 
+class ContainerConfiguration(BaseModel):
+    """Configuration for a container.
+
+    Attributes:
+        tags (list[str] | None): A list of tags for the container.
+    """
+
+    tags: list[str] = []
+
+
+class ConfigProfile(BaseModel):
+    """Model for the configuration profile.
+
+    Contains all settins for a specific project.
+
+    Attributes:
+        container (ContainerConfiguration | None): The container configuration.
+    """
+
+    container: ContainerConfiguration | None = None
+
+
 class SloughConfig(BaseModel):
     """Model for the configuration file.
 
@@ -61,3 +84,47 @@ class SloughConfig(BaseModel):
 
     project: ProjectInformation
     development_environment: DevelopmentEnvironment | None = None
+    cfg_profiles: dict[str, ConfigProfile] = {
+        '_default': ConfigProfile(),
+        '_all': ConfigProfile(),
+    }
+
+    def create_profile(self, profile_name: str) -> None:
+        """Create a new configuration profile.
+
+        Will create a new profile with the specified name if it does not exist.
+        The name is validated against the pattern.
+
+        Args:
+            profile_name (str): The name of the profile to create.
+
+        Raises:
+            ValueError: If the profilename is already in use or if the
+                profilename is invalid.
+        """
+        if profile_name in self.cfg_profiles:
+            raise ValueError(f'Profile "{profile_name}" already exists.')
+
+        if not re.match(r'^[a-zA-Z][A-Za-z0-9_-]+$', profile_name):
+            raise ValueError(
+                'Invalid profile name. Only alphanumeric characters, '
+                'dashes, and underscores are allowed.'
+            )
+        self.cfg_profiles[profile_name] = ConfigProfile()
+
+    def remove_profile(self, profile_name: str) -> None:
+        """Remove a configuration profile.
+
+        Will remove the profile with the specified name if it exists.
+
+        Args:
+            profile_name (str): The name of the profile to remove.
+
+        Raises:
+            ValueError: If the profile does not exist.
+        """
+        if profile_name not in self.cfg_profiles:
+            raise ValueError(f'Profile "{profile_name}" does not exist.')
+        if profile_name in ['_default', '_all']:
+            raise ValueError(f'Profile "{profile_name}" cannot be removed.')
+        del self.cfg_profiles[profile_name]

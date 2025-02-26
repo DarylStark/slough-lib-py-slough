@@ -234,3 +234,31 @@ def test_error_on_project_folder_when_no_config_file_is_set() -> None:
     slough.cfgfile = None
     with pytest.raises(ConfigFileNotSetError):
         _ = slough.project_folder
+
+
+def test_adding_a_container_tag_to_all_profile(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Test if we can add a container tag to the '_all' profile."""
+    monkeypatch.chdir('tests/test_data/project1')
+    slough = Slough(max_directory_depth=0)
+    slough.add_container_tag('test-tag', profile_name='_all')
+    assert slough.config is not None
+    assert slough.config.cfg_profiles['_all'] is not None
+    assert slough.config.cfg_profiles['_all'].container is not None
+    assert slough.config.cfg_profiles['_all'].container.tags == ['test-tag']
+
+
+def test_adding_a_container_tag_to_default_profile(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Test if we can add a container tag to the '_all' profile."""
+    monkeypatch.chdir('tests/test_data/project1')
+    slough = Slough(max_directory_depth=0)
+    slough.add_container_tag('test-tag')
+    assert slough.config is not None
+    assert slough.config.cfg_profiles['_default'] is not None
+    assert slough.config.cfg_profiles['_default'].container is not None
+    assert slough.config.cfg_profiles['_default'].container.tags == [
+        'test-tag'
+    ]
