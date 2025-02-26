@@ -155,3 +155,29 @@ class Slough:
         if tag in profile.container.tags:
             raise ValueError(f'Tag "{tag}" already exists in profile.')
         profile.container.tags.append(tag)
+
+    def remove_container_tag(
+        self, tag: str, *, profile_name: str = '_default'
+    ) -> None:
+        """Delete a container tag from the configuration.
+
+        If the tag is not found in the profile, a ValueError is raised.
+
+        Args:
+            tag (str): The tag to remove.
+            profile_name (str): The profile to remove the tag from.
+        """
+        if not self._config:
+            self._load_config()
+        if not self._config:
+            raise ConfigNotSetError('No configuration set.')
+
+        # Retrieve and update the profile
+        profile = self._config.cfg_profiles[profile_name]
+        if not profile.container:
+            raise ValueError(
+                f'Profile "{profile_name}" has no container configuration.'
+            )
+        if tag not in profile.container.tags:
+            raise ValueError(f'Tag "{tag}" doesn\'t exist in profile.')
+        profile.container.tags.remove(tag)

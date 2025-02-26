@@ -94,10 +94,9 @@ def list_container_tags(
     short_help='Remove container tags.',
 )
 def remove_container_tags(
-    tags: list[str] = typer.Argument(
-        help='The tags to remove from the profile.'
-    ),
-    profile: str | None = typer.Option(
+    ctx: typer.Context,
+    tags: str = typer.Argument(help='The tag to remove from the profile.'),
+    profile: str = typer.Option(
         default='_default',
         help='The profile to remove the container tags from.',
     ),
@@ -105,8 +104,12 @@ def remove_container_tags(
     """Removes tags from a profile.
 
     Args:
+        ctx (typer.Context): Typer context
         tags (list[str]): The tags to remove from the profile.
         profile (str, optional): The profile to remove the container tags from.
             Defaults to the default profile.
     """
-    pass
+    console, slough, _, _ = get_context_data_config(ctx)
+    slough.remove_container_tag(tags, profile_name=profile)
+    console.print(f'Tag "{tags}" removed from profile "{profile}".')
+    slough.save()
