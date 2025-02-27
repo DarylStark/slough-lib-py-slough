@@ -50,9 +50,17 @@ def convert_to_envvars(data: dict, prefix: str) -> str:
         elif isinstance(value, dict):
             output += convert_to_envvars(value, f'{prefix}_{key}')
         elif isinstance(value, list):
+            if len(value) == 0:
+                continue
+
             output += f'{var_name}_COUNT={len(value)}\n'
+            if all([type(item) is str for item in value]):
+                output += f'{var_name}="{','.join(value)}"\n'
             for i, item in enumerate(value):
-                output += convert_to_envvars(item, f'{var_name}_{i}')
+                if isinstance(item, str | int | float):
+                    output += f'{var_name}_{i}="{str(item)}"\n'
+                elif isinstance(item, dict):
+                    output += convert_to_envvars(item, f'{var_name}_{i}')
         else:
             local_logger.warning(
                 'Cannot convert "%s", invalid type: "%s"', key, type(value)
@@ -80,7 +88,10 @@ def cli_config_env(
         prefix (str): Prefix for the environment variables
     """
     console, _, config, _ = get_context_data_config(ctx)
-    console.print(convert_to_envvars(config.model_dump(), prefix), end='')
+    config_model = config.model_dump()
+    # We set the console width to 1024 to prevent line wrapping
+    console.width = 1024
+    console.print(convert_to_envvars(config_model, prefix), end='')
 
 
 @config.command(
