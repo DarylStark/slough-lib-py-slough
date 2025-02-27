@@ -15,7 +15,7 @@ from slough_cli_tool.exceptions import (
 def test_slough_cli_config_env(
     monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
 ) -> None:
-    """Test the `config env` command.
+    """Test the `config env` command without a profile.
 
     Args:
         monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
@@ -27,6 +27,28 @@ def test_slough_cli_config_env(
     assert 'SLOUGH_PROJECT_VERSION="0.0.1"' in result.stdout
     assert 'SLOUGH_PROJECT_AUTHORS_0_NAME="John Doe"' in result.stdout
     assert 'SLOUGH_PROJECT_AUTHORS_1_NAME="Daryl Stark"' in result.stdout
+
+
+def test_slough_cli_config_env_with_profile(
+    monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
+) -> None:
+    """Test the `config env` command with a profile.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        cli_runner (CliRunner): Typer CLI runner.
+    """
+    monkeypatch.chdir('tests/test_data/project7/')
+    result = cli_runner.invoke(
+        app, ['config', 'env', '--profile', 'production']
+    )
+    assert 'SLOUGH_PROJECT_NAME="project7"' in result.stdout
+    assert 'SLOUGH_PROJECT_VERSION="0.0.1"' in result.stdout
+    assert 'SLOUGH_PROJECT_AUTHORS_0_NAME="Daryl Stark"' in result.stdout
+    assert (
+        'SLOUGH_CONTAINER_TAGS="latest-image,latest-prd,my_application,1.0.0"'
+        in result.stdout
+    )
 
 
 def test_slough_cli_config_env_with_container_tags(

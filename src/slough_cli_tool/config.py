@@ -80,12 +80,16 @@ def cli_config_env(
     prefix: str = typer.Option(
         default='SLOUGH', help='The prefix for the variables.'
     ),
+    profile: str | None = typer.Option(
+        None, help='Profile to use for the configuration.'
+    ),
 ) -> None:
     """Show configuration as environment variables.
 
     Args:
         ctx (typer.Context): Typer context.
         prefix (str): Prefix for the environment variables
+        profile (str | None): Profile to use for the configuration.
     """
     console, _, config, _ = get_context_data_config(ctx)
     config_model = config.model_dump()
