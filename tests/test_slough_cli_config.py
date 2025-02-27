@@ -29,7 +29,6 @@ def test_slough_cli_config_env(
     assert 'SLOUGH_PROJECT_AUTHORS_1_NAME="Daryl Stark"' in result.stdout
 
 
-@pytest.mark.xfail
 def test_slough_cli_config_env_with_container_tags(
     monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
 ) -> None:
@@ -46,7 +45,24 @@ def test_slough_cli_config_env_with_container_tags(
     assert 'SLOUGH_PROJECT_NAME="project7"' in result.stdout
     assert 'SLOUGH_PROJECT_VERSION="0.0.1"' in result.stdout
     assert 'SLOUGH_PROJECT_AUTHORS_0_NAME="Daryl Stark"' in result.stdout
-    # TODO: Add test for the container tags
+    assert 'SLOUGH_CFG_PROFILES__ALL_CONTAINER_TAGS_COUNT=1' in result.stdout
+    assert (
+        'SLOUGH_CFG_PROFILES__ALL_CONTAINER_TAGS="latest-image"'
+        in result.stdout
+    )
+    assert (
+        'SLOUGH_CFG_PROFILES__ALL_CONTAINER_TAGS="latest-image"'
+        in result.stdout
+    )
+    assert (
+        'SLOUGH_CFG_PROFILES__ALL_CONTAINER_TAGS_0="latest-image"'
+        in result.stdout
+    )
+    assert (
+        'SLOUGH_CFG_PROFILES_ACCEPTANCE_CONTAINER_TAGS="latest-rc,'
+        + 'my_application,1.0.0-rc1"'
+        in result.stdout
+    )
 
 
 def test_slough_cli_config_env_different_prefix(
