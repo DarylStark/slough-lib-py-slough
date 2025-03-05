@@ -96,6 +96,25 @@ class Slough:
         cfg_manager.save_config(self._config.model_dump())
         self._logger.info(f'Saved configuration to {self.cfgfile}')
 
+    def get_config_for_profile(self, profile_name: str) -> SloughConfig:
+        """Get the configuration for a specific profile.
+
+        Args:
+            profile_name (str): The name of the profile.
+
+        Returns:
+            ConfigProfile: The configuration for the profile.
+        """
+        if not self._config:
+            self._load_config()
+        if not self._config:
+            raise ConfigNotSetError('No configuration set.')
+
+        if profile_name not in self._config.cfg_profiles:
+            raise ValueError(f'Profile "{profile_name}" not found.')
+
+        return self._config
+
     @property
     def config(self) -> SloughConfig | None:
         """Return the configuration."""

@@ -91,8 +91,11 @@ def cli_config_env(
         prefix (str): Prefix for the environment variables
         profile (str | None): Profile to use for the configuration.
     """
-    console, _, config, _ = get_context_data_config(ctx)
+    console, slough, config, _ = get_context_data_config(ctx)
     config_model = config.model_dump()
+    if profile:
+        config_model = slough.get_config_for_profile(profile).model_dump()
+
     # We set the console width to 1024 to prevent line wrapping
     console.width = 1024
     console.print(convert_to_envvars(config_model, prefix), end='')
