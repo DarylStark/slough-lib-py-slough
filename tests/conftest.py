@@ -9,6 +9,14 @@ from typer.testing import CliRunner
 
 from chain_of_responsibility import ChainHandler, NotHandledError
 from slough_cli_tool import app
+from slough_config.config_model import (
+    Author,
+    ConfigProfile,
+    ContainerConfiguration,
+    DevelopmentEnvironment,
+    ProjectInformation,
+    SloughConfig,
+)
 
 
 @pytest.fixture
@@ -228,3 +236,33 @@ def empty_test_dir_with_config(
     yield empty_test_dir
 
     pass
+
+
+@pytest.fixture(scope='function')
+def config_model() -> SloughConfig:
+    """Create a `SloughConfig` object for testing."""
+    return SloughConfig(
+        project=ProjectInformation(
+            name='test',
+            version='0.0.1',
+            authors=[Author(name='John Doe', email='johndoe@example.com')],
+        ),
+        development_environment=DevelopmentEnvironment.GENERIC,
+        cfg_profiles={
+            'test': ConfigProfile(
+                container=ContainerConfiguration(
+                    tags=['test_tag'],
+                )
+            ),
+            '_all': ConfigProfile(
+                container=ContainerConfiguration(
+                    tags=['_all_tag'],
+                )
+            ),
+            '_default': ConfigProfile(
+                container=ContainerConfiguration(
+                    tags=['_default_tag'],
+                )
+            ),
+        },
+    )

@@ -1,12 +1,32 @@
 """Module with the model for the configuration file."""
 
 import re
+from abc import ABC, abstractmethod
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
+if TYPE_CHECKING:
+    from .config_model_visitor import ConfigModelVisitor
 
-class Author(BaseModel):
+
+class SloughConfigModel(BaseModel, ABC):
+    """Base class for a Slough configuration model.
+
+    Contains the `visit` method to traverse the model.
+    """
+
+    @abstractmethod
+    def visit(self, visitor: 'ConfigModelVisitor') -> None:
+        """Visit the model element.
+
+        Args:
+            visitor (ConfigModelVisitor): The visitor to call.
+        """
+
+
+class Author(SloughConfigModel):
     """Model for the author information.
 
     Attributes:
@@ -18,8 +38,16 @@ class Author(BaseModel):
     name: str
     email: str = Field(pattern=r'^\S+@\S+\.\S+$')
 
+    def visit(self, visitor: 'ConfigModelVisitor') -> None:
+        """Visit the model element.
 
-class ProjectInformation(BaseModel):
+        Args:
+            visitor (ConfigModelVisitor): The visitor method to call.
+        """
+        visitor.visit_author(self)
+
+
+class ProjectInformation(SloughConfigModel):
     """Model for the project information.
 
     Attributes:
@@ -33,6 +61,14 @@ class ProjectInformation(BaseModel):
     version: str = Field(pattern=r'^(\d+)\.(\d+)\.(\d+)(?:-\S+(?:\.(\d+))?)?$')
     authors: list[Author]
 
+    def visit(self, visitor: 'ConfigModelVisitor') -> None:
+        """Visit the model element.
+
+        Args:
+            visitor (ConfigModelVisitor): The visitor method to call.
+        """
+        visitor.visit_project_information(self)
+
 
 class DevelopmentEnvironment(str, Enum):
     """Enum for the development environment.
@@ -44,6 +80,8 @@ class DevelopmentEnvironment(str, Enum):
             environment.
     """
 
+    # TODO: Add visitor
+
     CPP_GENERIC = 'cpp-generic'
     GENERIC = 'generic'
     NODEJS_GENERIC = 'nodejs-generic'
@@ -51,7 +89,7 @@ class DevelopmentEnvironment(str, Enum):
     RUST_GENERIC = 'rust-generic'
 
 
-class ContainerConfiguration(BaseModel):
+class ContainerConfiguration(SloughConfigModel):
     """Configuration for a container.
 
     Attributes:
@@ -60,8 +98,16 @@ class ContainerConfiguration(BaseModel):
 
     tags: list[str] = []
 
+    def visit(self, visitor: 'ConfigModelVisitor') -> None:
+        """Visit the model element.
 
-class ConfigProfile(BaseModel):
+        Args:
+            visitor (ConfigModelVisitor): The visitor method to call.
+        """
+        visitor.visit_container_configuration(self)
+
+
+class ConfigProfile(SloughConfigModel):
     """Model for the configuration profile.
 
     Contains all settins for a specific project.
@@ -72,8 +118,16 @@ class ConfigProfile(BaseModel):
 
     container: ContainerConfiguration | None = None
 
+    def visit(self, visitor: 'ConfigModelVisitor') -> None:
+        """Viszit the model element.
 
-class SloughConfig(BaseModel):
+        Args:
+            visitor (ConfigModelVisitor): The visitor method to call.
+        """
+        visitor.visit_config_profile(self)
+
+
+class SloughConfig(SloughConfigModel):
     """Model for the configuration file.
 
     Attributes:
@@ -88,6 +142,14 @@ class SloughConfig(BaseModel):
         '_default': ConfigProfile(),
         '_all': ConfigProfile(),
     }
+
+    def visit(self, visitor: 'ConfigModelVisitor') -> None:
+        """Visit the model element.
+
+        Args:
+            visitor (ConfigModelVisitor): The visitor method to call.
+        """
+        visitor.visit_slough_config(self)
 
     def create_profile(self, profile_name: str) -> None:
         """Create a new configuration profile.
