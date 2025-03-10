@@ -67,6 +67,6 @@ class MockVisitor(ConfigModelVisitor):
             config_model (SloughConfig): The configuration model.
         """
         self.visited.append('config_model')
-        self.visit_project_information(config_model.project)
+        config_model.project.visit(self)
         for profile in config_model.cfg_profiles.values():
             profile.visit(self)
