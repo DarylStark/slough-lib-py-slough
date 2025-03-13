@@ -1,14 +1,12 @@
 """Main module for slough-cli-tool."""
 
 import logging
-import os
 import sys
 
 import typer
 from rich.console import Console
 from rich.logging import RichHandler
 
-from slough import Slough
 from slough import __version__ as slough_version
 from slough.exceptions import SloughError
 
@@ -90,10 +88,10 @@ def common_command_line_options(
 
     # Create a context aware object that can be used by all commands.
     ctx.obj = {
-        'slough': Slough(
-            cfgfile,
-            max_directory_depth=int(os.environ.get('MAX_DIR_DEPTH', '6')),
-        ),
+        # 'slough': Slough(
+        #     cfgfile,
+        #     max_directory_depth=int(os.environ.get('MAX_DIR_DEPTH', '6')),
+        # ),
         'console': Console(),
     }
     local_logger.debug('Created context object')

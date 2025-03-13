@@ -239,14 +239,24 @@ def empty_test_dir_with_config(
 
 
 @pytest.fixture(scope='function')
-def config_model() -> SloughConfig:
-    """Create a `SloughConfig` object for testing."""
+def project_model() -> ProjectInformation:
+    """Create a `ProjectInformation` object for testing."""
+    return ProjectInformation(
+        name='test',
+        version='0.0.1',
+        authors=[Author(name='John Doe', email='johndoe@example.com')],
+    )
+
+
+@pytest.fixture(scope='function')
+def config_model(project_model: ProjectInformation) -> SloughConfig:
+    """Create a `SloughConfig` object for testing.
+
+    Args:
+        project_model (ProjectInformation): The project information model.
+    """
     return SloughConfig(
-        project=ProjectInformation(
-            name='test',
-            version='0.0.1',
-            authors=[Author(name='John Doe', email='johndoe@example.com')],
-        ),
+        project=project_model,
         development_environment=DevelopmentEnvironment.GENERIC,
         cfg_profiles={
             'test': ConfigProfile(

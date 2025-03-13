@@ -33,9 +33,9 @@ def add_container_tags(
     """
     console, slough, _, _ = get_context_data_config(ctx)
     for tag in tags:
-        slough.add_container_tag(tag, profile_name=profile)
+        # slough.add_container_tag(tag, profile_name=profile)
         console.print(f'Tag "{tag}" added to profile "{profile}".')
-    slough.save()
+    # slough.save()
 
 
 @tags.command(
@@ -110,6 +110,6 @@ def remove_container_tags(
             Defaults to the default profile.
     """
     console, slough, _, _ = get_context_data_config(ctx)
-    slough.remove_container_tag(tags, profile_name=profile)
+    # slough.remove_container_tag(tags, profile_name=profile)
     console.print(f'Tag "{tags}" removed from profile "{profile}".')
-    slough.save()
+    # slough.save()

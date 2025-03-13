@@ -94,7 +94,8 @@ def cli_config_env(
     console, slough, config, _ = get_context_data_config(ctx)
     config_model = config.model_dump()
     if profile:
-        config_model = slough.get_config_for_profile(profile).model_dump()
+        # config_model = slough.get_config_for_profile(profile).model_dump()
+        pass
 
     # We set the console width to 1024 to prevent line wrapping
     console.width = 1024
@@ -132,10 +133,10 @@ def cli_config_convert(
 
     # Convert configuration
     oldfile = cfgfile
-    slough.cfgfile = cfgfile.with_suffix(f'.{target.value}')
+    # slough.cfgfile = cfgfile.with_suffix(f'.{target.value}')
     local_logger = logging.getLogger('cli_config_convert')
-    local_logger.info('Converting configuration to "%s"', slough.cfgfile)
-    slough.save()
+    local_logger.info('Converting configuration to "%s"', '')
+    # slough.save()
 
     # Remove old file
     oldfile.unlink()

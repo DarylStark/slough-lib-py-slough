@@ -5,10 +5,7 @@ import logging
 import typer
 
 from slough_config import (
-    Author,
     DevelopmentEnvironment,
-    ProjectInformation,
-    SloughConfig,
 )
 
 from .exceptions import ConfigAlreadySetError
@@ -65,25 +62,25 @@ def cli_project_init(
     _, slough = get_context_data(ctx)
 
     # Create a new Slough object
-    slough_config = SloughConfig(
-        project=ProjectInformation(
-            name=title,
-            version=version,
-            authors=[Author(name=author_name, email=author_email)],
-        ),
-        development_environment=development_environment,
-    )
+    # slough_config = SloughConfig(
+    #     project=ProjectInformation(
+    #         name=title,
+    #         version=version,
+    #         authors=[Author(name=author_name, email=author_email)],
+    #     ),
+    #     development_environment=development_environment,
+    # )
 
     # Set the configuration in the `Slough` object
     local_logger = logging.getLogger('cli_project_init')
     if not slough.config:
-        slough.config = slough_config
+        # slough.config = slough_config
         local_logger.info('Created configuration')
     else:
         raise ConfigAlreadySetError('Configuration already set')
 
     # Save the configuration
-    slough.save()
+    # slough.save()
 
 
 @project.command(
@@ -114,4 +111,4 @@ def cli_set_development_environment(
     config.development_environment = development_environment
 
     # Save the configuration
-    slough.save()
+    # slough.save()

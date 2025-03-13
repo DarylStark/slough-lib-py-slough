@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .config_model_visitor import ConfigModelVisitor
 
 
-class SloughConfigModel(BaseModel, ABC):
+class SloughConfigModel(ABC, BaseModel, validate_assignment=True):
     """Base class for a Slough configuration model.
 
     Contains the `visit` method to traverse the model.
@@ -58,7 +58,7 @@ class ProjectInformation(SloughConfigModel):
     """
 
     name: str
-    version: str = Field(pattern=r'^(\d+)\.(\d+)\.(\d+)(?:-\S+(?:\.(\d+))?)?$')
+    version: str = Field(pattern=r'^(\d+)\.(\d+)\.(\d+)(?:-\S+\d+)?$')
     authors: list[Author]
 
     def visit(self, visitor: 'ConfigModelVisitor') -> None:
@@ -119,7 +119,7 @@ class ConfigProfile(SloughConfigModel):
     container: ContainerConfiguration | None = None
 
     def visit(self, visitor: 'ConfigModelVisitor') -> None:
-        """Viszit the model element.
+        """Visit the model element.
 
         Args:
             visitor (ConfigModelVisitor): The visitor method to call.
@@ -151,7 +151,16 @@ class SloughConfig(SloughConfigModel):
         """
         visitor.visit_slough_config(self)
 
-    def create_profile(self, profile_name: str) -> None:
+    @property
+    def profile_list(self) -> list[str]:
+        """List of profile names.
+
+        Returns:
+            list[str]: A list of profile names.
+        """
+        return list(self.cfg_profiles.keys())
+
+    def add_profile(self, profile_name: str) -> None:
         """Create a new configuration profile.
 
         Will create a new profile with the specified name if it does not exist.
@@ -164,15 +173,29 @@ class SloughConfig(SloughConfigModel):
             ValueError: If the profilename is already in use or if the
                 profilename is invalid.
         """
-        if profile_name in self.cfg_profiles:
+        if self._profile_exists(profile_name):
+            # TODO: Custom exception
             raise ValueError(f'Profile "{profile_name}" already exists.')
 
-        if not re.match(r'^[a-zA-Z][A-Za-z0-9_-]+$', profile_name):
+        if not self._is_valid_profile_name(profile_name):
+            # TODO: Custom exception
             raise ValueError(
                 'Invalid profile name. Only alphanumeric characters, '
                 'dashes, and underscores are allowed.'
             )
+
         self.cfg_profiles[profile_name] = ConfigProfile()
+
+    def _is_valid_profile_name(self, profile_name: str) -> bool:
+        """Check if the profile name is valid.
+
+        Args:
+            profile_name (str): The name of the profile to check.
+
+        Returns:
+            bool: True if the profile name is valid, False otherwise.
+        """
+        return re.match(r'^[a-zA-Z][A-Za-z0-9_-]+$', profile_name) is not None
 
     def remove_profile(self, profile_name: str) -> None:
         """Remove a configuration profile.
@@ -185,8 +208,20 @@ class SloughConfig(SloughConfigModel):
         Raises:
             ValueError: If the profile does not exist.
         """
-        if profile_name not in self.cfg_profiles:
+        # TODO: Custom exceptions
+        if not self._profile_exists(profile_name):
             raise ValueError(f'Profile "{profile_name}" does not exist.')
         if profile_name in ['_default', '_all']:
             raise ValueError(f'Profile "{profile_name}" cannot be removed.')
         del self.cfg_profiles[profile_name]
+
+    def _profile_exists(self, profile_name: str) -> bool:
+        """Check if a profile exists.
+
+        Args:
+            profile_name (str): The name of the profile to check.
+
+        Returns:
+            bool: True if the profile exists, False otherwise.
+        """
+        return profile_name in self.cfg_profiles

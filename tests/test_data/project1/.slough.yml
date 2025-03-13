@@ -1,0 +1,12 @@
+cfg_profiles:
+  _all:
+    container: null
+  _default:
+    container: null
+development_environment: null
+project:
+  authors:
+  - email: johndoe@example.com
+    name: John Doe
+  name: test_project
+  version: 0.1.0

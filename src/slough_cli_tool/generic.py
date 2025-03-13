@@ -40,10 +40,9 @@ def get_context_data_config(
     console, slough = get_context_data(ctx)
 
     if (
-        not isinstance(slough, Slough)
-        or not slough.config
-        or not slough.cfgfile
+        not isinstance(slough, Slough) or not slough.config
+        # or not slough.cfgfile
     ):
         raise ConfigMissingError('Configuration is missing.')
 
-    return console, slough, slough.config, slough.cfgfile
+    return console, slough, slough.config, Path()  # , slough.cfgfile

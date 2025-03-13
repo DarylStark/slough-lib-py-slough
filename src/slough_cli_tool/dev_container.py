@@ -1,6 +1,7 @@
 """Dev Container part of the CLI tool."""
 
 import json
+from pathlib import Path
 
 import typer
 
@@ -65,9 +66,10 @@ def cli_dev_container_generate_config(
             'Development environment is not set in the Slough configuration.'
         )
 
-    dev_container_folder = (
-        slough.project_folder / '.devcontainer' / 'devcontainer.json'
-    )
+    # dev_container_folder = (
+    #     slough.project_folder / '.devcontainer' / 'devcontainer.json'
+    # )
+    dev_container_folder = Path()
 
     # Load the current configuration
     try:
