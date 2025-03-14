@@ -55,7 +55,7 @@ def convert_to_envvars(data: dict, prefix: str) -> str:
 
             output += f'{var_name}_COUNT={len(value)}\n'
             if all([type(item) is str for item in value]):
-                output += f'{var_name}="{','.join(value)}"\n'
+                output += f'{var_name}="{",".join(value)}"\n'
             for i, item in enumerate(value):
                 if isinstance(item, str | int | float):
                     output += f'{var_name}_{i}="{str(item)}"\n'
