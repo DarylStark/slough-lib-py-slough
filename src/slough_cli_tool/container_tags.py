@@ -77,7 +77,7 @@ def list_container_tags(
                     tags.append((tag, profile_name))
 
     # Print data
-    if len(tags):
+    if len(tags) > 0:
         table = Table(box=box.SIMPLE)
         table.add_column('Tag')
         table.add_column('Profile')
