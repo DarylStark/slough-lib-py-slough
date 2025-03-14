@@ -1,6 +1,7 @@
 """File with the required fixtures."""
 
 import shutil
+import tempfile
 from collections.abc import Generator
 from pathlib import Path
 
@@ -276,3 +277,14 @@ def config_model(project_model: ProjectInformation) -> SloughConfig:
             ),
         },
     )
+
+
+@pytest.fixture(scope='function')
+def temp_folder() -> Generator[Path]:
+    """Create a temporary folder for testing.
+
+    Creates a temporary directory with a random name. Removes it after the test
+    is done.
+    """
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        yield Path(tmpdirname).resolve()

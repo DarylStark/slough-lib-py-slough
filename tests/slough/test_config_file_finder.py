@@ -1,23 +1,8 @@
 """Tests for the ConfigFileFinder."""
 
-import tempfile
-from collections.abc import Generator
 from pathlib import Path
 
-import pytest
-
 from slough.config_file_finder import ConfigFileFinder
-
-
-@pytest.fixture(scope='function')
-def temp_folder() -> Generator[Path]:
-    """Create a temporary folder for testing.
-
-    Creates a temporary directory with a random name. Removes it after the test
-    is done.
-    """
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        yield Path(tmpdirname).resolve()
 
 
 def test_config_file_finder_no_config_file(temp_folder: Path) -> None:
