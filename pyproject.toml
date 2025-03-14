@@ -41,8 +41,6 @@ select = [
 ignore = [
     "B008",    # function call in default argument
     "PLR2004", # magic value used in comparison
-    "ANN101",  # missing type annotation for self
-    "ANN102",  # missing type annotation for cls
     "TD003",   # missing link
     "TD002",   # missing author
     "PLR0913", # too many arguments
