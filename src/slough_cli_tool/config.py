@@ -14,20 +14,6 @@ from .generic import get_context_data_config
 config = typer.Typer(no_args_is_help=True)
 
 
-class ConvertTarget(str, Enum):
-    """Targets for the convert command."""
-
-    JSON = 'json'
-    YAML = 'yml'
-
-
-class SchemaTarget(str, Enum):
-    """Targets for the generate-schema command."""
-
-    JSON = 'json'
-    YAML = 'yml'
-
-
 def convert_to_envvars(data: dict, prefix: str) -> str:
     """Format dictionary to environment variables.
 
@@ -100,69 +86,3 @@ def cli_config_env(
     # We set the console width to 1024 to prevent line wrapping
     console.width = 1024
     console.print(convert_to_envvars(config_model, prefix), end='')
-
-
-@config.command(
-    name='convert',
-    help='Convert the configurationfile to a different format. This can be '
-    + 'useful when you need to convert a YAML file to JSON or visa versa.',
-    short_help='Convert the configuration to a different format.',
-)
-def cli_config_convert(
-    ctx: typer.Context,
-    target: ConvertTarget = typer.Argument(
-        help='Target format to convert to.'
-    ),
-) -> None:
-    """Convert configuration to specific output formats.
-
-    Args:
-        ctx (typer.Context): Typer context.
-        target (ConvertTarget): Target format.
-    """
-    _, slough, _, cfgfile = get_context_data_config(ctx)
-
-    # Check if conversion is valid
-    if (
-        cfgfile.suffix.lower() in ('.yaml', '.yml')
-        and target == ConvertTarget.YAML
-    ) or (cfgfile.suffix.lower() == '.json' and target == ConvertTarget.JSON):
-        raise ConfigConvertionAlreadyCorrectSufficError(
-            '[yellow]Configuration is already in this format.[/yellow]'
-        )
-
-    # Convert configuration
-    oldfile = cfgfile
-    # slough.cfgfile = cfgfile.with_suffix(f'.{target.value}')
-    local_logger = logging.getLogger('cli_config_convert')
-    local_logger.info('Converting configuration to "%s"', '')
-    # slough.save()
-
-    # Remove old file
-    oldfile.unlink()
-
-
-@config.command(
-    name='generate-schema',
-    help='Generate a schema for the configuration file. This can be used to '
-    + 'validate the configuration file.',
-    short_help='Generate a schema for the configuration file.',
-)
-def cli_config_generate_schema(
-    ctx: typer.Context,
-    target_format: SchemaTarget = typer.Option(
-        SchemaTarget.JSON, help='Output format for the schema.'
-    ),
-) -> None:
-    """Generate a schema for the configuration file.
-
-    Args:
-        ctx (typer.Context): Typer context.
-        target_format (SchemaTarget): Target format.
-    """
-    console, _, config, _ = get_context_data_config(ctx)
-    schema = config.model_json_schema()
-    if target_format == SchemaTarget.JSON:
-        console.print_json(data=schema)
-    else:
-        console.print(yaml.dump(config.model_json_schema()))
