@@ -211,8 +211,10 @@ class SloughConfig(SloughConfigModel):
         # TODO: Custom exceptions
         if not self._profile_exists(profile_name):
             raise ValueError(f'Profile "{profile_name}" does not exist.')
+
         if profile_name in ['_default', '_all']:
             raise ValueError(f'Profile "{profile_name}" cannot be removed.')
+
         del self.cfg_profiles[profile_name]
 
     def _profile_exists(self, profile_name: str) -> bool:
