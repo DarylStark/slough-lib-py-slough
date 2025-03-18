@@ -1,14 +1,21 @@
 """Main module for slough-cli-tool."""
 
 import logging
+from multiprocessing import Value
 import sys
+from pathlib import Path
+from re import A
 
 import typer
 from rich.console import Console
 from rich.logging import RichHandler
 
+from slough import Slough
 from slough import __version__ as slough_version
+from slough.config_file_finder import ConfigFileFinder
 from slough.exceptions import SloughError
+from slough.yaml_storage_manager import YAMLStorageManager
+from slough_config.config_model import Author, ProjectInformation, SloughConfig
 
 from .config import config
 from .container import container
@@ -53,11 +60,6 @@ app.add_typer(
 @app.callback()
 def common_command_line_options(
     ctx: typer.Context,
-    cfgfile: str = typer.Option(
-        'slough.yml',
-        help='Path to the configuration file.',
-        envvar='SLOUGH_CFGFILE',
-    ),
     verbosity: int = typer.Option(
         0,
         '--verbosity',
@@ -86,20 +88,35 @@ def common_command_line_options(
     )
 
     local_logger = logging.getLogger('common_command_line_options')
-    local_logger.debug('Given configuration file: "%s"', cfgfile)
+
+    # Find the needed configfile
+    cfgfile_path = ConfigFileFinder(filename='slough.yml').find()
+    if not cfgfile_path:
+        raise ValueError('No configuration file not found')
+
+    # Get a StorageManager
+    storage_manager = YAMLStorageManager(cfgfile_path)
+    try:
+        config = storage_manager.load()
+    except FileNotFoundError:
+        config = SloughConfig(
+            project=ProjectInformation(
+                name='empty_project',
+                version='0.0.1',
+                authors=[Author(name='nobody', email='nobody@nobody.com')],
+            )
+        )
+
+    # Create a Slough object
+    slough = Slough(config=config)
 
     # Create a context aware object that can be used by all commands.
     ctx.obj = {
-        # 'slough': Slough(
-        #     cfgfile,
-        #     max_directory_depth=int(os.environ.get('MAX_DIR_DEPTH', '6')),
-        # ),
+        'slough': slough,
         'console': Console(),
     }
     local_logger.debug('Created context object')
-    # local_logger.info(
-    #     'Configuration file in context: "%s"', ctx.obj['slough'].cfgfile
-    # )
+    local_logger.info('Configuration file in context: "%s"', str(cfgfile_path))
 
 
 @app.command('version')
