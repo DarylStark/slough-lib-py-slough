@@ -4,9 +4,35 @@ from pathlib import Path
 
 import yaml
 
-from slough_config import SloughConfig
+from slough_config import DevelopmentEnvironment, SloughConfig
 
 from .storage_manager import StorageManager
+
+
+def development_environment_representer(
+    dumper: yaml.Dumper, data: DevelopmentEnvironment
+) -> yaml.ScalarNode:
+    """Custom YAML representer for the DevelopmentEnvironment class.
+
+    This function defines how instances of the DevelopmentEnvironment class
+    should be represented when dumping to a YAML file. It converts the
+    DevelopmentEnvironment instance to a YAML scalar with the appropriate tag.
+
+    Args:
+        dumper (yaml.Dumper): The YAML dumper instance.
+        data (DevelopmentEnvironment): The DevelopmentEnvironment instance to
+            be represented.
+
+    Returns:
+        yaml.ScalarNode: The YAML node representing the DevelopmentEnvironment
+            instance.
+    """
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data.value)
+
+
+yaml.add_representer(
+    DevelopmentEnvironment, development_environment_representer
+)
 
 
 class YAMLStorageManager(StorageManager):
