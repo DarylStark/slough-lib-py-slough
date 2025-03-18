@@ -4,11 +4,7 @@ import logging
 from enum import Enum
 
 import typer
-import yaml
 
-from .exceptions import (
-    ConfigConvertionAlreadyCorrectSufficError,
-)
 from .generic import get_context_data_config
 
 config = typer.Typer(no_args_is_help=True)
