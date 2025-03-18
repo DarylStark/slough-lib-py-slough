@@ -54,7 +54,9 @@ app.add_typer(
 def common_command_line_options(
     ctx: typer.Context,
     cfgfile: str = typer.Option(
-        None, help='Path to the configuration file.', envvar='SLOUGH_CFGFILE'
+        'slough.yml',
+        help='Path to the configuration file.',
+        envvar='SLOUGH_CFGFILE',
     ),
     verbosity: int = typer.Option(
         0,
@@ -95,9 +97,9 @@ def common_command_line_options(
         'console': Console(),
     }
     local_logger.debug('Created context object')
-    local_logger.info(
-        'Configuration file in context: "%s"', ctx.obj['slough'].cfgfile
-    )
+    # local_logger.info(
+    #     'Configuration file in context: "%s"', ctx.obj['slough'].cfgfile
+    # )
 
 
 @app.command('version')
