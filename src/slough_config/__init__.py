@@ -5,7 +5,6 @@ other Python script that needs to load configuration from a Slough enabled
 project.
 """
 
-from .config_manager import ConfigManager
 from .config_model import (
     Author,
     ConfigProfile,
@@ -14,17 +13,12 @@ from .config_model import (
     ProjectInformation,
     SloughConfig,
 )
-from .json_manager import JSONManager
-from .yaml_manager import YAMLManager
 
 __all__ = [
     'Author',
-    'ConfigManager',
     'ConfigProfile',
     'ContainerConfiguration',
     'DevelopmentEnvironment',
-    'JSONManager',
     'ProjectInformation',
     'SloughConfig',
-    'YAMLManager',
 ]
