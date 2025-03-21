@@ -5,6 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "CLI app - version",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "slough_cli_tool",
+            "console": "integratedTerminal",
+            "args": [
+                "version"
+            ]
+        },
+        {
             "name": "CLI app - config - env",
             "type": "debugpy",
             "request": "launch",
