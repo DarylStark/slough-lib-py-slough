@@ -22,7 +22,6 @@ class ConfigModelVisitor:
         Args:
             author (SloughConfigModel): The author information.
         """
-        pass
 
     def visit_project_information(
         self, project_information: ProjectInformation
@@ -32,7 +31,6 @@ class ConfigModelVisitor:
         Args:
             project_information (ProjectInformation): The project information.
         """
-        pass
 
     def visit_container_configuration(
         self, container_configuration: ContainerConfiguration
@@ -43,7 +41,6 @@ class ConfigModelVisitor:
             container_configuration (ContainerConfiguration): The container
                 configuration.
         """
-        pass
 
     def visit_config_profile(self, config_profile: ConfigProfile) -> None:
         """Visit the configuration profile.
@@ -51,7 +48,6 @@ class ConfigModelVisitor:
         Args:
             config_profile (ConfigProfile): The configuration profile.
         """
-        pass
 
     def visit_slough_config(self, config_model: SloughConfig) -> None:
         """Visit the configuration model.
@@ -59,4 +55,3 @@ class ConfigModelVisitor:
         Args:
             config_model (SloughConfig): The configuration model.
         """
-        pass
