@@ -13,7 +13,6 @@ from slough import __version__ as slough_version
 from slough.config_file_finder import ConfigFileFinder
 from slough.exceptions import SloughError
 from slough.yaml_storage_manager import YAMLStorageManager
-from slough_config.config_model import Author, ProjectInformation, SloughConfig
 
 from .config import config
 from .container import container
@@ -85,7 +84,7 @@ def common_command_line_options(
         handlers=[RichHandler()],
     )
 
-    local_logger = logging.getLogger('common_command_line_options')
+    cli_logger = logging.getLogger('cli')
 
     # Find the needed configfile
     cfgfile_path = ConfigFileFinder(filename='slough.yml').find()
@@ -94,27 +93,18 @@ def common_command_line_options(
 
     # Get a StorageManager
     storage_manager = YAMLStorageManager(cfgfile_path)
-    try:
-        config = storage_manager.load()
-    except FileNotFoundError:
-        config = SloughConfig(
-            project=ProjectInformation(
-                name='empty_project',
-                version='0.0.1',
-                authors=[Author(name='nobody', email='nobody@nobody.com')],
-            )
-        )
 
     # Create a Slough object
-    slough = Slough(config=config)
+    slough = Slough(storage_manager=storage_manager)
 
     # Create a context aware object that can be used by all commands.
     ctx.obj = {
         'slough': slough,
         'console': Console(),
+        'logger': cli_logger,
     }
-    local_logger.debug('Created context object')
-    local_logger.info('Configuration file in context: "%s"', str(cfgfile_path))
+    cli_logger.debug('Created context object')
+    cli_logger.info('Configuration file in context: "%s"', str(cfgfile_path))
 
 
 @app.command('version')

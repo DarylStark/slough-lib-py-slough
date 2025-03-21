@@ -2,22 +2,45 @@
 
 import logging
 
+from slough.exceptions import ConfigNogLoadedError
 from slough_config.config_model import (
+    Author,
+    ProjectInformation,
     SloughConfig,
 )
+
+from .storage_manager import StorageManager
 
 
 class Slough:
     """Class that represents a Slough application."""
 
-    def __init__(self, config: SloughConfig) -> None:
+    def __init__(self, storage_manager: StorageManager) -> None:
         """Initialize the Slough object.
 
         Args:
-            config (SloughConfig): The configuration to use.
+            storage_manager (StorageManager): The storage manager to use.
         """
         self._logger = logging.getLogger('Slough')
-        self._config = config
+        self._storage_manager = storage_manager
+        try:
+            self._config = self._storage_manager.load()
+        except ConfigNogLoadedError:  # TODO: No. No, no, no
+            self._config = self._get_default_config()
+
+    def _get_default_config(self) -> SloughConfig:
+        """Return a default configuration.
+
+        Returns:
+            SloughConfig: The default configuration.
+        """
+        return SloughConfig(
+            project=ProjectInformation(
+                name='empty_project',
+                version='0.0.1',
+                authors=[Author(name='nobody', email='nobody@nobody.com')],
+            )
+        )
 
     @property
     def config(self) -> SloughConfig | None:
@@ -52,3 +75,7 @@ class Slough:
             profile_name (str): The name of the profile to remove.
         """
         self._config.remove_profile(profile_name)
+
+    def save(self) -> None:
+        """Save the configuration."""
+        self._storage_manager.save(self._config)

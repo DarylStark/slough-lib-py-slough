@@ -6,8 +6,10 @@ from collections.abc import Generator
 from pathlib import Path
 
 import pytest
+from mocks import MockStorageManager
 from typer.testing import CliRunner
 
+from slough.slough import Slough
 from slough_cli_tool import app
 from slough_config.config_model import (
     Author,
@@ -171,3 +173,15 @@ def temp_folder() -> Generator[Path]:
     """
     with tempfile.TemporaryDirectory() as tmpdirname:
         yield Path(tmpdirname).resolve()
+
+
+@pytest.fixture(scope='function')
+def slough_object(config_model: SloughConfig) -> Slough:
+    """Create a Slough object for testing.
+
+    Returns:
+        Slough: A configured Slough object.
+    """
+    mock_storage_manager = MockStorageManager(config_model)
+    slough = Slough(mock_storage_manager)
+    return slough
