@@ -119,7 +119,11 @@ def common_command_line_options(
 
 @app.command('version')
 def version(ctx: typer.Context) -> None:
-    """Print the version of slough-cli-tool."""
+    """Print the version of slough-cli-tool.
+
+    Args:
+        ctx (typer.Context): Typer context object.
+    """
     console = ctx.obj['console']
     console.print(f'[b]slough-cli-tool[/b] version: [u]{slough_version}[/u]')
 
