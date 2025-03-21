@@ -1,10 +1,8 @@
 """Main module for slough-cli-tool."""
 
 import logging
-from multiprocessing import Value
 import sys
 from pathlib import Path
-from re import A
 
 import typer
 from rich.console import Console
@@ -92,7 +90,7 @@ def common_command_line_options(
     # Find the needed configfile
     cfgfile_path = ConfigFileFinder(filename='slough.yml').find()
     if not cfgfile_path:
-        raise ValueError('No configuration file not found')
+        cfgfile_path = Path.cwd() / 'slough.yml'
 
     # Get a StorageManager
     storage_manager = YAMLStorageManager(cfgfile_path)
