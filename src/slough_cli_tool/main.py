@@ -77,25 +77,13 @@ def common_command_line_options(
         verbosity (int): Verbosity level
     """
     # Set up logging
-    logging.basicConfig(
-        level=logging.WARNING - (verbosity * 10),
-        format='"%(name)s": %(message)s',
-        datefmt='[%X]',
-        handlers=[RichHandler()],
-    )
-
-    cli_logger = logging.getLogger('cli')
+    cli_logger = create_default_cli_logger(verbosity)
 
     # Find the needed configfile
-    cfgfile_path = ConfigFileFinder(filename='slough.yml').find()
-    if not cfgfile_path:
-        cfgfile_path = Path.cwd() / 'slough.yml'
+    cfgfile_path = create_cfgfile_path()
 
     # Get a StorageManager
-    storage_manager = YAMLStorageManager(cfgfile_path)
-
-    # Create a Slough object
-    slough = Slough(storage_manager=storage_manager)
+    slough = create_slough_object(cfgfile_path)
 
     # Create a context aware object that can be used by all commands.
     ctx.obj = {
@@ -105,6 +93,54 @@ def common_command_line_options(
     }
     cli_logger.debug('Created context object')
     cli_logger.info('Configuration file in context: "%s"', str(cfgfile_path))
+
+
+def create_slough_object(cfgfile_path: Path) -> Slough:
+    """Create a Slough object.
+
+    Args:
+        cfgfile_path (Path): Path to the configuration file.
+
+    Returns:
+        Slough: Slough object.
+    """
+    cfgfile_path = create_cfgfile_path()
+    storage_manager = YAMLStorageManager(cfgfile_path)
+
+    # Create a Slough object
+    slough = Slough(storage_manager=storage_manager)
+    return slough
+
+
+def create_cfgfile_path() -> Path:
+    """Create the path to the configuration file.
+
+    Returns:
+        Path: Path to the configuration file.
+    """
+    cfgfile_path = ConfigFileFinder(filename='slough.yml').find()
+    if not cfgfile_path:
+        cfgfile_path = Path.cwd() / 'slough.yml'
+    return cfgfile_path
+
+
+def create_default_cli_logger(verbosity: int) -> logging.Logger:
+    """Create a defaullt CLI logger.
+
+    Args:
+        verbosity (int): Verbosity level.
+
+    Returns:
+        logging.Logger: Configured logger.
+    """
+    logging.basicConfig(
+        level=logging.WARNING - (verbosity * 10),
+        format='"%(name)s": %(message)s',
+        datefmt='[%X]',
+        handlers=[RichHandler()],
+    )
+    cli_logger = logging.getLogger('cli')
+    return cli_logger
 
 
 @app.command('version')
