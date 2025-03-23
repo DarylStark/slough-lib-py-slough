@@ -6,7 +6,7 @@ cfg_profiles:
 development_environment: null
 project:
   authors:
-  - email: johndoe@example.com
-    name: John Doe
-  name: test_project
-  version: 0.1.0
+  - email: daryl@dstark.nl
+    name: Daryl Stark
+  name: slough-lib
+  version: 0.0.1

@@ -165,13 +165,19 @@ def config_model(project_model: ProjectInformation) -> SloughConfig:
 
 
 @pytest.fixture(scope='function')
-def temp_folder() -> Generator[Path]:
+def temp_folder(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator[Path]:
     """Create a temporary folder for testing.
 
     Creates a temporary directory with a random name. Removes it after the test
     is done.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
     """
     with tempfile.TemporaryDirectory() as tmpdirname:
+        monkeypatch.chdir(tmpdirname)
         yield Path(tmpdirname).resolve()
 
 
@@ -185,3 +191,36 @@ def slough_object(config_model: SloughConfig) -> Slough:
     mock_storage_manager = MockStorageManager(config_model)
     slough = Slough(mock_storage_manager)
     return slough
+
+
+@pytest.fixture(scope='function')
+def temp_folder_with_slough_config(
+    monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
+) -> Generator[Path]:
+    """Create a temporary folder with Slough config for testing.
+
+    Creates a temporary directory with a random name and initializes a Slough
+    project in it. Removes it after the test is done.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        cli_runner (CliRunner): Typer CLI runner.
+    """
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        monkeypatch.chdir(tmpdirname)
+        cli_runner.invoke(
+            app,
+            [
+                'project',
+                'init',
+                '--title',
+                'test_project',
+                '--version',
+                '0.1.0',
+                '--author-name',
+                'John Doe',
+                '--author-email',
+                'johndoe@example.com',
+            ],
+        )
+        yield Path(tmpdirname).resolve()

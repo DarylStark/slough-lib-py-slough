@@ -23,9 +23,11 @@ class Slough:
         """
         self._logger = logging.getLogger('Slough')
         self._storage_manager = storage_manager
+        self._is_default_config = False
         try:
             self._config = self._storage_manager.load()
         except ConfigNogLoadedError:  # TODO: No. No, no, no
+            self._is_default_config = True
             self._config = self._get_default_config()
 
     def _get_default_config(self) -> SloughConfig:
@@ -43,7 +45,7 @@ class Slough:
         )
 
     @property
-    def config(self) -> SloughConfig | None:
+    def config(self) -> SloughConfig:
         """Return the configuration.
 
         Returns:
@@ -59,6 +61,16 @@ class Slough:
             list[str]: A list with the profile names.
         """
         return self._config.profile_list
+
+    @property
+    def is_default_config(self) -> bool:
+        """Return True if the configuration is the default one.
+
+        Returns:
+            bool: True if the configuration is the default one, otherwise
+            False.
+        """
+        return self._is_default_config
 
     def add_profile(self, profile_name: str) -> None:
         """Add a profile to the configuration.
