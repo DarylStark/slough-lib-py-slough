@@ -11,7 +11,6 @@ from slough_config import (
 from slough_config.config_model import Author
 
 from .exceptions import ConfigAlreadySetError
-from .generic import get_context_data_config
 
 project = typer.Typer(no_args_is_help=True)
 
@@ -104,8 +103,8 @@ def cli_set_development_environment(
         development_environment (DevelopmentEnvironment): The development
             environment.
     """
-    _, slough, config, _ = get_context_data_config(ctx)
-    config.development_environment = development_environment
+    slough: Slough = ctx.obj['slough']
+    slough.config.development_environment = development_environment
 
     # Save the configuration
-    # slough.save()
+    slough.save()

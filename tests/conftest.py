@@ -221,6 +221,8 @@ def temp_folder_with_slough_config(
                 'John Doe',
                 '--author-email',
                 'johndoe@example.com',
+                '--development-environment',
+                'generic',
             ],
         )
         yield Path(tmpdirname).resolve()

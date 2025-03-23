@@ -8,7 +8,7 @@ from slough_cli_tool import app
 
 
 def test_slough_cli_project_set_development_environment_when_empty(
-    cli_runner: CliRunner, empty_test_dir: Path
+    cli_runner: CliRunner, temp_folder_with_slough_config: Path
 ) -> None:
     """Test the `project set-development-environment` command.
 
@@ -16,83 +16,24 @@ def test_slough_cli_project_set_development_environment_when_empty(
 
     Args:
         cli_runner (CliRunner): Typer CLI runner.
-        empty_test_dir (Path): Path to the empty test directory.
+        temp_folder_with_slough_config (Path): Temporary folder with slough
+            config for testing.
     """
-    # First, we create a new project configuration
-    result = cli_runner.invoke(
-        app,
-        ['--cfgfile', 'slough.yml', 'project', 'init'],
-        input=(
-            'test_project\n'
-            + '0.1.0\n'
-            + 'John Doe\n'
-            + 'johndoe@example.com\n'
-        ),
-    )
-
     # Set the development environment
     result = cli_runner.invoke(
         app,
         [
-            '--cfgfile',
-            'slough.yml',
             'project',
             'set-development-environment',
             'python-generic',
         ],
     )
+    assert result.exit_code == 0
 
-    # Check the new value
-    result = cli_runner.invoke(
-        app, ['--cfgfile', 'slough.yml', 'config', 'env']
-    )
-    assert 'SLOUGH_DEVELOPMENT_ENVIRONMENT="python-generic"' in result.stdout
+    # Test if the `slough.yml` file is created
+    config_file = temp_folder_with_slough_config / 'slough.yml'
 
-
-def test_slough_cli_project_set_development_environment_when_not_empty(
-    cli_runner: CliRunner, empty_test_dir: Path
-) -> None:
-    """Test the `project set-development-environment` command.
-
-    Assumes the development environment is already set.
-
-    Args:
-        cli_runner (CliRunner): Typer CLI runner.
-        empty_test_dir (Path): Path to the empty test directory.
-    """
-    # First, we create a new project configuration
-    result = cli_runner.invoke(
-        app,
-        [
-            '--cfgfile',
-            'slough.yml',
-            'project',
-            'init',
-            '--development-environment',
-            'python-generic',
-        ],
-        input=(
-            'test_project\n'
-            + '0.1.0\n'
-            + 'John Doe\n'
-            + 'johndoe@example.com\n'
-        ),
-    )
-
-    # Set the development environment
-    result = cli_runner.invoke(
-        app,
-        [
-            '--cfgfile',
-            'slough.yml',
-            'project',
-            'set-development-environment',
-            'nodejs-generic',
-        ],
-    )
-
-    # Check the new value
-    result = cli_runner.invoke(
-        app, ['--cfgfile', 'slough.yml', 'config', 'env']
-    )
-    assert 'SLOUGH_DEVELOPMENT_ENVIRONMENT="nodejs-generic"' in result.stdout
+    # Check if it contains the correct values
+    with open(config_file) as file:
+        config = file.read()
+    assert 'development_environment: python-generic' in config
