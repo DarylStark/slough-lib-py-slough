@@ -1,5 +1,6 @@
 """Module with generic CLI functions."""
 
+import warnings
 from pathlib import Path
 
 import typer
@@ -20,6 +21,11 @@ def get_context_data(ctx: typer.Context) -> tuple[Console, Slough]:
     Returns:
         tuple[Slough, Console]: onsole object, Slough object.
     """
+    warnings.warn(
+        'get_context_data is deprecated and will be removed after refactoring',
+        DeprecationWarning,
+        stacklevel=2,
+    )
     slough = ctx.obj['slough']
     console = ctx.obj['console']
     return console, slough
