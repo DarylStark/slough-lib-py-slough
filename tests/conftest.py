@@ -6,7 +6,7 @@ from collections.abc import Generator
 from pathlib import Path
 
 import pytest
-from mocks import MockStorageManager
+from mocks import MockStorageManager, MockStorageManagerFailing
 from typer.testing import CliRunner
 
 from slough.slough import Slough
@@ -189,6 +189,18 @@ def slough_object(config_model: SloughConfig) -> Slough:
         Slough: A configured Slough object.
     """
     mock_storage_manager = MockStorageManager(config_model)
+    slough = Slough(mock_storage_manager)
+    return slough
+
+
+@pytest.fixture(scope='function')
+def failing_slough_object() -> Slough:
+    """Create a Slough object for testing a failing loader.
+
+    Returns:
+        Slough: A configured Slough object.
+    """
+    mock_storage_manager = MockStorageManagerFailing()
     slough = Slough(mock_storage_manager)
     return slough
 

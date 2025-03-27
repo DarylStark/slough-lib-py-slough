@@ -159,6 +159,71 @@ def test_profile_removal(config_model: SloughConfig) -> None:
     assert 'test' not in config_model.cfg_profiles
 
 
+def test_profile_rename(config_model: SloughConfig) -> None:
+    """Test the profile rename.
+
+    Args:
+        config_model (SloughConfig): The configuration model to test.
+    """
+    config_model.rename_profile('test', 'new_test')
+    assert 'new_test' in config_model.profile_list
+    assert 'test' not in config_model.profile_list
+    assert 'new_test' in config_model.cfg_profiles
+    assert 'test' not in config_model.cfg_profiles
+
+
+@pytest.mark.parametrize(
+    'profile_name',
+    ['_all', '_default', '_test', 'name with spaces'],
+)
+def test_profile_rename_invalid_name(
+    config_model: SloughConfig, profile_name: str
+) -> None:
+    """Test the profile rename with a invalid name.
+
+    Args:
+        config_model (SloughConfig): The configuration model to test.
+        profile_name (str): The name of the profile to test.
+    """
+    with pytest.raises(ValueError):
+        config_model.rename_profile('test', profile_name)
+
+
+@pytest.mark.parametrize(
+    'profile_name',
+    ['test1', 'test2', 'test3'],
+)
+def test_profile_rename_non_existing_profile(
+    config_model: SloughConfig, profile_name: str
+) -> None:
+    """Test the profile rename with a non existing profile.
+
+    Args:
+        config_model (SloughConfig): The configuration model to test.
+        profile_name (str): The name of the profile to test.
+    """
+    with pytest.raises(ValueError):
+        config_model.rename_profile(profile_name, 'new_test')
+
+
+@pytest.mark.parametrize(
+    'profile_name',
+    ['test1', 'test2', 'test3'],
+)
+def test_profile_rename_to_existing_profile(
+    config_model: SloughConfig, profile_name: str
+) -> None:
+    """Test the profile rename with a non existing profile.
+
+    Args:
+        config_model (SloughConfig): The configuration model to test.
+        profile_name (str): The name to rename to.
+    """
+    config_model.add_profile(profile_name)
+    with pytest.raises(ValueError):
+        config_model.rename_profile('test', profile_name)
+
+
 @pytest.mark.parametrize(
     'profile_name',
     ['_all', '_default'],

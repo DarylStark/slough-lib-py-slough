@@ -2,9 +2,10 @@
 
 import typer
 from rich import box
+from rich.console import Console
 from rich.table import Table
 
-from slough_cli_tool.generic import get_context_data_config
+from slough.slough import Slough
 
 profiles = typer.Typer(no_args_is_help=True)
 
@@ -24,9 +25,9 @@ def add_profile(
         ctx (typer.Context): Typer context
         profile_name (str): The profile to add.
     """
-    _, slough, config, _ = get_context_data_config(ctx)
-    config.add_profile(profile_name)
-    # slough.save()
+    slough: Slough = ctx.obj['slough']
+    slough.add_profile(profile_name)
+    slough.save()
 
 
 @profiles.command(
@@ -40,10 +41,12 @@ def list_profiles(ctx: typer.Context) -> None:
     Args:
         ctx (typer.Context): Typer context
     """
-    console, _, config, _ = get_context_data_config(ctx)
+    slough: Slough = ctx.obj['slough']
+    console: Console = ctx.obj['console']
+
     table = Table(box=box.SIMPLE)
     table.add_column('Profile name')
-    for profile in config.cfg_profiles:
+    for profile in slough.profile_list:
         table.add_row(profile)
     console.print(table)
 
@@ -63,9 +66,9 @@ def remove_profile(
         ctx (typer.Context): Typer context
         profile_name (str): The profile to remove.
     """
-    _, slough, config, _ = get_context_data_config(ctx)
-    config.remove_profile(profile_name)
-    # slough.save()
+    slough: Slough = ctx.obj['slough']
+    slough.remove_profile(profile_name)
+    slough.save()
 
 
 @profiles.command(
@@ -85,10 +88,7 @@ def rename_profile(
         profile_name (str): The profile to remove.
         new_name (str): The new name for the profile.
     """
-    _, slough, config, _ = get_context_data_config(ctx)
-    if new_name in config.cfg_profiles:
-        raise ValueError(f'Profile "{new_name}" already exists.')
-
-    config.cfg_profiles[new_name] = config.cfg_profiles.pop(profile_name)
-    # slough.save()
+    slough: Slough = ctx.obj['slough']
+    slough.rename_profile(profile_name, new_name)
+    slough.save()
     typer.echo(f'Profile "{profile_name}" renamed to "{new_name}".')

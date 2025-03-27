@@ -227,3 +227,26 @@ class SloughConfig(SloughConfigModel):
             bool: True if the profile exists, False otherwise.
         """
         return profile_name in self.cfg_profiles
+
+    def rename_profile(self, profile_name: str, new_name: str) -> None:
+        """Rename a profile.
+
+        Will rename the profile with the specified name if it exists.
+
+        Args:
+            profile_name (str): The name of the profile to rename.
+            new_name (str): The new name for the profile.
+        """
+        if not self._is_valid_profile_name(new_name):
+            raise ValueError(
+                'Invalid profile name. Only alphanumeric characters, '
+                'dashes, and underscores are allowed.'
+            )
+
+        if not self._profile_exists(profile_name):
+            raise ValueError(f'Profile "{profile_name}" does not exist.')
+
+        if self._profile_exists(new_name):
+            raise ValueError(f'Profile "{new_name}" already exists.')
+
+        self.cfg_profiles[new_name] = self.cfg_profiles.pop(profile_name)

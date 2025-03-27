@@ -88,6 +88,15 @@ class Slough:
         """
         self._config.remove_profile(profile_name)
 
+    def rename_profile(self, profile_name: str, new_name: str) -> None:
+        """Remove a profile from the configuration.
+
+        Args:
+            profile_name (str): The name of the profile to rename.
+            new_name (str): The new name for the profile.
+        """
+        self._config.rename_profile(profile_name, new_name)
+
     def save(self) -> None:
         """Save the configuration."""
         self._storage_manager.save(self._config)

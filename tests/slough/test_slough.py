@@ -11,6 +11,21 @@ def test_config_retrieval(
     assert slough_object.config == config_model
 
 
+def test_default_config(
+    failing_slough_object: Slough,
+) -> None:
+    """Test if the default configuration is loaded.
+
+    This test checks if the default configuration is loaded when the
+    configuration file is not found or is invalid.
+
+    Args:
+        failing_slough_object (Slough): The Slough object to test.
+    """
+    assert failing_slough_object.config.project.name == 'empty_project'
+    assert failing_slough_object.is_default_config
+
+
 def test_saving_config(slough_object: Slough) -> None:
     """Test the saving of the configuration."""
     slough_object.add_profile('my_new_profile')
@@ -53,4 +68,13 @@ def test_remove_profile(slough_object: Slough) -> None:
     slough_object.remove_profile('new_profile')
     assert sorted(slough_object.profile_list) == sorted(
         ['_default', '_all', 'test']
+    )
+
+
+def test_rename_profile(slough_object: Slough) -> None:
+    """Test renaming a profile."""
+    slough_object.add_profile('new_profile')
+    slough_object.rename_profile('new_profile', 'test2')
+    assert sorted(slough_object.profile_list) == sorted(
+        ['_default', '_all', 'test', 'test2']
     )
