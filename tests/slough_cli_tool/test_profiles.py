@@ -198,6 +198,7 @@ def test_slough_cli_profiles_remove_non_existing_profile(
 )
 def test_slough_cli_profiles_rename(
     cli_runner: CliRunner,
+    temp_folder: Path,
     profile_name: str,
     new_name: str,
 ) -> None:
@@ -205,6 +206,7 @@ def test_slough_cli_profiles_rename(
 
     Args:
         cli_runner (CliRunner): Typer CLI runner.
+        temp_folder (Path): Temporary folder for testing.
         profile_name (str): Profile name.
         new_name (str): New profile name.
     """
@@ -224,6 +226,7 @@ def test_slough_cli_profiles_rename(
 )
 def test_slough_cli_profiles_rename_to_existing(
     cli_runner: CliRunner,
+    temp_folder: Path,
     profile_name: str,
     new_name: str,
 ) -> None:
@@ -233,6 +236,7 @@ def test_slough_cli_profiles_rename_to_existing(
 
     Args:
         cli_runner (CliRunner): Typer CLI runner.
+        temp_folder (Path): Temporary folder for testing.
         profile_name (str): Profile name.
         new_name (str): New profile name.
     """
