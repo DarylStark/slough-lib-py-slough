@@ -76,6 +76,7 @@ addopts = [
     '--cov=slough_cli_tool',
     '--cov=slough_config',
     '--cov=slough',
+    '--cov=dev_container_gen',
     '--cov-report=html',
     '--cov-report=lcov',
     '--cov-context=test',
