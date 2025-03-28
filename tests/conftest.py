@@ -238,3 +238,28 @@ def temp_folder_with_slough_config(
             ],
         )
         yield Path(tmpdirname).resolve()
+
+
+@pytest.fixture(scope='function')
+def temp_folder_with_dev_containers(temp_folder: Path) -> Path:
+    """Create a temporary folder with a Dev Container config for testing.
+
+    Creates a temporary directory with a random name and creates multiple
+    DevContainer configuration files in it. Removes it after the test is done.
+
+    Args:
+        temp_folder (Path): Path to the temporary folder.
+    """
+    with open(temp_folder / 'devcontainer1.json', 'w') as f:
+        f.write('{"name": "test-container", "image": "latest"}')
+    with open(temp_folder / 'devcontainer2.json', 'w') as f:
+        f.write(
+            '{"name": "test-container", "image": "latest", '
+            + '"remoteEnv": {"TEST_VAR": "test_value"}}'
+        )
+    with open(temp_folder / 'devcontainer3.json', 'w') as f:
+        f.write(
+            '{"name": "test-container", "image": "latest", '
+            + '"mounts": ["test_mount"]}'
+        )
+    return temp_folder
