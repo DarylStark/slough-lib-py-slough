@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from dev_container_gen.loader import Loader
+from dev_container_gen import Loader
 
 
 def test_load_non_existing_file(temp_folder: Path) -> None:

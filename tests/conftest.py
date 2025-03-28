@@ -9,6 +9,7 @@ import pytest
 from mocks import MockStorageManager, MockStorageManagerFailing
 from typer.testing import CliRunner
 
+from dev_container_gen.model import DevContainer
 from slough.slough import Slough
 from slough_cli_tool import app
 from slough_config.config_model import (
@@ -263,3 +264,9 @@ def temp_folder_with_dev_containers(temp_folder: Path) -> Path:
             + '"mounts": ["test_mount"]}'
         )
     return temp_folder
+
+
+@pytest.fixture(scope='function')
+def dev_container_model() -> DevContainer:
+    """Fixture for a default dev container."""
+    return DevContainer(name='test', image='test_image')

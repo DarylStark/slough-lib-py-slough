@@ -2,21 +2,22 @@
 
 import pytest
 
-from dev_container_gen.model import DevContainer
+from dev_container_gen import DevContainer
 
 
-def test_adding_docker_mount() -> None:
-    """Test adding a Docker mount to the DevContainer configuration."""
-    # Create a DevContainer instance
-    dev_container = DevContainer(name='test', image='test_image')
+def test_adding_docker_mount(dev_container_model: DevContainer) -> None:
+    """Test adding a Docker mount to the DevContainer configuration.
 
+    Args:
+        dev_container_model (DevContainer): The DevContainer instance.
+    """
     # Add the Docker mount
-    dev_container.add_docker_mount()
+    dev_container_model.add_docker_mount()
 
     # Check if the mount was added correctly
     assert (
         'source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind'
-        in dev_container.mounts
+        in dev_container_model.mounts
     )
 
 
@@ -27,18 +28,20 @@ def test_adding_docker_mount() -> None:
         'source=/another/path,target=/another/path,type=bind',
     ],
 )
-def test_adding_custom_mount(mount: str) -> None:
+def test_adding_custom_mount(
+    mount: str, dev_container_model: DevContainer
+) -> None:
     """Test adding a custom mount to the DevContainer configuration.
 
     Args:
         mount (str): The custom mount to add.
+        dev_container_model (DevContainer): The DevContainer instance.
     """
     # Create a DevContainer instance
-    dev_container = DevContainer(name='test', image='test_image')
-    dev_container.add_mount(mount)
+    dev_container_model.add_mount(mount)
 
     # Check if the custom mount was added correctly
-    assert mount in dev_container.mounts
+    assert mount in dev_container_model.mounts
 
 
 @pytest.mark.parametrize(
@@ -48,45 +51,53 @@ def test_adding_custom_mount(mount: str) -> None:
         'source=/another/path,target=/another/path,type=bind',
     ],
 )
-def test_adding_custom_mount_twice(mount: str) -> None:
+def test_adding_custom_mount_twice(
+    mount: str, dev_container_model: DevContainer
+) -> None:
     """Test adding a custom mount to the DevContainer configuration twice.
 
     It should only be in there one time.
 
     Args:
         mount (str): The custom mount to add.
+        dev_container_model (DevContainer): The DevContainer instance.
     """
     # Create a DevContainer instance
-    dev_container = DevContainer(name='test', image='test_image')
-    dev_container.add_mount(mount)
-    dev_container.add_mount(mount)
+    dev_container_model.add_mount(mount)
+    dev_container_model.add_mount(mount)
 
     # Check if the custom mount was added correctly
-    assert dev_container.mounts.count(mount) == 1
+    assert dev_container_model.mounts.count(mount) == 1
 
 
-def test_adding_environment_variable() -> None:
-    """Test adding an environment variable."""
-    # Create a DevContainer instance
-    dev_container = DevContainer(name='test', image='test_image')
+def test_adding_environment_variable(
+    dev_container_model: DevContainer,
+) -> None:
+    """Test adding an environment variable.
 
+    Args:
+        dev_container_model (DevContainer): The DevContainer instance.
+    """
     # Add an environment variable
-    dev_container.add_environment_variable('TEST_VAR', 'test_value')
+    dev_container_model.add_environment_variable('TEST_VAR', 'test_value')
 
     # Check if the environment variable was added correctly
-    assert dev_container.remote_environment['TEST_VAR'] == 'test_value'
+    assert dev_container_model.remote_environment['TEST_VAR'] == 'test_value'
 
 
-def test_overwriting_environment_variable() -> None:
-    """Test overwriting an existing environment variable."""
-    # Create a DevContainer instance
-    dev_container = DevContainer(name='test', image='test_image')
+def test_overwriting_environment_variable(
+    dev_container_model: DevContainer,
+) -> None:
+    """Test overwriting an existing environment variable.
 
+    Args:
+        dev_container_model (DevContainer): The DevContainer instance.
+    """
     # Add an environment variable
-    dev_container.add_environment_variable('TEST_VAR', 'initial_value')
+    dev_container_model.add_environment_variable('TEST_VAR', 'initial_value')
 
     # Overwrite the environment variable
-    dev_container.add_environment_variable('TEST_VAR', 'new_value')
+    dev_container_model.add_environment_variable('TEST_VAR', 'new_value')
 
     # Check if the environment variable was updated correctly
-    assert dev_container.remote_environment['TEST_VAR'] == 'new_value'
+    assert dev_container_model.remote_environment['TEST_VAR'] == 'new_value'
