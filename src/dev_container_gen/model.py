@@ -20,6 +20,14 @@ class DevContainer(BaseModel):
         )
         self.add_mount(mount)
 
+    def remove_docker_mount(self) -> None:
+        """Remove the Docker mount from the DevContainer configuration."""
+        mount = (
+            'source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind'
+        )
+        if mount in self.mounts:
+            self.mounts.remove(mount)
+
     def add_mount(self, mount: str) -> None:
         """Add a mount to the DevContainer configuration.
 

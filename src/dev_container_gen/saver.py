@@ -22,6 +22,7 @@ class Saver:
         Args:
             dev_container (DevContainer): The DevContainer instance to save.
         """
+        self.path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.path, 'w') as file:
             file.write(
                 dev_container.model_dump_json(

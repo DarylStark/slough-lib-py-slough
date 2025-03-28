@@ -23,30 +23,17 @@ from slough_cli_tool import app
     ],
 )
 def test_slough_cli_profiles_add(
-    cli_runner: CliRunner, temp_folder: Path, profile_name: str
+    cli_runner: CliRunner,
+    temp_folder_with_slough_config: Path,
+    profile_name: str,
 ) -> None:
     """Test the `profiles add` command.
 
     Args:
         cli_runner (CliRunner): Typer CLI runner.
-        temp_folder (Path): Temporary folder for testing.
+        temp_folder_with_slough_config (Path): Temporary folder for testing.
         profile_name (str): Profile name.
     """
-    cli_runner.invoke(
-        app,
-        [
-            'project',
-            'init',
-            '--title',
-            'test_project',
-            '--version',
-            '1.0.0',
-            '--author-name',
-            'Daryl Stark',
-            '--author-email',
-            'daryl@example.com',
-        ],
-    )
     result_add = cli_runner.invoke(app, ['profiles', 'add', profile_name])
     assert result_add.exit_code == 0
     result_list = cli_runner.invoke(app, ['profiles', 'list'])

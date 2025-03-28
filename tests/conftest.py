@@ -242,6 +242,40 @@ def temp_folder_with_slough_config(
 
 
 @pytest.fixture(scope='function')
+def temp_folder_with_slough_config_no_dev_env(
+    monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
+) -> Generator[Path]:
+    """Create a temporary folder with Slough config for testing.
+
+    Creates a temporary directory with a random name and initializes a Slough
+    project in it. Removes it after the test is done. This object does not
+    container a development environment.
+
+    Args:
+        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
+        cli_runner (CliRunner): Typer CLI runner.
+    """
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        monkeypatch.chdir(tmpdirname)
+        cli_runner.invoke(
+            app,
+            [
+                'project',
+                'init',
+                '--title',
+                'test_project',
+                '--version',
+                '0.1.0',
+                '--author-name',
+                'John Doe',
+                '--author-email',
+                'johndoe@example.com',
+            ],
+        )
+        yield Path(tmpdirname).resolve()
+
+
+@pytest.fixture(scope='function')
 def temp_folder_with_dev_containers(temp_folder: Path) -> Path:
     """Create a temporary folder with a Dev Container config for testing.
 

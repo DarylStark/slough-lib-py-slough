@@ -21,6 +21,45 @@ def test_adding_docker_mount(dev_container_model: DevContainer) -> None:
     )
 
 
+def test_removing_docker_mount(dev_container_model: DevContainer) -> None:
+    """Test removing a Docker mount from the DevContainer configuration.
+
+    Args:
+        dev_container_model (DevContainer): The DevContainer instance.
+    """
+    # Add the Docker mount
+    dev_container_model.add_docker_mount()
+
+    # Remove the Docker mount
+    dev_container_model.remove_docker_mount()
+
+    # Check if the mount was added correctly
+    assert (
+        'source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind'
+        not in dev_container_model.mounts
+    )
+
+
+def test_removing_docker_mount_when_it_wasnt_there(
+    dev_container_model: DevContainer,
+) -> None:
+    """Test removing a Docker mount from the DevContainer configuration.
+
+    Test it on a model that doesn't have it.
+
+    Args:
+        dev_container_model (DevContainer): The DevContainer instance.
+    """
+    # Remove the Docker mount
+    dev_container_model.remove_docker_mount()
+
+    # Check if the mount was added correctly
+    assert (
+        'source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind'
+        not in dev_container_model.mounts
+    )
+
+
 @pytest.mark.parametrize(
     'mount',
     [

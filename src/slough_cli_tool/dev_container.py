@@ -1,16 +1,15 @@
 """Dev Container part of the CLI tool."""
 
-import json
 from pathlib import Path
 
 import typer
 
+from dev_container_gen import DevContainer, Loader, Saver
+from slough import Slough
 from slough_cli_tool.exceptions import (
     DevelopmentEnvironmentNotSetError,
 )
 from slough_config import DevelopmentEnvironment as DevEnv
-
-from .generic import get_context_data
 
 dev_container = typer.Typer(no_args_is_help=True)
 
@@ -59,55 +58,36 @@ def cli_dev_container_generate_config(
         bind_docker_socket (bool, optional): Mount the Docker socket inside the
             dev container. Defaults to False.
     """
-    console, slough = get_context_data(ctx)
+    slough: Slough = ctx.obj['slough']
 
-    if slough.config is None or slough.config.development_environment is None:
+    if slough.config.development_environment is None:
         raise DevelopmentEnvironmentNotSetError(
             'Development environment is not set in the Slough configuration.'
         )
 
-    # dev_container_folder = (
-    #     slough.project_folder / '.devcontainer' / 'devcontainer.json'
-    # )
-    dev_container_folder = Path()
+    # Get the path for the dev container configuration
+    config_filename = (Path() / '.devcontainer/devcontainer.json').resolve()
 
     # Load the current configuration
-    try:
-        with open(dev_container_folder, encoding='utf-8') as infile:
-            dev_container_config = json.load(infile)
-    except FileNotFoundError:
-        dev_container_config = {}
-
-    # Update the configuration with the new image
-    dev_container_config['image'] = DEV_CONTAINER_IMAGES[
-        slough.config.development_environment
-    ].replace('{tag}', container_tag)
-
-    # Update the name
-    if name is not None:
-        dev_container_config['name'] = name
-
-    # Update the Docker socket binding
-    docker_mount = (
-        'source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind'
+    loader = Loader(config_filename)
+    dev_container_config = loader.load() or DevContainer(
+        name=slough.config.project.name, image=''
     )
+
+    # Get the correct image
+    image = DEV_CONTAINER_IMAGES.get(
+        slough.config.development_environment, DevEnv.GENERIC
+    )
+    image = image.replace('{tag}', container_tag)
+
+    # Update the configuration
+    dev_container_config.name = name or dev_container_config.name
+    dev_container_config.image = image
     if bind_docker_socket:
-        if docker_mount not in dev_container_config.get('mounts', []):
-            dev_container_config['mounts'] = dev_container_config.get(
-                'mounts', []
-            ) + [docker_mount]
+        dev_container_config.add_docker_mount()
     elif bind_docker_socket is False:
-        dev_container_config['mounts'] = [
-            mount
-            for mount in dev_container_config.get('mounts', [])
-            if mount != docker_mount
-        ]
-    if len(dev_container_config.get('mounts', [])) == 0:
-        dev_container_config.pop('mounts', None)
+        dev_container_config.remove_docker_mount()
 
-    # Make sure the folder exists
-    dev_container_folder.parent.mkdir(parents=True, exist_ok=True)
-
-    # Write the updated configuration
-    with open(dev_container_folder, 'w', encoding='utf-8') as outfile:
-        json.dump(dev_container_config, outfile, indent=4, sort_keys=True)
+    # Save the configuration
+    saver = Saver(config_filename)
+    saver.save(dev_container_config)
