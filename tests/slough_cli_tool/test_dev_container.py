@@ -7,7 +7,6 @@ import pytest
 from typer.testing import CliRunner
 
 from slough_cli_tool import app
-from slough_cli_tool.exceptions import DevelopmentEnvironmentNotSetError
 
 
 def test_dev_container_generate_config_no_options(
@@ -48,8 +47,15 @@ def test_dev_container_generate_config_no_dev_environment(
         app,
         ['dev-container', 'generate-config'],
     )
-    assert result.exit_code == 1
-    assert type(result.exception) is DevelopmentEnvironmentNotSetError
+    assert result.exit_code == 0
+
+    # Get the created file
+    with open('.devcontainer/devcontainer.json', encoding='utf-8') as infile:
+        data = json.load(infile)
+
+    # Check values
+    assert data['image'] == 'dast1986/slough-dev-dc-generic-base:latest'
+    assert data['name'] == 'test_project'
 
 
 @pytest.mark.parametrize(
