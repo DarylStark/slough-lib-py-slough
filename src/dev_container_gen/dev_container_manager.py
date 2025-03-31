@@ -30,14 +30,15 @@ class DevContainerManager:
 
     def update_configuration(
         self,
-        name: str | None,
-        bind_docker_socket: bool | None,
         image: str,
+        name: str | None = None,
+        bind_docker_socket: bool | None = None,
         tag: str = 'latest',
     ) -> None:
         """Updates the development container configuration.
 
         Args:
+            image (str): The container image to use in the configuration.
             name (str | None): The name for the dev container. If None, the
                 existing name in the configuration is retained.
             bind_docker_socket (bool | None): Whether to bind the Docker
@@ -45,7 +46,6 @@ class DevContainerManager:
                 removed.
             dev_container_config (DevContainer): The development container
                 configuration object to update.
-            image (str): The container image to use in the configuration.
             tag (str): The tag for the container image. Defaults to 'latest'.
         """
         self._dev_container_config.name = (

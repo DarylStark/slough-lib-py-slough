@@ -285,6 +285,10 @@ def temp_folder_with_dev_containers(temp_folder: Path) -> Path:
     Args:
         temp_folder (Path): Path to the temporary folder.
     """
+    dev_container_filename = temp_folder / '.devcontainer/devcontainer.json'
+    dev_container_filename.parent.mkdir(parents=True, exist_ok=True)
+    with open(dev_container_filename, 'w') as f:
+        f.write('{"name": "test-container", "image": "latest"}')
     with open(temp_folder / 'devcontainer1.json', 'w') as f:
         f.write('{"name": "test-container", "image": "latest"}')
     with open(temp_folder / 'devcontainer2.json', 'w') as f:
