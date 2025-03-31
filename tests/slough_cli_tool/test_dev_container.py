@@ -12,7 +12,7 @@ from slough_cli_tool import app
 def test_dev_container_generate_config_no_options(
     cli_runner: CliRunner, temp_folder_with_slough_config: Path
 ) -> None:
-    """Generate a dev conatiner configuration without any options.
+    """Generate a dev container configuration without any options.
 
     Args:
         cli_runner (CliRunner): The CLI runner.
@@ -36,7 +36,7 @@ def test_dev_container_generate_config_no_options(
 def test_dev_container_generate_config_no_dev_environment(
     cli_runner: CliRunner, temp_folder_with_slough_config_no_dev_env: Path
 ) -> None:
-    """Generate a dev conatiner configuration without any options.
+    """Generate a dev container configuration without any options.
 
     Args:
         cli_runner (CliRunner): The CLI runner.
@@ -64,7 +64,7 @@ def test_dev_container_generate_config_no_dev_environment(
 def test_dev_container_generate_config_with_name(
     cli_runner: CliRunner, temp_folder_with_slough_config: Path, name: str
 ) -> None:
-    """Generate a dev conatiner configuration with a name.
+    """Generate a dev container configuration with a name.
 
     Args:
         cli_runner (CliRunner): The CLI runner.
@@ -90,7 +90,7 @@ def test_dev_container_generate_config_with_name(
 def test_dev_container_generate_config_with_tag(
     cli_runner: CliRunner, temp_folder_with_slough_config: Path, tag: str
 ) -> None:
-    """Generate a dev conatiner configuration with a tag.
+    """Generate a dev container configuration with a tag.
 
     Args:
         cli_runner (CliRunner): The CLI runner.
@@ -114,7 +114,7 @@ def test_dev_container_generate_config_with_tag(
 def test_dev_container_generate_config_with_docker_mount(
     cli_runner: CliRunner, temp_folder_with_slough_config: Path
 ) -> None:
-    """Generate a dev conatiner configuration with a Docker mount.
+    """Generate a dev container configuration with a Docker mount.
 
     Args:
         cli_runner (CliRunner): The CLI runner.
@@ -139,7 +139,7 @@ def test_dev_container_generate_config_with_docker_mount(
 def test_dev_container_generate_config_without_docker_mount(
     cli_runner: CliRunner, temp_folder_with_slough_config: Path
 ) -> None:
-    """Generate a dev conatiner configuration with a Docker mount.
+    """Generate a dev container configuration with a Docker mount.
 
     Args:
         cli_runner (CliRunner): The CLI runner.
@@ -162,7 +162,7 @@ def test_dev_container_generate_config_without_docker_mount(
 def test_dev_container_generate_config_remove_docker_mount(
     cli_runner: CliRunner, temp_folder_with_slough_config: Path
 ) -> None:
-    """Generate a dev conatiner configuration with a Docker mount.
+    """Generate a dev container configuration with a Docker mount.
 
     Args:
         cli_runner (CliRunner): The CLI runner.
