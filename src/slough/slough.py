@@ -109,6 +109,8 @@ class Slough:
         """
         return self._config.get_profile(profile_name)
 
+    # TODO: Add a method to get a profile combined with the `_all` profile.
+
     def save(self) -> None:
         """Save the configuration."""
         self._storage_manager.save(self._config)
