@@ -1,0 +1,27 @@
+cfg_profiles:
+  _all:
+    container:
+      tags:
+      - all_tag
+      - test6
+      - test-tag
+  _default:
+    container:
+      tags:
+      - latest
+      - test
+      - tag2
+      - my_app
+      - tag1
+      - test6
+      - test-tag
+      - tag3
+      - test2
+      - test3
+development_environment: null
+project:
+  authors:
+  - email: nobody@nobody.com
+    name: nobody
+  name: empty_project
+  version: 0.0.1

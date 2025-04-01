@@ -408,3 +408,57 @@ def test_retrieving_non_existing_profile(config_model: SloughConfig) -> None:
     """
     with pytest.raises(ProfileNotFoundError):
         config_model.get_profile('non_existing_profile')
+
+
+@pytest.mark.parametrize(
+    'tag_name',
+    [
+        'test_tag1',
+        'test_TAG2',
+        'test_tag3',
+        'test_tag4',
+        'test_tag5',
+    ],
+)
+def test_container_configuration_removing_one_tag(
+    container_configuration_default_model: ContainerConfiguration,
+    tag_name: str,
+) -> None:
+    """Test the container configuration removing one tag.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        tag_name (str): The name of the tag to add.
+    """
+    container_configuration_default_model.add_tags(tag_name)
+    assert container_configuration_default_model.tags == [tag_name.lower()]
+    container_configuration_default_model.remove_tags(tag_name)
+    assert container_configuration_default_model.tags == []
+
+
+@pytest.mark.parametrize(
+    'tags',
+    [
+        ['test_tag1', 'test_tag2'],
+        ['test_TAG1', 'TEST_TAG2'],
+        ['a', 'b', 'c'],
+    ],
+)
+def test_container_configuration_removing_tags(
+    container_configuration_default_model: ContainerConfiguration,
+    tags: list[str],
+) -> None:
+    """Test the container configuration removing nultiple tags.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        tags (list[str]): The list of tags to add.
+    """
+    container_configuration_default_model.add_tags(tags)
+    assert sorted(container_configuration_default_model.tags) == sorted(
+        [tag_name.lower() for tag_name in tags]
+    )
+    container_configuration_default_model.remove_tags(tags)
+    assert container_configuration_default_model.tags == []

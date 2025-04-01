@@ -119,6 +119,18 @@ class ContainerConfiguration(SloughConfigModel):
         self.tags.extend([tag.lower() for tag in tags])
         self.tags = list(set(self.tags))
 
+    def remove_tags(self, tags: str | list[str]) -> None:
+        """Remove tags from the container configuration.
+
+        Args:
+            tags (str | list[str]): The tag or tags to remove.
+        """
+        if isinstance(tags, str):
+            tags = [tags]
+        tags = [tag.lower() for tag in tags]
+        self.tags = list(filter(lambda t: t.lower() not in tags, self.tags))
+        pass
+
 
 class ConfigProfile(SloughConfigModel):
     """Model for the configuration profile.
