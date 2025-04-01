@@ -9,7 +9,7 @@ from slough_config.config_model import (
     SloughConfig,
 )
 
-from .exceptions import ConfigNogLoadedError, ProfileNotFoundError
+from .exceptions import ConfigNogLoadedError
 from .storage_manager import StorageManager
 
 
@@ -107,12 +107,7 @@ class Slough:
         Returns:
             ConfigProfile: The profile.
         """
-        # TODO: Delegate this to the _config object
-        if profile_name not in self._config.cfg_profiles:
-            raise ProfileNotFoundError(
-                f'Profile with name "{profile_name}" does not exist.'
-            )
-        return self._config.cfg_profiles[profile_name]
+        return self._config.get_profile(profile_name)
 
     def save(self) -> None:
         """Save the configuration."""

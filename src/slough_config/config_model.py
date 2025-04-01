@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
+from .exceptions import ProfileNotFoundError
+
 if TYPE_CHECKING:  # pragma: no cover
     from .config_model_visitor import ConfigModelVisitor
 
@@ -271,3 +273,21 @@ class SloughConfig(SloughConfigModel):
             raise ValueError(f'Profile "{new_name}" already exists.')
 
         self.cfg_profiles[new_name] = self.cfg_profiles.pop(profile_name)
+
+    def get_profile(self, profile_name: str) -> ConfigProfile:
+        """Get a profile.
+
+        Will return the profile with the specified name if it exists.
+
+        Args:
+            profile_name (str): The name of the profile to get.
+
+        Raises:
+            ValueError: If the profile does not exist.
+        """
+        if not self._profile_exists(profile_name):
+            raise ProfileNotFoundError(
+                f'Profile "{profile_name}" does not exist.'
+            )
+
+        return self.cfg_profiles[profile_name]

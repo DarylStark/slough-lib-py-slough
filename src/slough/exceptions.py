@@ -17,9 +17,3 @@ class ConfigNogLoadedError(SloughError):
     """Exception raised when the configuration is not loaded."""
 
     pass
-
-
-class ProfileNotFoundError(SloughError):
-    """Error raised when the profile is not found."""
-
-    pass

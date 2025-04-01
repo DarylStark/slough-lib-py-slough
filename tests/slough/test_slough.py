@@ -3,8 +3,8 @@
 import pytest
 
 from slough import Slough
-from slough.exceptions import ProfileNotFoundError
 from slough_config.config_model import SloughConfig
+from slough_config.exceptions import ProfileNotFoundError
 
 
 def test_config_retrieval(

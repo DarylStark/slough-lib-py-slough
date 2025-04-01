@@ -9,6 +9,7 @@ from slough_config.config_model import (
     ContainerConfiguration,
     ProjectInformation,
 )
+from slough_config.exceptions import ProfileNotFoundError
 
 
 @pytest.mark.parametrize(
@@ -384,3 +385,26 @@ def test_container_configuration_adding_tags(
     assert sorted(container_configuration_default_model.tags) == sorted(
         [tag_name.lower() for tag_name in tags]
     )
+
+
+def test_retrieving_profile(config_model: SloughConfig) -> None:
+    """Test the retrieval of a profile.
+
+    Args:
+        config_model (SloughConfig): The configuration model to test.
+    """
+    config_model.add_profile('new_profile')
+    assert config_model.get_profile('new_profile') is not None
+    assert config_model.get_profile('_default') is not None
+    assert config_model.get_profile('_all') is not None
+    assert config_model.get_profile('test') is not None
+
+
+def test_retrieving_non_existing_profile(config_model: SloughConfig) -> None:
+    """Test the retrieval of a non-existing profile.
+
+    Args:
+        config_model (SloughConfig): The configuration model to test.
+    """
+    with pytest.raises(ProfileNotFoundError):
+        config_model.get_profile('non_existing_profile')
