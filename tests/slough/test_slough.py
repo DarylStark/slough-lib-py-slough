@@ -1,6 +1,9 @@
 """Tests for the Slough module."""
 
+import pytest
+
 from slough import Slough
+from slough.exceptions import ProfileNotFoundError
 from slough_config.config_model import SloughConfig
 
 
@@ -78,3 +81,23 @@ def test_rename_profile(slough_object: Slough) -> None:
     assert sorted(slough_object.profile_list) == sorted(
         ['_default', '_all', 'test', 'test2']
     )
+
+
+def test_retrieving_profile(slough_object: Slough) -> None:
+    """Test the retrieval of a profile."""
+    slough_object.add_profile('new_profile')
+    assert slough_object.get_profile('new_profile') is not None
+    assert slough_object.get_profile('_default') is not None
+    assert slough_object.get_profile('_all') is not None
+    assert slough_object.get_profile('test') is not None
+
+
+def test_retrieving_non_existing_profile(
+    slough_object: Slough,
+) -> None:
+    """Test the retrieval of a non-existing profile."""
+    with pytest.raises(ProfileNotFoundError):
+        slough_object.get_profile('non_existing_profile')
+
+
+# TODO: Test the retrieval of the profiles

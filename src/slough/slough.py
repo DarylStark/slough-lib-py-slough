@@ -2,13 +2,14 @@
 
 import logging
 
-from slough.exceptions import ConfigNogLoadedError
 from slough_config.config_model import (
     Author,
+    ConfigProfile,
     ProjectInformation,
     SloughConfig,
 )
 
+from .exceptions import ConfigNogLoadedError, ProfileNotFoundError
 from .storage_manager import StorageManager
 
 
@@ -96,6 +97,22 @@ class Slough:
             new_name (str): The new name for the profile.
         """
         self._config.rename_profile(profile_name, new_name)
+
+    def get_profile(self, profile_name: str) -> ConfigProfile:
+        """Get a profile from the configuration.
+
+        Args:
+            profile_name (str): The name of the profile to get.
+
+        Returns:
+            ConfigProfile: The profile.
+        """
+        # TODO: Delegate this to the _config object
+        if profile_name not in self._config.cfg_profiles:
+            raise ProfileNotFoundError(
+                f'Profile with name "{profile_name}" does not exist.'
+            )
+        return self._config.cfg_profiles[profile_name]
 
     def save(self) -> None:
         """Save the configuration."""

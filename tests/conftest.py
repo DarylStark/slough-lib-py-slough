@@ -284,6 +284,9 @@ def temp_folder_with_dev_containers(temp_folder: Path) -> Path:
 
     Args:
         temp_folder (Path): Path to the temporary folder.
+
+    Returns:
+        Path: a Path object with the path to the created directory.
     """
     dev_container_filename = temp_folder / '.devcontainer/devcontainer.json'
     dev_container_filename.parent.mkdir(parents=True, exist_ok=True)
@@ -306,5 +309,41 @@ def temp_folder_with_dev_containers(temp_folder: Path) -> Path:
 
 @pytest.fixture(scope='function')
 def dev_container_model() -> DevContainer:
-    """Fixture for a default dev container."""
+    """Fixture for a default dev container.
+
+    Returns:
+        DevContainer: A default dev container.
+    """
     return DevContainer(name='test', image='test_image')
+
+
+@pytest.fixture(scope='function')
+def config_profile_model() -> ConfigProfile:
+    """Fixture for a default config profile.
+
+    This profile doesn't contain a ContainerConfiguration.
+
+    Returns:
+        ConfigProfile: A default config profile.
+    """
+    return ConfigProfile()
+
+
+@pytest.fixture(scope='function')
+def config_profile_model_with_container_config() -> ConfigProfile:
+    """Fixture for a config profile with `ContainerConfiguration`.
+
+    Returns:
+        ConfigProfile: A config profile with a ContainerConfiguration.
+    """
+    return ConfigProfile(container=ContainerConfiguration(tags=['test_tag']))
+
+
+@pytest.fixture(scope='function')
+def container_configuration_default_model() -> ContainerConfiguration:
+    """Fixture for a default container configuration.
+
+    Returns:
+        ContainConfiguration: A default container configuration.
+    """
+    return ContainerConfiguration()

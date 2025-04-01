@@ -106,6 +106,17 @@ class ContainerConfiguration(SloughConfigModel):
         """
         visitor.visit_container_configuration(self)
 
+    def add_tags(self, tags: str | list[str]) -> None:
+        """Add tags to the container configuration.
+
+        Args:
+            tags (str | list[str]): The tag or tags to add.
+        """
+        if isinstance(tags, str):
+            tags = [tags]
+        self.tags.extend([tag.lower() for tag in tags])
+        self.tags = list(set(self.tags))
+
 
 class ConfigProfile(SloughConfigModel):
     """Model for the configuration profile.
@@ -125,6 +136,16 @@ class ConfigProfile(SloughConfigModel):
             visitor (ConfigModelVisitor): The visitor method to call.
         """
         visitor.visit_config_profile(self)
+
+    def get_container_configuration(self) -> ContainerConfiguration:
+        """Get the container configuration.
+
+        Returns:
+            ContainerConfiguration: The container configuration.
+        """
+        if self.container is None:
+            self.container = ContainerConfiguration()
+        return self.container
 
 
 class SloughConfig(SloughConfigModel):

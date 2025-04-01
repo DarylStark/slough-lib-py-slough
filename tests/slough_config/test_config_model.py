@@ -4,7 +4,11 @@ import pytest
 from pydantic import ValidationError
 
 from slough_config import SloughConfig
-from slough_config.config_model import ProjectInformation
+from slough_config.config_model import (
+    ConfigProfile,
+    ContainerConfiguration,
+    ProjectInformation,
+)
 
 
 @pytest.mark.parametrize(
@@ -294,3 +298,89 @@ def test_project_information_invalid_versions(
 
 
 # TODO: Add tests for the emailaddress validation
+
+
+def test_config_profle_container_retrieval(
+    config_profile_model: ConfigProfile,
+) -> None:
+    """Test the config profile container retrieval.
+
+    This test checks if the container retrieval works by retrieving a container
+    from the config profile that doesn't have a `ContainerConfiguration` set.
+    It should return a newly created `ContainerConfiguration` model.
+
+    Args:
+        config_profile_model (ConfigProfile): The config profile model to test.
+    """
+    assert config_profile_model.container is None
+    assert config_profile_model.get_container_configuration() is not None
+    assert config_profile_model.container is not None
+
+
+def test_config_profile_container_retrieval_with_config(
+    config_profile_model_with_container_config: ConfigProfile,
+) -> None:
+    """Test the config profile container retrieval.
+
+    This test checks if the container retrieval works by retrieving a container
+    from the config profile that does have a ContainerConfiguration set.
+
+    Args:
+        config_profile_model_with_container_config (ConfigProfile): The config
+            profile model to test.
+    """
+    assert config_profile_model_with_container_config.container is not None
+    assert (
+        config_profile_model_with_container_config.get_container_configuration()
+        is config_profile_model_with_container_config.container
+    )
+
+
+@pytest.mark.parametrize(
+    'tag_name',
+    [
+        'test_tag1',
+        'test_TAG2',
+        'test_tag3',
+        'test_tag4',
+        'test_tag5',
+    ],
+)
+def test_container_configuration_adding_one_tag(
+    container_configuration_default_model: ContainerConfiguration,
+    tag_name: str,
+) -> None:
+    """Test the container configuration adding one tag.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        tag_name (str): The name of the tag to add.
+    """
+    container_configuration_default_model.add_tags(tag_name)
+    assert container_configuration_default_model.tags == [tag_name.lower()]
+
+
+@pytest.mark.parametrize(
+    'tags',
+    [
+        ['test_tag1', 'test_tag2'],
+        ['test_TAG1', 'TEST_TAG2'],
+        ['a', 'b', 'c'],
+    ],
+)
+def test_container_configuration_adding_tags(
+    container_configuration_default_model: ContainerConfiguration,
+    tags: list[str],
+) -> None:
+    """Test the container configuration adding nultiple tags.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        tags (list[str]): The list of tags to add.
+    """
+    container_configuration_default_model.add_tags(tags)
+    assert sorted(container_configuration_default_model.tags) == sorted(
+        [tag_name.lower() for tag_name in tags]
+    )
