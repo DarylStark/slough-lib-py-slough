@@ -462,3 +462,117 @@ def test_container_configuration_removing_tags(
     )
     container_configuration_default_model.remove_tags(tags)
     assert container_configuration_default_model.tags == []
+
+
+def test_combining_two_container_configurations(
+    container_configuration_default_model: ContainerConfiguration,
+) -> None:
+    """Test the combining of two container configurations.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+    """
+    container_configuration_default_model.add_tags(['test_tag1', 'test_tag2'])
+    new_container = ContainerConfiguration()
+    new_container.add_tags(['test_tag3', 'test_tag4'])
+    combined_container = container_configuration_default_model.combine(
+        new_container
+    )
+    assert sorted(combined_container.tags) == sorted(
+        ['test_tag1', 'test_tag2', 'test_tag3', 'test_tag4']
+    )
+
+
+def test_combining_container_configurations_with_none_object(
+    container_configuration_default_model: ContainerConfiguration,
+) -> None:
+    """Test the combining of two container configurations.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+    """
+    container_configuration_default_model.add_tags(['test_tag1', 'test_tag2'])
+    combined_container = container_configuration_default_model.combine(None)
+    assert sorted(combined_container.tags) == sorted(
+        ['test_tag1', 'test_tag2']
+    )
+
+
+def test_combingin_container_configurations_with_empty_object(
+    container_configuration_default_model: ContainerConfiguration,
+) -> None:
+    """Test the combining of two container configurations.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+    """
+    container_configuration_default_model.add_tags(['test_tag1', 'test_tag2'])
+    new_container = ContainerConfiguration()
+    combined_container = container_configuration_default_model.combine(
+        new_container
+    )
+    assert sorted(combined_container.tags) == sorted(
+        ['test_tag1', 'test_tag2']
+    )
+
+
+def test_combining_two_configuration_profiles(
+    config_profile_model_with_container_config: ConfigProfile,
+) -> None:
+    """Test the combining of two configuration profiles.
+
+    Args:
+        config_profile_model_with_container_config (ConfigProfile): The config
+            profile model to test.
+    """
+    combined_profile = config_profile_model_with_container_config.combine(
+        ConfigProfile(
+            container=ContainerConfiguration(
+                tags=['test_tag_second_container']
+            )
+        )
+    )
+    assert combined_profile.container is not None
+    assert sorted(combined_profile.container.tags) == sorted(
+        [
+            'test_tag',
+            'test_tag_second_container',
+        ]
+    )
+
+
+def test_combining_configuration_profile_with_empty_profile(
+    config_profile_model_with_container_config: ConfigProfile,
+) -> None:
+    """Test the combining of two configuration profiles.
+
+    Args:
+        config_profile_model_with_container_config (ConfigProfile): The config
+            profile model to test.
+    """
+    combined_profile = config_profile_model_with_container_config.combine(
+        ConfigProfile(container=None)
+    )
+    assert combined_profile.container is not None
+    assert combined_profile.container.tags == ['test_tag']
+
+
+def test_combining_empty_configuration_profile_with_full_profile(
+    config_profile_model_with_container_config: ConfigProfile,
+    config_profile_model: ConfigProfile,
+) -> None:
+    """Test the combining of two configuration profiles.
+
+    Args:
+        config_profile_model_with_container_config (ConfigProfile): The config
+            profile model to test.
+        config_profile_model (ConfigProfile): The config profile model to test.
+    """
+    combined_profile = config_profile_model.combine(
+        config_profile_model_with_container_config
+    )
+    assert combined_profile.container is not None
+    assert combined_profile.container.tags == ['test_tag']

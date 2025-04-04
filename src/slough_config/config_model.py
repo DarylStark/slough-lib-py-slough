@@ -3,7 +3,7 @@
 import re
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from pydantic import BaseModel, Field
 
@@ -108,6 +108,20 @@ class ContainerConfiguration(SloughConfigModel):
         """
         visitor.visit_container_configuration(self)
 
+    def combine(
+        self, other: Optional['ContainerConfiguration']
+    ) -> 'ContainerConfiguration':
+        """Combine this model with another model of the same type.
+
+        Args:
+            other (ContainerConfiguration): The other model to combine with.
+        """
+        if other is None:
+            return self
+        return ContainerConfiguration(
+            tags=list(set(self.tags + other.tags)),
+        )
+
     def add_tags(self, tags: str | list[str]) -> None:
         """Add tags to the container configuration.
 
@@ -150,6 +164,17 @@ class ConfigProfile(SloughConfigModel):
             visitor (ConfigModelVisitor): The visitor method to call.
         """
         visitor.visit_config_profile(self)
+
+    def combine(self, other: 'ConfigProfile') -> 'ConfigProfile':
+        """Combine this model with another model.
+
+        Args:
+            other (CombinableSloughConfigModel): The other model to combine
+                with.
+        """
+        if self.container is None:
+            self.container = ContainerConfiguration()
+        return ConfigProfile(container=self.container.combine(other.container))
 
     def get_container_configuration(self) -> ContainerConfiguration:
         """Get the container configuration.
