@@ -100,4 +100,25 @@ def test_retrieving_non_existing_profile(
         slough_object.get_profile('non_existing_profile')
 
 
-# TODO: Test the retrieval of the profiles
+def test_retrieving_profile_with_all(slough_object: Slough) -> None:
+    """Test the retrieval of a profile with all profiles."""
+    slough_object.add_profile('new_profile')
+    slough_object.get_profile(
+        'new_profile'
+    ).get_container_configuration().add_tags(['tag1', 'tag2'])
+    slough_object.get_profile('_all').get_container_configuration().add_tags(
+        ['tag3', 'tag4']
+    )
+
+    combined_profile = slough_object.get_profile_with_all('new_profile')
+    assert sorted(
+        combined_profile.get_container_configuration().tags
+    ) == sorted(
+        [
+            '_all_tag',
+            'tag1',
+            'tag2',
+            'tag3',
+            'tag4',
+        ]
+    )

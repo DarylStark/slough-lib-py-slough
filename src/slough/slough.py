@@ -109,7 +109,18 @@ class Slough:
         """
         return self._config.get_profile(profile_name)
 
-    # TODO: Add a method to get a profile combined with the `_all` profile.
+    def get_profile_with_all(self, profile_name: str) -> ConfigProfile:
+        """Get a profile from the configuration with the `_all` profile.
+
+        Args:
+            profile_name (str): The name of the profile to get.
+
+        Returns:
+            ConfigProfile: The profile combined with the `_all` profile.
+        """
+        return self._config.get_profile(profile_name).combine(
+            self._config.get_profile('_all')
+        )
 
     def save(self) -> None:
         """Save the configuration."""
