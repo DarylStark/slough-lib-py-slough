@@ -58,26 +58,14 @@ def list_container_tags(
             Defaults to None.
     """
     slough: Slough = ctx.obj['slough']
-    tags = [
-        (tag, '_all')
-        for tag in slough.get_profile('_all')
-        .get_container_configuration()
-        .tags
-    ]
-    if profile != '_all':
-        tags += [
-            (tag, profile)
-            for tag in slough.get_profile(profile)
-            .get_container_configuration()
-            .tags
-        ]
+    cfg_profile = slough.get_profile_with_all(profile)
+    tags = sorted(cfg_profile.get_container_configuration().tags)
 
     console: Console = ctx.obj['console']
     table = Table(title='Container Tags', box=rich.box.SIMPLE)
-    table.add_column('Profile', justify='left', style='magenta')
     table.add_column('Tag', justify='left', style='cyan')
     for tag in tags:
-        table.add_row(tag[1], tag[0])
+        table.add_row(tag)
     console.print(table)
 
 
