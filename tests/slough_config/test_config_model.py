@@ -484,6 +484,29 @@ def test_combining_two_container_configurations(
     )
 
 
+def test_combining_two_container_configurations_double_tags(
+    container_configuration_default_model: ContainerConfiguration,
+) -> None:
+    """Test the combining of two container configurations.
+
+    In this test, the tags from both objects are the same. The result should
+    not contain duplicate tags.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+    """
+    container_configuration_default_model.add_tags(['test_tag1', 'test_tag2'])
+    new_container = ContainerConfiguration()
+    new_container.add_tags(['test_tag1', 'test_tag3'])
+    combined_container = container_configuration_default_model.combine(
+        new_container
+    )
+    assert sorted(combined_container.tags) == sorted(
+        ['test_tag1', 'test_tag2', 'test_tag3']
+    )
+
+
 def test_combining_container_configurations_with_none_object(
     container_configuration_default_model: ContainerConfiguration,
 ) -> None:
