@@ -13,4 +13,4 @@ def test_slough_cli_version(cli_runner: CliRunner) -> None:
         cli_runner (CliRunner): Typer CLI runner.
     """
     result = cli_runner.invoke(app, ['version'])
-    assert f'slough-cli-tool version: {slough_version}' in result.stdout
+    assert slough_version in result.stdout

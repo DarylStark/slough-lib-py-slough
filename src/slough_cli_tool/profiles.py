@@ -1,11 +1,10 @@
 """Profile part of the CLI tool."""
 
 import typer
-from rich import box
-from rich.console import Console
-from rich.table import Table
 
 from slough.slough import Slough
+from slough_cli_tool.cli_output_models import DataSetOutput
+from slough_cli_tool.cli_output_visitor import CLIOutputVisitor
 
 profiles = typer.Typer(no_args_is_help=True)
 
@@ -42,13 +41,14 @@ def list_profiles(ctx: typer.Context) -> None:
         ctx (typer.Context): Typer context
     """
     slough: Slough = ctx.obj['slough']
-    console: Console = ctx.obj['console']
-
-    table = Table(box=box.SIMPLE)
-    table.add_column('Profile name')
-    for profile in slough.profile_list:
-        table.add_row(profile)
-    console.print(table)
+    os: CLIOutputVisitor = ctx.obj['output_strategy']
+    output_data = DataSetOutput(
+        [
+            'Profile name',
+        ]
+    )
+    output_data.data = [[profile] for profile in slough.profile_list]
+    output_data.out(os)
 
 
 @profiles.command(

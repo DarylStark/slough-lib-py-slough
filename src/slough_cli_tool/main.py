@@ -8,12 +8,12 @@ import typer
 from rich.console import Console
 from rich.logging import RichHandler
 
-from slough import Slough
 from slough import __version__ as slough_version
 from slough.config_file_finder import ConfigFileFinder
 from slough.exceptions import SloughError
-from slough.yaml_storage_manager import YAMLStorageManager
-from slough_cli_tool.cli_output_visitor import ConsoleOutput
+from slough_cli_tool.cli_factory import SloughCLIFactory
+from slough_cli_tool.cli_output_models import MessageOutput
+from slough_cli_tool.cli_output_visitor import CLIOutputVisitor
 
 from .config import config
 from .container import container
@@ -78,40 +78,26 @@ def common_command_line_options(
         verbosity (int): Verbosity level
     """
     # Set up logging
-    cli_logger = create_default_cli_logger(verbosity)
+    logging.basicConfig(
+        level=logging.WARNING - (verbosity * 10),
+        format='"%(name)s": %(message)s',
+        datefmt='[%X]',
+        handlers=[RichHandler()],
+    )
 
-    # Find the needed configfile
+    # Create a factory for the CLI
     cfgfile_path = create_cfgfile_path()
-
-    # Get a StorageManager
-    slough = create_slough_object(cfgfile_path)
+    factory = SloughCLIFactory(cfgfile_path)
 
     # Create a context aware object that can be used by all commands.
+    cli_logger = factory.get_logger()
     ctx.obj = {
-        'slough': slough,
-        'console': Console(),
+        'slough': factory.get_slough_object(),
         'logger': cli_logger,
-        'output_strategy': ConsoleOutput(),
+        'output_strategy': factory.get_output_visitor(),
     }
     cli_logger.debug('Created context object')
     cli_logger.info('Configuration file in context: "%s"', str(cfgfile_path))
-
-
-def create_slough_object(cfgfile_path: Path) -> Slough:
-    """Create a Slough object.
-
-    Args:
-        cfgfile_path (Path): Path to the configuration file.
-
-    Returns:
-        Slough: Slough object.
-    """
-    cfgfile_path = create_cfgfile_path()
-    storage_manager = YAMLStorageManager(cfgfile_path)
-
-    # Create a Slough object
-    slough = Slough(storage_manager=storage_manager)
-    return slough
 
 
 def create_cfgfile_path() -> Path:
@@ -126,25 +112,6 @@ def create_cfgfile_path() -> Path:
     return cfgfile_path
 
 
-def create_default_cli_logger(verbosity: int) -> logging.Logger:
-    """Create a defaullt CLI logger.
-
-    Args:
-        verbosity (int): Verbosity level.
-
-    Returns:
-        logging.Logger: Configured logger.
-    """
-    logging.basicConfig(
-        level=logging.WARNING - (verbosity * 10),
-        format='"%(name)s": %(message)s',
-        datefmt='[%X]',
-        handlers=[RichHandler()],
-    )
-    cli_logger = logging.getLogger('cli')
-    return cli_logger
-
-
 @app.command('version')
 def version(ctx: typer.Context) -> None:
     """Print the version of slough-cli-tool.
@@ -152,8 +119,9 @@ def version(ctx: typer.Context) -> None:
     Args:
         ctx (typer.Context): Typer context object.
     """
-    console = ctx.obj['console']
-    console.print(f'[b]slough-cli-tool[/b] version: [u]{slough_version}[/u]')
+    os: CLIOutputVisitor = ctx.obj['output_strategy']
+    output_data = MessageOutput(f'Slough CLI {slough_version}')
+    output_data.out(os)
 
 
 def main() -> None:

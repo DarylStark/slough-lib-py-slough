@@ -6,7 +6,7 @@ from rich import box
 from rich.console import Console
 from rich.table import Table
 
-from .cli_output_models import DataSetOutput
+from .cli_output_models import DataSetOutput, MessageOutput
 
 
 class CLIOutputVisitor(ABC):
@@ -18,6 +18,14 @@ class CLIOutputVisitor(ABC):
 
         Args:
             model (DataSetOutput): The dataset to output.
+        """
+
+    @abstractmethod
+    def out_message(self, model: MessageOutput) -> None:
+        """Output the message using the given visitor.
+
+        Args:
+            model (MessageOutput): The message to output.
         """
 
 
@@ -42,3 +50,11 @@ class ConsoleOutput(CLIOutputVisitor):
             table.add_row(*row)
 
         self._console.print(table)
+
+    def out_message(self, model: MessageOutput) -> None:
+        """Output the message using the console.
+
+        Args:
+            model (MessageOutput): The message to output.
+        """
+        self._console.print(model.message)

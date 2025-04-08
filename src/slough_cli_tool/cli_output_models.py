@@ -65,3 +65,32 @@ class DataSetOutput(CLIOutputModel):
             visitor (OutputVisitor): The output visitor to use.
         """
         visitor.out_dataset(self)
+
+
+class MessageOutput(CLIOutputModel):
+    """Class for outputting a message."""
+
+    def __init__(self, message: str) -> None:
+        """Set the message to be output.
+
+        Args:
+            message (str): The message to be output.
+        """
+        self._message = message
+
+    @property
+    def message(self) -> str:
+        """Get the message to be output.
+
+        Returns:
+            str: The message to be output.
+        """
+        return self._message
+
+    def out(self, visitor: 'CLIOutputVisitor') -> None:
+        """Output the model using the given visitor.
+
+        Args:
+            visitor (OutputVisitor): The output visitor to use.
+        """
+        visitor.out_message(self)
