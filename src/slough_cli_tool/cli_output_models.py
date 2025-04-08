@@ -1,0 +1,67 @@
+"""Module with output models."""
+
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:  # pragma: no cover
+    from .cli_output_visitor import CLIOutputVisitor
+
+
+class CLIOutputModel(ABC):
+    """Base class for cli output models."""
+
+    @abstractmethod
+    def out(self, visitor: 'CLIOutputVisitor') -> None:
+        """Output the model using the given visitor.
+
+        Args:
+            visitor (OutputVisitor): The output visitor to use.
+        """
+
+
+class DataSetOutput(CLIOutputModel):
+    """Class for outputting a dataset."""
+
+    def __init__(self, fields: list[str]) -> None:
+        """Set the data to be output.
+
+        Args:
+            fields (list[str]): The fields of the dataset.
+        """
+        self._fields = fields
+        self._data: list[list[str]] = []
+
+    @property
+    def data(self) -> list:
+        """Get the data to be output.
+
+        Returns:
+            list: The data to be output.
+        """
+        return self._data
+
+    @data.setter
+    def data(self, data: list[list[str]]) -> None:
+        """Set the data to be output.
+
+        Args:
+            data (list): The data to be output.
+        """
+        self._data = data
+
+    @property
+    def fields(self) -> list[str]:
+        """Get the fields of the dataset.
+
+        Returns:
+            list[str]: The fields of the dataset.
+        """
+        return self._fields
+
+    def out(self, visitor: 'CLIOutputVisitor') -> None:
+        """Output the model using the given visitor.
+
+        Args:
+            visitor (OutputVisitor): The output visitor to use.
+        """
+        visitor.out_dataset(self)

@@ -106,6 +106,18 @@
                 "dev-container",
                 "generate-config"
             ]
+        },
+        {
+            "name": "CLI app - container - tags - list",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "slough_cli_tool",
+            "console": "integratedTerminal",
+            "args": [
+                "container",
+                "tags",
+                "list"
+            ]
         }
     ]
 }

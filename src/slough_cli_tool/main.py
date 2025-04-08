@@ -13,6 +13,7 @@ from slough import __version__ as slough_version
 from slough.config_file_finder import ConfigFileFinder
 from slough.exceptions import SloughError
 from slough.yaml_storage_manager import YAMLStorageManager
+from slough_cli_tool.cli_output_visitor import ConsoleOutput
 
 from .config import config
 from .container import container
@@ -90,6 +91,7 @@ def common_command_line_options(
         'slough': slough,
         'console': Console(),
         'logger': cli_logger,
+        'output_strategy': ConsoleOutput(),
     }
     cli_logger.debug('Created context object')
     cli_logger.info('Configuration file in context: "%s"', str(cfgfile_path))

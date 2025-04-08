@@ -1,11 +1,10 @@
 """Container tags part of the CLI tool."""
 
-import rich.box
 import typer
-from rich.console import Console
-from rich.table import Table
 
 from slough.slough import Slough
+from slough_cli_tool.cli_output_models import DataSetOutput
+from slough_cli_tool.cli_output_visitor import CLIOutputVisitor
 
 tags = typer.Typer(no_args_is_help=True)
 
@@ -61,12 +60,14 @@ def list_container_tags(
     cfg_profile = slough.get_profile_with_all(profile)
     tags = sorted(cfg_profile.get_container_configuration().tags)
 
-    console: Console = ctx.obj['console']
-    table = Table(title='Container Tags', box=rich.box.SIMPLE)
-    table.add_column('Tag', justify='left', style='cyan')
-    for tag in tags:
-        table.add_row(tag)
-    console.print(table)
+    os: CLIOutputVisitor = ctx.obj['output_strategy']
+    output_data = DataSetOutput(
+        [
+            'Tagname',
+        ]
+    )
+    output_data.data = [[tag] for tag in tags]
+    output_data.out(os)
 
 
 @tags.command(
