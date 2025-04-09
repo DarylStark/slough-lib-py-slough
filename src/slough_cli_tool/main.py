@@ -2,16 +2,13 @@
 
 import logging
 import sys
-from pathlib import Path
 
 import typer
 from rich.console import Console
-from rich.logging import RichHandler
 
 from slough import __version__ as slough_version
-from slough.config_file_finder import ConfigFileFinder
 from slough.exceptions import SloughError
-from slough_cli_tool.cli_factory import SloughCLIFactory
+from slough_cli_tool.cli_context import CLIContext, SloughCLIContext
 from slough_cli_tool.cli_output_models import MessageOutput
 from slough_cli_tool.cli_output_visitor import CLIOutputVisitor
 
@@ -77,39 +74,19 @@ def common_command_line_options(
         cfgfile (str): Path to the configuration file.
         verbosity (int): Verbosity level
     """
-    # Set up logging
-    logging.basicConfig(
-        level=logging.WARNING - (verbosity * 10),
-        format='"%(name)s": %(message)s',
-        datefmt='[%X]',
-        handlers=[RichHandler()],
+    # Create a context for the CLI
+    context: CLIContext = SloughCLIContext(
+        logging_verbosity=logging.WARNING - verbosity * 10
     )
 
-    # Create a factory for the CLI
-    cfgfile_path = create_cfgfile_path()
-    factory = SloughCLIFactory(cfgfile_path)
-
     # Create a context aware object that can be used by all commands.
-    cli_logger = factory.get_logger()
+    cli_logger = context.logger
     ctx.obj = {
-        'slough': factory.get_slough_object(),
+        'slough': context.slough,
         'logger': cli_logger,
-        'output_strategy': factory.get_output_visitor(),
+        'output_strategy': context.output_visitor,
     }
     cli_logger.debug('Created context object')
-    cli_logger.info('Configuration file in context: "%s"', str(cfgfile_path))
-
-
-def create_cfgfile_path() -> Path:
-    """Create the path to the configuration file.
-
-    Returns:
-        Path: Path to the configuration file.
-    """
-    cfgfile_path = ConfigFileFinder(filename='slough.yml').find()
-    if not cfgfile_path:
-        cfgfile_path = Path.cwd() / 'slough.yml'
-    return cfgfile_path
 
 
 @app.command('version')
