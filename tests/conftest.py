@@ -1,6 +1,5 @@
 """File with the required fixtures."""
 
-import shutil
 import tempfile
 from collections.abc import Generator
 from pathlib import Path
@@ -22,27 +21,6 @@ from slough_config.config_model import (
 )
 
 
-@pytest.fixture(scope='function')
-def empty_test_dir(
-    monkeypatch: pytest.MonkeyPatch,
-) -> Generator[Path]:
-    """Fixture that creates and removes a empty directory.
-
-    Args:
-        monkeypatch (pytest.MonkeyPatch): Pytest monkeypatch fixture.
-
-    Yields:
-        Generator[Path]: A Path object with the path to the created directory.
-    """
-    path = Path('tests/test_data/empty_test_dir').resolve()
-    path.mkdir(parents=True, exist_ok=True)
-    monkeypatch.chdir(path)
-    yield path
-
-    # Cleanup; remove the directory and all files in it
-    shutil.rmtree(path)
-
-
 @pytest.fixture
 def cli_runner() -> CliRunner:
     """Fixture with a Typer CLI runner.
@@ -54,75 +32,6 @@ def cli_runner() -> CliRunner:
         CliRunner: A Typer CLI runner instance.
     """
     return CliRunner()
-
-
-@pytest.fixture(scope='function')
-def remove_dev_container() -> Generator[None]:
-    """Fixture that removes the dev container folder."""
-    yield None
-
-    # Cleanup; remove the directory and all files in it
-    path = '.devcontainer'
-    shutil.rmtree(path)
-
-
-@pytest.fixture(scope='function')
-def dev_container(
-    monkeypatch: pytest.MonkeyPatch, remove_dev_container: None
-) -> None:
-    """Fixture that creates a dev container configuration file."""
-    # First we create the initial code
-    monkeypatch.chdir('tests/test_data/project2/')
-    runner = CliRunner()
-    runner.invoke(
-        app,
-        [
-            'dev-container',
-            'generate-config',
-            '--name',
-            'test-container',
-            '--container-tag',
-            'latest',
-        ],
-    )
-
-
-@pytest.fixture(scope='function')
-def empty_test_dir_with_config(
-    empty_test_dir: Path,
-    cli_runner: CliRunner,
-) -> Generator[Path]:
-    """Fixture that creates a empty testdir with a config file.
-
-    In the cleanup, the directory and all files in it are removed.
-
-    Args:
-        empty_test_dir (Path): Path to the empty test directory.
-        cli_runner (CliRunner): Typer CLI runner.
-
-    Yields:
-        Generator[Path]: A Path object with the path to the created directory.
-    """
-    cli_runner.invoke(
-        app,
-        [
-            '--cfgfile',
-            'slough.yml',
-            'project',
-            'init',
-            '--title',
-            'test_project',
-            '--version',
-            '1.0.0',
-            '--author-name',
-            'test_author',
-            '--author-email',
-            'test@example.com',
-        ],
-    )
-    yield empty_test_dir
-
-    pass
 
 
 @pytest.fixture(scope='function')
