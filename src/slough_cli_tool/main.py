@@ -79,13 +79,11 @@ def common_command_line_options(
         logging_verbosity=logging.WARNING - verbosity * 10
     )
 
-    # Create a context aware object that can be used by all commands.
+    # Add the context to the Typer context
+    ctx.obj = context
+
+    # Logging output
     cli_logger = context.logger
-    ctx.obj = {
-        'slough': context.slough,
-        'logger': cli_logger,
-        'output_strategy': context.output_visitor,
-    }
     cli_logger.debug('Created context object')
 
 
@@ -96,7 +94,7 @@ def version(ctx: typer.Context) -> None:
     Args:
         ctx (typer.Context): Typer context object.
     """
-    os: CLIOutputVisitor = ctx.obj['output_strategy']
+    os: CLIOutputVisitor = ctx.obj.output_visitor
     output_data = MessageOutput(f'Slough CLI {slough_version}')
     output_data.out(os)
 

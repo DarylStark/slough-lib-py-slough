@@ -53,7 +53,7 @@ def cli_dev_container_generate_config(
         bind_docker_socket (bool, optional): Mount the Docker socket inside the
             dev container. Defaults to False.
     """
-    slough: Slough = ctx.obj['slough']
+    slough: Slough = ctx.obj.slough
     dev_environment = slough.config.development_environment or DevEnv.GENERIC
     image = DEV_CONTAINER_IMAGES.get(
         dev_environment, DEV_CONTAINER_IMAGES[DevEnv.GENERIC]

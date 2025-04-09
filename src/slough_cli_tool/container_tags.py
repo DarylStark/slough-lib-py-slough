@@ -30,7 +30,7 @@ def add_container_tags(
         profile (str, optional): The profile to add container tags for.
             Defaults to the default profile.
     """
-    slough: Slough = ctx.obj['slough']
+    slough: Slough = ctx.obj.slough
     slough.get_profile(profile).get_container_configuration().add_tags(tags)
     slough.save()
 
@@ -56,11 +56,11 @@ def list_container_tags(
         profile (str, optional): The profile to list container tags for.
             Defaults to None.
     """
-    slough: Slough = ctx.obj['slough']
+    slough: Slough = ctx.obj.slough
     cfg_profile = slough.get_profile_with_all(profile)
     tags = sorted(cfg_profile.get_container_configuration().tags)
 
-    os: CLIOutputVisitor = ctx.obj['output_strategy']
+    os: CLIOutputVisitor = ctx.obj.output_visitor
     output_data = DataSetOutput(
         [
             'Tagname',
@@ -93,6 +93,6 @@ def remove_container_tags(
         profile (str, optional): The profile to remove the container tags from.
             Defaults to the default profile.
     """
-    slough: Slough = ctx.obj['slough']
+    slough: Slough = ctx.obj.slough
     slough.get_profile(profile).get_container_configuration().remove_tags(tags)
     slough.save()

@@ -60,13 +60,13 @@ def cli_project_init(
         development_environment (DevelopmentEnvironment): The development
             environment.
     """
-    slough: Slough = ctx.obj['slough']
+    slough: Slough = ctx.obj.slough
 
     if not slough.is_default_config:
         raise ConfigAlreadySetError('The configuration is already set.')
 
     # Set the configuration in the `Slough` object
-    local_logger: Logger = ctx.obj['logger']
+    local_logger: Logger = ctx.obj.logger
     local_logger.debug('Setting the configuration in the Slough object')
     slough.config.project.name = title
     slough.config.project.version = version
@@ -103,7 +103,7 @@ def cli_set_development_environment(
         development_environment (DevelopmentEnvironment): The development
             environment.
     """
-    slough: Slough = ctx.obj['slough']
+    slough: Slough = ctx.obj.slough
     slough.config.development_environment = development_environment
 
     # Save the configuration

@@ -24,7 +24,7 @@ def add_profile(
         ctx (typer.Context): Typer context
         profile_name (str): The profile to add.
     """
-    slough: Slough = ctx.obj['slough']
+    slough: Slough = ctx.obj.slough
     slough.add_profile(profile_name)
     slough.save()
 
@@ -40,8 +40,8 @@ def list_profiles(ctx: typer.Context) -> None:
     Args:
         ctx (typer.Context): Typer context
     """
-    slough: Slough = ctx.obj['slough']
-    os: CLIOutputVisitor = ctx.obj['output_strategy']
+    slough: Slough = ctx.obj.slough
+    os: CLIOutputVisitor = ctx.obj.output_visitor
     output_data = DataSetOutput(
         [
             'Profile name',
@@ -66,7 +66,7 @@ def remove_profile(
         ctx (typer.Context): Typer context
         profile_name (str): The profile to remove.
     """
-    slough: Slough = ctx.obj['slough']
+    slough: Slough = ctx.obj.slough
     slough.remove_profile(profile_name)
     slough.save()
 
@@ -88,7 +88,7 @@ def rename_profile(
         profile_name (str): The profile to remove.
         new_name (str): The new name for the profile.
     """
-    slough: Slough = ctx.obj['slough']
+    slough: Slough = ctx.obj.slough
     slough.rename_profile(profile_name, new_name)
     slough.save()
     typer.echo(f'Profile "{profile_name}" renamed to "{new_name}".')
