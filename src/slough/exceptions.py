@@ -4,16 +4,10 @@
 class SloughError(Exception):
     """Base exception for the Slough package."""
 
-    pass
-
 
 class StorageManagerError(SloughError):
     """Base exception for the storage manager."""
 
-    pass
 
-
-class ConfigNogLoadedError(SloughError):
+class ConfigNogLoadedError(StorageManagerError):
     """Exception raised when the configuration is not loaded."""
-
-    pass

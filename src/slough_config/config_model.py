@@ -7,7 +7,12 @@ from typing import TYPE_CHECKING, Optional
 
 from pydantic import BaseModel, Field
 
-from .exceptions import ProfileNotFoundError
+from .exceptions import (
+    DefaultProfileError,
+    DuplicateProfileNameError,
+    InvalidProfileNameError,
+    ProfileNotFoundError,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from .config_model_visitor import ConfigModelVisitor
@@ -82,7 +87,13 @@ class DevelopmentEnvironment(str, Enum):
             environment.
     """
 
-    # TODO: Add visitor
+    def visit(self, visitor: 'ConfigModelVisitor') -> None:
+        """Visit the model element.
+
+        Args:
+            visitor (ConfigModelVisitor): The visitor method to call.
+        """
+        visitor.visit_development_environment(self)
 
     CPP_GENERIC = 'cpp-generic'
     GENERIC = 'generic'
@@ -143,7 +154,6 @@ class ContainerConfiguration(SloughConfigModel):
             tags = [tags]
         tags = [tag.lower() for tag in tags]
         self.tags = list(filter(lambda t: t.lower() not in tags, self.tags))
-        pass
 
 
 class ConfigProfile(SloughConfigModel):
@@ -228,20 +238,16 @@ class SloughConfig(SloughConfigModel):
 
         Args:
             profile_name (str): The name of the profile to create.
-
-        Raises:
-            ValueError: If the profilename is already in use or if the
-                profilename is invalid.
         """
-        if self._profile_exists(profile_name):
-            # TODO: Custom exception
-            raise ValueError(f'Profile "{profile_name}" already exists.')
-
         if not self._is_valid_profile_name(profile_name):
-            # TODO: Custom exception
-            raise ValueError(
+            raise InvalidProfileNameError(
                 'Invalid profile name. Only alphanumeric characters, '
                 'dashes, and underscores are allowed.'
+            )
+
+        if self._profile_exists(profile_name):
+            raise DuplicateProfileNameError(
+                f'Profile "{profile_name}" already exists.'
             )
 
         self.cfg_profiles[profile_name] = ConfigProfile()
@@ -264,16 +270,16 @@ class SloughConfig(SloughConfigModel):
 
         Args:
             profile_name (str): The name of the profile to remove.
-
-        Raises:
-            ValueError: If the profile does not exist.
         """
-        # TODO: Custom exceptions
         if not self._profile_exists(profile_name):
-            raise ValueError(f'Profile "{profile_name}" does not exist.')
+            raise ProfileNotFoundError(
+                f'Profile "{profile_name}" does not exist.'
+            )
 
         if profile_name in ['_default', '_all']:
-            raise ValueError(f'Profile "{profile_name}" cannot be removed.')
+            raise DefaultProfileError(
+                f'Profile "{profile_name}" cannot be removed.'
+            )
 
         del self.cfg_profiles[profile_name]
 
@@ -298,16 +304,20 @@ class SloughConfig(SloughConfigModel):
             new_name (str): The new name for the profile.
         """
         if not self._is_valid_profile_name(new_name):
-            raise ValueError(
+            raise InvalidProfileNameError(
                 'Invalid profile name. Only alphanumeric characters, '
                 'dashes, and underscores are allowed.'
             )
 
         if not self._profile_exists(profile_name):
-            raise ValueError(f'Profile "{profile_name}" does not exist.')
+            raise ProfileNotFoundError(
+                f'Profile "{profile_name}" does not exist.'
+            )
 
         if self._profile_exists(new_name):
-            raise ValueError(f'Profile "{new_name}" already exists.')
+            raise DuplicateProfileNameError(
+                f'Profile "{new_name}" already exists.'
+            )
 
         self.cfg_profiles[new_name] = self.cfg_profiles.pop(profile_name)
 

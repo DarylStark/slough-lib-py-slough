@@ -7,3 +7,15 @@ class SloughConfigError(Exception):
 
 class ProfileNotFoundError(SloughConfigError):
     """Exception raised when a profile is not found in the configuration."""
+
+
+class InvalidProfileNameError(SloughConfigError):
+    """Exception raised when a profile name is invalid."""
+
+
+class DuplicateProfileNameError(SloughConfigError):
+    """Exception raised when a profile name is double."""
+
+
+class DefaultProfileError(SloughConfigError):
+    """Exception raised when a default profile is being altered."""

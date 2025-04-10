@@ -27,7 +27,7 @@ class Slough:
         self._is_default_config = False
         try:
             self._config = self._storage_manager.load()
-        except ConfigNogLoadedError:  # TODO: No. No, no, no
+        except ConfigNogLoadedError:
             self._is_default_config = True
             self._config = self._get_default_config()
 

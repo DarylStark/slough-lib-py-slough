@@ -6,6 +6,12 @@ import pytest
 from typer.testing import CliRunner
 
 from slough_cli_tool import app
+from slough_config.exceptions import (
+    DefaultProfileError,
+    DuplicateProfileNameError,
+    InvalidProfileNameError,
+    ProfileNotFoundError,
+)
 
 
 @pytest.mark.parametrize(
@@ -59,7 +65,7 @@ def test_slough_cli_profiles_add_existing_profile(
     _ = cli_runner.invoke(app, ['profiles', 'add', profile_name])
     result = cli_runner.invoke(app, ['profiles', 'add', profile_name])
     assert result.exit_code == 1
-    assert type(result.exception) is ValueError
+    assert type(result.exception) is DuplicateProfileNameError
 
 
 @pytest.mark.parametrize(
@@ -80,7 +86,7 @@ def test_slough_cli_profiles_add_invalid_profile(
     """
     result = cli_runner.invoke(app, ['profiles', 'add', profile_name])
     assert result.exit_code == 1
-    assert type(result.exception) is ValueError
+    assert type(result.exception) is InvalidProfileNameError
 
 
 def test_slough_cli_profiles_list(
@@ -153,7 +159,7 @@ def test_slough_cli_profiles_remove_default_profile(
     """
     result = cli_runner.invoke(app, ['profiles', 'remove', profile_name])
     assert result.exit_code == 1
-    assert type(result.exception) is ValueError
+    assert type(result.exception) is DefaultProfileError
 
 
 @pytest.mark.parametrize(
@@ -172,7 +178,7 @@ def test_slough_cli_profiles_remove_non_existing_profile(
     """
     result = cli_runner.invoke(app, ['profiles', 'remove', profile_name])
     assert result.exit_code == 1
-    assert type(result.exception) is ValueError
+    assert type(result.exception) is ProfileNotFoundError
 
 
 @pytest.mark.parametrize(
@@ -234,4 +240,4 @@ def test_slough_cli_profiles_rename_to_existing(
         app, ['profiles', 'rename', profile_name, new_name]
     )
     assert result.exit_code == 1
-    assert type(result.exception) is ValueError
+    assert type(result.exception) is DuplicateProfileNameError

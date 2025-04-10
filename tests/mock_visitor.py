@@ -1,11 +1,10 @@
 """Mock visitor for the configuration model."""
 
-# TODO: Check if this can be done with a Unit Test Mock.
-
 from slough_config.config_model import (
     Author,
     ConfigProfile,
     ContainerConfiguration,
+    DevelopmentEnvironment,
     ProjectInformation,
     SloughConfig,
 )
@@ -39,6 +38,17 @@ class MockVisitor(ConfigModelVisitor):
         for author in project_information.authors:
             author.visit(self)
 
+    def visit_development_environment(
+        self, development_environment: DevelopmentEnvironment
+    ) -> None:
+        """Visit the development environment.
+
+        Args:
+            development_environment (DevelopmentEnvironment): The development
+                environment.
+        """
+        self.visited.append('development_environment')
+
     def visit_container_configuration(
         self, container_configuration: ContainerConfiguration
     ) -> None:
@@ -68,5 +78,7 @@ class MockVisitor(ConfigModelVisitor):
         """
         self.visited.append('config_model')
         config_model.project.visit(self)
+        if config_model.development_environment:
+            config_model.development_environment.visit(self)
         for profile in config_model.cfg_profiles.values():
             profile.visit(self)

@@ -4,6 +4,7 @@ from .config_model import (
     Author,
     ConfigProfile,
     ContainerConfiguration,
+    DevelopmentEnvironment,
     ProjectInformation,
     SloughConfig,
 )
@@ -30,6 +31,16 @@ class ConfigModelVisitor:
 
         Args:
             project_information (ProjectInformation): The project information.
+        """
+
+    def visit_development_environment(
+        self, development_environment: DevelopmentEnvironment
+    ) -> None:
+        """Visit the development environment.
+
+        Args:
+            development_environment (DevelopmentEnvironment): The development
+                environment.
         """
 
     def visit_container_configuration(

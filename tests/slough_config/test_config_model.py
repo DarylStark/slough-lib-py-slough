@@ -9,7 +9,12 @@ from slough_config.config_model import (
     ContainerConfiguration,
     ProjectInformation,
 )
-from slough_config.exceptions import ProfileNotFoundError
+from slough_config.exceptions import (
+    DefaultProfileError,
+    DuplicateProfileNameError,
+    InvalidProfileNameError,
+    ProfileNotFoundError,
+)
 
 
 @pytest.mark.parametrize(
@@ -105,7 +110,7 @@ def test_profile_creation_when_already_exists_default_profiles(
         profile_name (str): The name of the profile to test.
         config_model (SloughConfig): The configuration model to test.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidProfileNameError):
         config_model.add_profile(profile_name)
 
 
@@ -120,7 +125,7 @@ def test_profile_creation_when_already_exists(
     Args:
         config_model (SloughConfig): The configuration model to test.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(DuplicateProfileNameError):
         config_model.add_profile('test')
 
 
@@ -138,7 +143,7 @@ def test_profile_creation_with_invalid_name(
         config_model (SloughConfig): The configuration model to test.
         profile_name (str): The name of the profile to test.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidProfileNameError):
         config_model.add_profile(profile_name)
 
 
@@ -190,7 +195,7 @@ def test_profile_rename_invalid_name(
         config_model (SloughConfig): The configuration model to test.
         profile_name (str): The name of the profile to test.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidProfileNameError):
         config_model.rename_profile('test', profile_name)
 
 
@@ -207,7 +212,7 @@ def test_profile_rename_non_existing_profile(
         config_model (SloughConfig): The configuration model to test.
         profile_name (str): The name of the profile to test.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ProfileNotFoundError):
         config_model.rename_profile(profile_name, 'new_test')
 
 
@@ -225,7 +230,7 @@ def test_profile_rename_to_existing_profile(
         profile_name (str): The name to rename to.
     """
     config_model.add_profile(profile_name)
-    with pytest.raises(ValueError):
+    with pytest.raises(DuplicateProfileNameError):
         config_model.rename_profile('test', profile_name)
 
 
@@ -244,7 +249,7 @@ def test_profile_removal_default_profiles(
         config_model (SloughConfig): The configuration model to test.
         profile_name (str): The name of the profile to test.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(DefaultProfileError):
         config_model.remove_profile(profile_name)
 
 
@@ -258,7 +263,7 @@ def test_profile_removal_non_existing_profiles(
         config_model (SloughConfig): The configuration model to test.
         profile_name (str): The name of the profile to test.
     """
-    with pytest.raises(ValueError):
+    with pytest.raises(ProfileNotFoundError):
         config_model.remove_profile(profile_name)
 
 
@@ -296,9 +301,6 @@ def test_project_information_invalid_versions(
     """
     with pytest.raises(ValidationError):
         project_model.version = version
-
-
-# TODO: Add tests for the emailaddress validation
 
 
 def test_config_profle_container_retrieval(
