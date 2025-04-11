@@ -147,6 +147,45 @@ def temp_folder_with_slough_config(
                 'generic',
             ],
         )
+
+        # Add profiles
+        cli_runner.invoke(
+            app,
+            [
+                'profiles',
+                'add',
+                'my_test_profile',
+            ],
+        )
+
+        # Add container tags to the `_default` profile
+        cli_runner.invoke(app, ['container', 'tags', 'add', 'latest'])
+        cli_runner.invoke(
+            app,
+            [
+                'container',
+                'tags',
+                'add',
+                '--profile',
+                '_all',
+                'version',
+                'hash',
+            ],
+        )
+        cli_runner.invoke(
+            app,
+            [
+                'container',
+                'tags',
+                'add',
+                '--profile',
+                'my_test_profile',
+                'latest-dev',
+                'dev',
+            ],
+        )
+
+        # Yield the created path
         yield Path(tmpdirname).resolve()
 
 
