@@ -7,3 +7,7 @@ class SloughCLIError(Exception):
 
 class ConfigAlreadySetError(SloughCLIError):
     """Error raised when the configuration is already set."""
+
+
+class OutputTypeUnsupportedError(SloughCLIError):
+    """Error raised when the output type is not supported."""

@@ -6,6 +6,8 @@ from rich import box
 from rich.console import Console
 from rich.table import Table
 
+from slough_cli_tool.exceptions import OutputTypeUnsupportedError
+
 from .cli_output_models import DataSetOutput, MessageOutput
 
 
@@ -83,8 +85,8 @@ class EnvironmentVariableOutput(CLIOutputVisitor):
         """
         for item in model.data:
             if len(item) != 2:
-                raise ValueError(  # TODO: Custom error
-                    'Each item must be a tuple with exactly two elements.'
+                raise OutputTypeUnsupportedError(
+                    'This output type is not valid for this type of data.'
                 )
             if self._export:
                 print('export ', end='')
@@ -97,6 +99,4 @@ class EnvironmentVariableOutput(CLIOutputVisitor):
         Args:
             model (MessageOutput): The message to output.
         """
-        raise ValueError(  # TODO: Custom error
-            'Wrong output'
-        )
+        print(f'MEASSAGE={model.message}')
