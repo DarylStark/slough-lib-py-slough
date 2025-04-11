@@ -22,9 +22,7 @@
             "console": "integratedTerminal",
             "args": [
                 "config",
-                "list",
-                "--profile",
-                "production"
+                "list"
             ]
         },
         {

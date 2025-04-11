@@ -28,8 +28,20 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
         Args:
             prefix (str): The prefix for the configuration variables.
         """
-        self._key_value_pairs: list[tuple[str, str]] = []
-        self._prefix = prefix
+        # self._key_value_pairs: list[tuple[str, str]] = []
+        self._key_value_pairs: dict[str, str] = {}
+        self._prefix: str = prefix
+
+    def _add_key_value_pair(self, key: str, value: str | int) -> None:
+        """Add a key-value pair to the list.
+
+        Args:
+            key (str): The key.
+            value (str): The value.
+        """
+        key = f'{self._prefix}.{key}'
+        # self._key_value_pairs.append((key, str(value)))
+        self._key_value_pairs[key] = str(value)
 
     def visit_slough_config(self, config_model: SloughConfig) -> None:
         """Visit the configuration model.
@@ -38,13 +50,9 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
             config_model (SloughConfig): The configuration model.
         """
         if config_model.development_environment:
-            self._key_value_pairs.extend(
-                [
-                    (
-                        f'{self._prefix}.development_environment',
-                        config_model.development_environment.value,
-                    )
-                ]
+            self._add_key_value_pair(
+                'development_environment',
+                config_model.development_environment.value,
             )
         config_model.project.visit(self)
 
@@ -56,15 +64,10 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
         Args:
             config_model (ProjectInformation): The project information model.
         """
-        self._key_value_pairs.extend(
-            [
-                (f'{self._prefix}.project.name', config_model.name),
-                (f'{self._prefix}.project.version', config_model.version),
-                (
-                    f'{self._prefix}.project.authors.count',
-                    str(len(config_model.authors)),
-                ),
-            ]
+        self._add_key_value_pair('project.name', config_model.name)
+        self._add_key_value_pair('project.version', config_model.version)
+        self._add_key_value_pair(
+            'project.authors.count', len(config_model.authors)
         )
         for index, author in enumerate(config_model.authors):
             self._add_author(index, author)
@@ -76,14 +79,9 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
             index (int): The index of the author.
             author (Author): The author model.
         """
-        self._key_value_pairs.extend(
-            [
-                (f'{self._prefix}.project.authors.{index}.name', author.name),
-                (
-                    f'{self._prefix}.project.authors.{index}.email',
-                    author.email,
-                ),
-            ]
+        self._add_key_value_pair(f'project.authors.{index}.name', author.name)
+        self._add_key_value_pair(
+            f'project.authors.{index}.email', author.email
         )
 
     def visit_container_configuration(
@@ -95,21 +93,17 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
             container_configuration (ContainerConfiguration): The container
                 configuration model.
         """
-        self._key_value_pairs.append(
-            (
-                f'{self._prefix}.configuration.container.tag.count',
-                str(len(container_configuration.tags)),
-            )
+        self._add_key_value_pair(
+            'configuration.container.tag.count',
+            len(container_configuration.tags),
         )
-        self._key_value_pairs.append(
-            (
-                f'{self._prefix}.configuration.container.tags',
-                ','.join(container_configuration.tags),
-            )
+        self._add_key_value_pair(
+            'configuration.container.tags',
+            ','.join(container_configuration.tags),
         )
         for index, tag in enumerate(container_configuration.tags):
-            self._key_value_pairs.append(
-                (f'{self._prefix}.configuration.container.tag.{index}', tag)
+            self._add_key_value_pair(
+                f'configuration.container.tag.{index}', tag
             )
 
     def visit_config_profile(self, config_profile: ConfigProfile) -> None:
@@ -127,7 +121,7 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
         Returns:
             list[tuple[str, str]]: The key-value pairs.
         """
-        return self._key_value_pairs
+        return [(key, value) for key, value in self._key_value_pairs.items()]
 
 
 @config.command(
