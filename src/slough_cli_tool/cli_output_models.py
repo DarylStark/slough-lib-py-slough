@@ -1,6 +1,7 @@
 """Module with output models."""
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -29,7 +30,7 @@ class DataSetOutput(CLIOutputModel):
             fields (list[str]): The fields of the dataset.
         """
         self._fields = fields
-        self._data: list[list[str]] = []
+        self._data: list[Iterable[str]] = []
 
     @property
     def data(self) -> list:
@@ -41,7 +42,7 @@ class DataSetOutput(CLIOutputModel):
         return self._data
 
     @data.setter
-    def data(self, data: list[list[str]]) -> None:
+    def data(self, data: list[Iterable[str]]) -> None:
         """Set the data to be output.
 
         Args:

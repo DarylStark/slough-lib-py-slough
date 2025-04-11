@@ -22,20 +22,9 @@
             "console": "integratedTerminal",
             "args": [
                 "config",
-                "env"
-            ]
-        },
-        {
-            "name": "CLI app - config - env - prefix:TEST",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "slough_cli_tool",
-            "console": "integratedTerminal",
-            "args": [
-                "config",
-                "env",
-                "--prefix",
-                "TEST"
+                "list",
+                "--profile",
+                "production"
             ]
         },
         {
