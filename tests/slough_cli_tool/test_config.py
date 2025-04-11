@@ -99,3 +99,25 @@ def test_config_list_as_exported_env(
     assert 'export SLOUGH_CONFIGURATION_CONTAINER_TAGS=' in result.stdout
     assert 'export SLOUGH_CONFIGURATION_CONTAINER_TAG_COUNT=' in result.stdout
     assert 'export SLOUGH_DEVELOPMENT_ENVIRONMENT=' in result.stdout
+
+
+@pytest.mark.parametrize(
+    'prefix',
+    ['slough', 'test_prefix', 'test.prefix', 'TEST', 'TEST_PREFIX'],
+)
+def test_config_list_custom_prefixes(
+    cli_runner: CliRunner, temp_folder_with_slough_config: Path, prefix: str
+) -> None:
+    """Test the `config list` command.
+
+    Args:
+        cli_runner (CliRunner): The CLI runner.
+        temp_folder_with_slough_config (Path): Temporary folder for testing.
+        prefix (str): The prefix to test.
+    """
+    result = cli_runner.invoke(
+        app,
+        ['config', 'list', '--prefix', prefix],
+    )
+    assert result.exit_code == 0
+    assert f'{prefix}.project.name' in result.stdout

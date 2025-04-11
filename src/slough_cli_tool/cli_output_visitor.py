@@ -99,4 +99,4 @@ class EnvironmentVariableOutput(CLIOutputVisitor):
         Args:
             model (MessageOutput): The message to output.
         """
-        print(f'MEASSAGE={model.message}')
+        print(f'MESSAGE="{model.message}"')
