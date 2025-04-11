@@ -58,3 +58,45 @@ class ConsoleOutput(CLIOutputVisitor):
             model (MessageOutput): The message to output.
         """
         self._console.print(model.message)
+
+
+class EnvironmentVariableOutput(CLIOutputVisitor):
+    """Output visitor that uses environment variables for output."""
+
+    def __init__(self, export: bool = False) -> None:
+        """Initialize the environment variable output visitor.
+
+        Args:
+            export (bool): Whether to export the variables or not.
+        """
+        self._export = export
+
+    def out_dataset(self, model: DataSetOutput) -> None:
+        """Output the variables using the environment variable output.
+
+        This requires data in the following format: a list with a tuple with
+        exactly two elements: the variable name and the value. If this isn't
+        given, an error will be raised.
+
+        Args:
+            model (DataSetOutput): The dataset to output.
+        """
+        for item in model.data:
+            if len(item) != 2:
+                raise ValueError(  # TODO: Custom error
+                    'Each item must be a tuple with exactly two elements.'
+                )
+            if self._export:
+                print('export ', end='')
+            variable_name = item[0].upper().replace('.', '_')
+            print(f'{variable_name}="{item[1]}"')
+
+    def out_message(self, model: MessageOutput) -> None:
+        """Output the message using the environment variable output.
+
+        Args:
+            model (MessageOutput): The message to output.
+        """
+        raise ValueError(  # TODO: Custom error
+            'Wrong output'
+        )

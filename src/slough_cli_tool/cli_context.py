@@ -2,6 +2,7 @@
 
 import logging
 from abc import ABC, abstractmethod
+from enum import Enum
 from pathlib import Path
 
 from rich.logging import RichHandler
@@ -10,7 +11,11 @@ from slough.config_file_finder import ConfigFileFinder
 from slough.slough import Slough
 from slough.yaml_storage_manager import YAMLStorageManager
 
-from .cli_output_visitor import CLIOutputVisitor, ConsoleOutput
+from .cli_output_visitor import (
+    CLIOutputVisitor,
+    ConsoleOutput,
+    EnvironmentVariableOutput,
+)
 
 
 class CLIContext(ABC):
@@ -49,13 +54,26 @@ class CLIContext(ABC):
         """
 
 
+class OutputType(str, Enum):
+    """Output types for the CLI."""
+
+    CONSOLE = 'console'
+    ENV = 'env'
+    EXPOTRED_ENV = 'exported-env'
+
+
 class SloughCLIContext(CLIContext):
     """Concrete CLI Context for Slough CLI."""
 
-    def __init__(self, logging_verbosity: int = 30) -> None:
+    def __init__(
+        self,
+        logging_verbosity: int = 30,
+        output_type: OutputType = OutputType.CONSOLE,
+    ) -> None:
         """Initialize the Slough CLI context."""
         # Member variables
         self._logging_verbosity: int = logging_verbosity
+        self._output_type: OutputType = output_type
 
         # Initialize the logger
         self._initialize_logger()
@@ -121,6 +139,19 @@ class SloughCLIContext(CLIContext):
             )
         return self._slough
 
+    def _create_output_visitor(self) -> CLIOutputVisitor:
+        """Create the output visitor.
+
+        Returns:
+            CLIOutputVisitor: The application wide output visitor.
+        """
+        if self._output_type == OutputType.CONSOLE:
+            return ConsoleOutput()
+        elif self._output_type == OutputType.ENV:
+            return EnvironmentVariableOutput()
+        else:
+            return EnvironmentVariableOutput(export=True)
+
     @property
     def output_visitor(self) -> CLIOutputVisitor:
         """Retrieve the output visitor.
@@ -132,5 +163,5 @@ class SloughCLIContext(CLIContext):
             CLIOutputVisitor: The application wide output visitor.
         """
         if not self._cli_output_visitor:
-            self._cli_output_visitor = ConsoleOutput()
+            self._cli_output_visitor = self._create_output_visitor()
         return self._cli_output_visitor

@@ -8,7 +8,11 @@ from rich.console import Console
 
 from slough import __version__ as slough_version
 from slough.exceptions import SloughError
-from slough_cli_tool.cli_context import CLIContext, SloughCLIContext
+from slough_cli_tool.cli_context import (
+    CLIContext,
+    OutputType,
+    SloughCLIContext,
+)
 from slough_cli_tool.cli_output_models import MessageOutput
 from slough_cli_tool.cli_output_visitor import CLIOutputVisitor
 
@@ -63,6 +67,11 @@ def common_command_line_options(
         help='Increase output verbosity.',
         max=2,
     ),
+    output: OutputType = typer.Option(
+        OutputType.CONSOLE,
+        help='Output format.',
+        show_default=True,
+    ),
 ) -> None:
     """Common options for all commands.
 
@@ -72,11 +81,13 @@ def common_command_line_options(
     Args:
         ctx (typer.Context): Typer context object.
         cfgfile (str): Path to the configuration file.
-        verbosity (int): Verbosity level
+        verbosity (int): Verbosity level.
+        output (OutputType): Output format.
     """
     # Create a context for the CLI
     context: CLIContext = SloughCLIContext(
-        logging_verbosity=logging.WARNING - verbosity * 10
+        logging_verbosity=logging.WARNING - verbosity * 10,
+        output_type=output,
     )
 
     # Add the context to the Typer context
