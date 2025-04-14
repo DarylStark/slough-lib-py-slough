@@ -5,6 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "CLI app - version",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "slough_cli_tool",
+            "console": "integratedTerminal",
+            "args": [
+                "version"
+            ]
+        },
+        {
             "name": "CLI app - config - env",
             "type": "debugpy",
             "request": "launch",
@@ -12,20 +22,7 @@
             "console": "integratedTerminal",
             "args": [
                 "config",
-                "env"
-            ]
-        },
-        {
-            "name": "CLI app - config - env - prefix:TEST",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "slough_cli_tool",
-            "console": "integratedTerminal",
-            "args": [
-                "config",
-                "env",
-                "--prefix",
-                "TEST"
+                "list"
             ]
         },
         {
@@ -95,6 +92,18 @@
             "args": [
                 "dev-container",
                 "generate-config"
+            ]
+        },
+        {
+            "name": "CLI app - container - tags - list",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "slough_cli_tool",
+            "console": "integratedTerminal",
+            "args": [
+                "container",
+                "tags",
+                "list"
             ]
         }
     ]

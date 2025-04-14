@@ -1,11 +1,10 @@
 """Container tags part of the CLI tool."""
 
 import typer
-from rich import box
-from rich.table import Table
 
-from slough_cli_tool.generic import get_context_data_config
-from slough_config.config_model import ContainerConfiguration
+from slough.slough import Slough
+from slough_cli_tool.cli_output_models import DataSetOutput
+from slough_cli_tool.cli_output_visitor import CLIOutputVisitor
 
 tags = typer.Typer(no_args_is_help=True)
 
@@ -31,10 +30,8 @@ def add_container_tags(
         profile (str, optional): The profile to add container tags for.
             Defaults to the default profile.
     """
-    console, slough, _, _ = get_context_data_config(ctx)
-    for tag in tags:
-        slough.add_container_tag(tag, profile_name=profile)
-        console.print(f'Tag "{tag}" added to profile "{profile}".')
+    slough: Slough = ctx.obj.slough
+    slough.get_profile(profile).get_container_configuration().add_tags(tags)
     slough.save()
 
 
@@ -59,33 +56,18 @@ def list_container_tags(
         profile (str, optional): The profile to list container tags for.
             Defaults to None.
     """
-    console, _, config, _ = get_context_data_config(ctx)
+    slough: Slough = ctx.obj.slough
+    cfg_profile = slough.get_profile_with_all(profile)
+    tags = sorted(cfg_profile.get_container_configuration().tags)
 
-    # Get data
-    tags: list[tuple[str, str]] = []
-    profile_set = {'_all', profile}
-    for profile_name in list(profile_set):
-        if (
-            profile_name in config.cfg_profiles
-            and config.cfg_profiles[profile_name].container
-        ):
-            container_object: ContainerConfiguration | None = (
-                config.cfg_profiles[profile_name].container
-            )
-            if container_object:
-                for tag in container_object.tags:
-                    tags.append((tag, profile_name))
-
-    # Print data
-    if len(tags):
-        table = Table(box=box.SIMPLE)
-        table.add_column('Tag')
-        table.add_column('Profile')
-        for tag, profile_name in tags:
-            table.add_row(tag, profile_name)
-        console.print(table)
-    else:
-        console.print('There are no tags configured.')
+    os: CLIOutputVisitor = ctx.obj.output_visitor
+    output_data = DataSetOutput(
+        [
+            'Tagname',
+        ]
+    )
+    output_data.data = [[tag] for tag in tags]
+    output_data.out(os)
 
 
 @tags.command(
@@ -95,7 +77,9 @@ def list_container_tags(
 )
 def remove_container_tags(
     ctx: typer.Context,
-    tags: str = typer.Argument(help='The tag to remove from the profile.'),
+    tags: list[str] = typer.Argument(
+        help='The tags to remove from the profile.'
+    ),
     profile: str = typer.Option(
         default='_default',
         help='The profile to remove the container tags from.',
@@ -109,7 +93,6 @@ def remove_container_tags(
         profile (str, optional): The profile to remove the container tags from.
             Defaults to the default profile.
     """
-    console, slough, _, _ = get_context_data_config(ctx)
-    slough.remove_container_tag(tags, profile_name=profile)
-    console.print(f'Tag "{tags}" removed from profile "{profile}".')
+    slough: Slough = ctx.obj.slough
+    slough.get_profile(profile).get_container_configuration().remove_tags(tags)
     slough.save()

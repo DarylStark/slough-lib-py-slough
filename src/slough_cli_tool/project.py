@@ -1,18 +1,16 @@
 """Config part of the CLI tool."""
 
-import logging
+from logging import Logger
 
 import typer
 
+from slough.slough import Slough
 from slough_config import (
-    Author,
     DevelopmentEnvironment,
-    ProjectInformation,
-    SloughConfig,
 )
+from slough_config.config_model import Author
 
 from .exceptions import ConfigAlreadySetError
-from .generic import get_context_data, get_context_data_config
 
 project = typer.Typer(no_args_is_help=True)
 
@@ -62,25 +60,20 @@ def cli_project_init(
         development_environment (DevelopmentEnvironment): The development
             environment.
     """
-    _, slough = get_context_data(ctx)
+    slough: Slough = ctx.obj.slough
 
-    # Create a new Slough object
-    slough_config = SloughConfig(
-        project=ProjectInformation(
-            name=title,
-            version=version,
-            authors=[Author(name=author_name, email=author_email)],
-        ),
-        development_environment=development_environment,
-    )
+    if not slough.is_default_config:
+        raise ConfigAlreadySetError('The configuration is already set.')
 
     # Set the configuration in the `Slough` object
-    local_logger = logging.getLogger('cli_project_init')
-    if not slough.config:
-        slough.config = slough_config
-        local_logger.info('Created configuration')
-    else:
-        raise ConfigAlreadySetError('Configuration already set')
+    local_logger: Logger = ctx.obj.logger
+    local_logger.debug('Setting the configuration in the Slough object')
+    slough.config.project.name = title
+    slough.config.project.version = version
+    slough.config.project.authors = [
+        Author(name=author_name, email=author_email)
+    ]
+    slough.config.development_environment = development_environment
 
     # Save the configuration
     slough.save()
@@ -110,8 +103,8 @@ def cli_set_development_environment(
         development_environment (DevelopmentEnvironment): The development
             environment.
     """
-    _, slough, config, _ = get_context_data_config(ctx)
-    config.development_environment = development_environment
+    slough: Slough = ctx.obj.slough
+    slough.config.development_environment = development_environment
 
     # Save the configuration
     slough.save()

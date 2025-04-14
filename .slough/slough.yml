@@ -1,8 +1,0 @@
----
-project:
-  name: slough-lib-py-slough
-  version: 0.0.1
-  authors:
-    - name: Daryl Stark
-      email: darylstark@example.com
-development_environment: python-generic

@@ -1,183 +1,127 @@
 """Module with the Slough class."""
 
 import logging
-from pathlib import Path
 
-from slough_config import ConfigFileFinder, ConfigManager
 from slough_config.config_model import (
+    Author,
     ConfigProfile,
-    ContainerConfiguration,
+    ProjectInformation,
     SloughConfig,
 )
 
-from .exceptions import (
-    ConfigAlreadySetError,
-    ConfigFileNotSetError,
-    ConfigManagerNotRegisteredError,
-    ConfigNotSetError,
-)
+from .exceptions import ConfigNogLoadedError
+from .storage_manager import StorageManager
 
 
 class Slough:
     """Class that represents a Slough application."""
 
-    def __init__(
-        self,
-        cfgfile: str | None = None,
-        max_directory_depth: int = 6,
-    ) -> None:
+    def __init__(self, storage_manager: StorageManager) -> None:
         """Initialize the Slough object.
 
         Args:
-            cfgfile (str): Path to the configuration file. If none is given,
-                the configuration file will be searched for.
-            max_directory_depth (int): The maximum directory depth to search
-                for the configuration file.
+            storage_manager (StorageManager): The storage manager to use.
         """
         self._logger = logging.getLogger('Slough')
-        self._config: SloughConfig | None = None
-        self._max_directory_depth = max_directory_depth
-        self.cfgfile: Path | None = None
-        if cfgfile:
-            self.cfgfile = Path(cfgfile)
-        else:
-            self._set_correct_configfile()
+        self._storage_manager = storage_manager
+        self._is_default_config = False
+        try:
+            self._config = self._storage_manager.load()
+        except ConfigNogLoadedError:
+            self._is_default_config = True
+            self._config = self._get_default_config()
 
-    def _set_correct_configfile(self) -> None:
-        """Set the correct configuration file.
-
-        Args:
-            cfgfile (str): Path to the configuration file.
-        """
-        # Configfile is not set, find one
-        finder = ConfigFileFinder(
-            max_directory_depth=self._max_directory_depth
-        )
-        self.cfgfile = finder.find_config_file() or Path('.slough/slough.yml')
-        self._logger.info(f'Configuration file set to {self.cfgfile}')
-
-    def _get_config_manager(self) -> ConfigManager:
-        """Get the correct configuration manager.
-
-        Returns the correct configuration manager based on the extension of the
-        configuration file.
+    def _get_default_config(self) -> SloughConfig:
+        """Return a default configuration.
 
         Returns:
-            ConfigManager: The configuration manager.
+            SloughConfig: The default configuration.
         """
-        if not self.cfgfile:
-            raise ConfigFileNotSetError('No configuration file set.')
-
-        extension = self.cfgfile.suffix[1:].lower()
-        if extension not in ConfigManager.managers:
-            raise ConfigManagerNotRegisteredError(
-                f'No manager registered for extension {extension}'
+        return SloughConfig(
+            project=ProjectInformation(
+                name='empty_project',
+                version='0.0.1',
+                authors=[Author(name='nobody', email='nobody@nobody.com')],
             )
-        self._logger.debug(
-            f'Using "{ConfigManager.managers[extension].__name__}" class '
-            + f'for extension "{extension}"'
         )
-        return ConfigManager.managers[extension](self.cfgfile)
 
-    def _load_config(self) -> None:
-        """Load the configuration."""
-        cfg_manager = self._get_config_manager()
-        self._logger.info(f'Loading configuration from {self.cfgfile}')
-        self._config = cfg_manager.load_config()
-        self._logger.info(f'Loaded configuration from {self.cfgfile}')
+    @property
+    def config(self) -> SloughConfig:
+        """Return the configuration.
+
+        Returns:
+            SloughConfig: The configuration.
+        """
+        return self._config
+
+    @property
+    def profile_list(self) -> list[str]:
+        """Return a list with the profile names.
+
+        Returns:
+            list[str]: A list with the profile names.
+        """
+        return self._config.profile_list
+
+    @property
+    def is_default_config(self) -> bool:
+        """Return True if the configuration is the default one.
+
+        Returns:
+            bool: True if the configuration is the default one, otherwise
+            False.
+        """
+        return self._is_default_config
+
+    def add_profile(self, profile_name: str) -> None:
+        """Add a profile to the configuration.
+
+        Args:
+            profile_name (str): The name of the profile to add.
+        """
+        self._config.add_profile(profile_name)
+
+    def remove_profile(self, profile_name: str) -> None:
+        """Remove a profile from the configuration.
+
+        Args:
+            profile_name (str): The name of the profile to remove.
+        """
+        self._config.remove_profile(profile_name)
+
+    def rename_profile(self, profile_name: str, new_name: str) -> None:
+        """Remove a profile from the configuration.
+
+        Args:
+            profile_name (str): The name of the profile to rename.
+            new_name (str): The new name for the profile.
+        """
+        self._config.rename_profile(profile_name, new_name)
+
+    def get_profile(self, profile_name: str) -> ConfigProfile:
+        """Get a profile from the configuration.
+
+        Args:
+            profile_name (str): The name of the profile to get.
+
+        Returns:
+            ConfigProfile: The profile.
+        """
+        return self._config.get_profile(profile_name)
+
+    def get_profile_with_all(self, profile_name: str) -> ConfigProfile:
+        """Get a profile from the configuration with the `_all` profile.
+
+        Args:
+            profile_name (str): The name of the profile to get.
+
+        Returns:
+            ConfigProfile: The profile combined with the `_all` profile.
+        """
+        return self._config.get_profile(profile_name).combine(
+            self._config.get_profile('_all')
+        )
 
     def save(self) -> None:
         """Save the configuration."""
-        if not self._config:
-            raise ConfigNotSetError('No configuration file set.')
-
-        cfg_manager = self._get_config_manager()
-        self._logger.info(f'Saving configuration to {self.cfgfile}')
-        cfg_manager.save_config(self._config.model_dump())
-        self._logger.info(f'Saved configuration to {self.cfgfile}')
-
-    @property
-    def config(self) -> SloughConfig | None:
-        """Return the configuration."""
-        if not self._config:
-            self._load_config()
-        return self._config
-
-    @config.setter
-    def config(self, value: SloughConfig) -> None:
-        """Set the configuration."""
-        if self.config is not None:
-            raise ConfigAlreadySetError('Configuration already set.')
-        self._config = value
-
-    @property
-    def project_folder(self) -> Path:
-        """Return the project folder.
-
-        This can be the folder where the configuration file is located, or if
-        the configuration file is in a `.slough` folder, the directory above
-        that.
-
-        Returns:
-            Path: The project folder.
-        """
-        if not self.cfgfile:
-            raise ConfigFileNotSetError('No configuration file set.')
-
-        if self.cfgfile.parent.name == '.slough':
-            return self.cfgfile.parent.parent.resolve()
-        return self.cfgfile.parent.resolve()
-
-    def add_container_tag(
-        self, tag: str, *, profile_name: str = '_default'
-    ) -> None:
-        """Add a container tag to the configuration.
-
-        If the given profile does not exist, it will be created.
-
-        Args:
-            tag (str): The tag to add.
-            profile_name (str): The profile to add the tag to.
-        """
-        if not self._config:
-            self._load_config()
-        if not self._config:
-            raise ConfigNotSetError('No configuration set.')
-
-        # Create the profile if it doesn't exist
-        if profile_name not in self._config.cfg_profiles:
-            self._config.cfg_profiles[profile_name] = ConfigProfile()
-
-        # Retrieve and update the profile
-        profile = self._config.cfg_profiles[profile_name]
-        if not profile.container:
-            profile.container = ContainerConfiguration()
-        if tag in profile.container.tags:
-            raise ValueError(f'Tag "{tag}" already exists in profile.')
-        profile.container.tags.append(tag)
-
-    def remove_container_tag(
-        self, tag: str, *, profile_name: str = '_default'
-    ) -> None:
-        """Delete a container tag from the configuration.
-
-        If the tag is not found in the profile, a ValueError is raised.
-
-        Args:
-            tag (str): The tag to remove.
-            profile_name (str): The profile to remove the tag from.
-        """
-        if not self._config:
-            self._load_config()
-        if not self._config:
-            raise ConfigNotSetError('No configuration set.')
-
-        # Retrieve and update the profile
-        profile = self._config.cfg_profiles[profile_name]
-        if not profile.container:
-            raise ValueError(
-                f'Profile "{profile_name}" has no container configuration.'
-            )
-        if tag not in profile.container.tags:
-            raise ValueError(f'Tag "{tag}" doesn\'t exist in profile.')
-        profile.container.tags.remove(tag)
+        self._storage_manager.save(self._config)

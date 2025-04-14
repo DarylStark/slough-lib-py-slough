@@ -1,5 +1,6 @@
 """This module is the entry point for the CLI tool."""
 
-from .main import app, main
+from .cli_app import app
+from .main import main
 
 __all__ = ['main', 'app']

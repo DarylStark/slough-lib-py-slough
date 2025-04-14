@@ -41,8 +41,6 @@ select = [
 ignore = [
     "B008",    # function call in default argument
     "PLR2004", # magic value used in comparison
-    "ANN101",  # missing type annotation for self
-    "ANN102",  # missing type annotation for cls
     "TD003",   # missing link
     "TD002",   # missing author
     "PLR0913", # too many arguments
@@ -74,10 +72,10 @@ dev = [
 
 [tool.pytest.ini_options]
 addopts = [
-    '--cov=chain_of_responsibility',
     '--cov=slough_cli_tool',
     '--cov=slough_config',
     '--cov=slough',
+    '--cov=dev_container_gen',
     '--cov-report=html',
     '--cov-report=lcov',
     '--cov-context=test',

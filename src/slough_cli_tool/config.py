@@ -1,160 +1,157 @@
 """Config part of the CLI tool."""
 
-import logging
-from enum import Enum
-
 import typer
-import yaml
 
-from .exceptions import (
-    ConfigConvertionAlreadyCorrectSufficError,
+from slough.slough import Slough
+from slough_cli_tool.cli_output_models import DataSetOutput
+from slough_config.config_model import (
+    Author,
+    ConfigProfile,
+    ContainerConfiguration,
+    ProjectInformation,
+    SloughConfig,
 )
-from .generic import get_context_data_config
+from slough_config.config_model_visitor import ConfigModelVisitor
 
 config = typer.Typer(no_args_is_help=True)
 
 
-class ConvertTarget(str, Enum):
-    """Targets for the convert command."""
+class KeyValueConfigVisitor(ConfigModelVisitor):
+    """Visitor that collects key-value pairs from the configuration model.
 
-    JSON = 'json'
-    YAML = 'yml'
-
-
-class SchemaTarget(str, Enum):
-    """Targets for the generate-schema command."""
-
-    JSON = 'json'
-    YAML = 'yml'
-
-
-def convert_to_envvars(data: dict, prefix: str) -> str:
-    """Format dictionary to environment variables.
-
-    Args:
-        data (dict): Dictionary to format.
-        prefix (str): Prefix for the environment variables.
-
-    Returns:
-        str: Formatted data.
+    This visitor is used to output the configuration as key-value pairs.
     """
-    local_logger = logging.getLogger('convert_to_envvars')
-    output = ''
-    for key, value in data.items():
-        var_name = f'{prefix}_{key}'.upper()
 
-        if isinstance(value, Enum):
-            output += f'{var_name}="{str(value.value)}"\n'
-        elif isinstance(value, str | int | float):
-            output += f'{var_name}="{str(value)}"\n'
-        elif isinstance(value, dict):
-            output += convert_to_envvars(value, f'{prefix}_{key}')
-        elif isinstance(value, list):
-            if len(value) == 0:
-                continue
+    def __init__(self, prefix: str) -> None:
+        """Initialize the visitor.
 
-            output += f'{var_name}_COUNT={len(value)}\n'
-            if all([type(item) is str for item in value]):
-                output += f'{var_name}="{','.join(value)}"\n'
-            for i, item in enumerate(value):
-                if isinstance(item, str | int | float):
-                    output += f'{var_name}_{i}="{str(item)}"\n'
-                elif isinstance(item, dict):
-                    output += convert_to_envvars(item, f'{var_name}_{i}')
-        else:
-            local_logger.warning(
-                'Cannot convert "%s", invalid type: "%s"', key, type(value)
+        Args:
+            prefix (str): The prefix for the configuration variables.
+        """
+        # self._key_value_pairs: list[tuple[str, str]] = []
+        self._key_value_pairs: dict[str, str] = {}
+        self._prefix: str = prefix
+
+    def _add_key_value_pair(self, key: str, value: str | int) -> None:
+        """Add a key-value pair to the list.
+
+        Args:
+            key (str): The key.
+            value (str): The value.
+        """
+        key = f'{self._prefix}.{key}'
+        # self._key_value_pairs.append((key, str(value)))
+        self._key_value_pairs[key] = str(value)
+
+    def visit_slough_config(self, config_model: SloughConfig) -> None:
+        """Visit the configuration model.
+
+        Args:
+            config_model (SloughConfig): The configuration model.
+        """
+        if config_model.development_environment:
+            self._add_key_value_pair(
+                'development_environment',
+                config_model.development_environment.value,
+            )
+        config_model.project.visit(self)
+
+    def visit_project_information(
+        self, config_model: ProjectInformation
+    ) -> None:
+        """Visit the configuration model.
+
+        Args:
+            config_model (ProjectInformation): The project information model.
+        """
+        self._add_key_value_pair('project.name', config_model.name)
+        self._add_key_value_pair('project.version', config_model.version)
+        self._add_key_value_pair(
+            'project.authors.count', len(config_model.authors)
+        )
+        for index, author in enumerate(config_model.authors):
+            self._add_author(index, author)
+
+    def _add_author(self, index: int, author: Author) -> None:
+        """Add author information to the key-value pairs.
+
+        Args:
+            index (int): The index of the author.
+            author (Author): The author model.
+        """
+        self._add_key_value_pair(f'project.authors.{index}.name', author.name)
+        self._add_key_value_pair(
+            f'project.authors.{index}.email', author.email
+        )
+
+    def visit_container_configuration(
+        self, container_configuration: ContainerConfiguration
+    ) -> None:
+        """Visit the container configuration.
+
+        Args:
+            container_configuration (ContainerConfiguration): The container
+                configuration model.
+        """
+        self._add_key_value_pair(
+            'configuration.container.tag.count',
+            len(container_configuration.tags),
+        )
+        self._add_key_value_pair(
+            'configuration.container.tags',
+            ','.join(container_configuration.tags),
+        )
+        for index, tag in enumerate(container_configuration.tags):
+            self._add_key_value_pair(
+                f'configuration.container.tag.{index}', tag
             )
 
-    return output
+    def visit_config_profile(self, config_profile: ConfigProfile) -> None:
+        """Visit the configuration profile.
+
+        Args:
+            config_profile (ConfigProfile): The configuration profile model.
+        """
+        config_profile.get_container_configuration().visit(self)
+
+    @property
+    def key_value_pairs(self) -> list[tuple[str, str]]:
+        """Get the key-value pairs.
+
+        Returns:
+            list[tuple[str, str]]: The key-value pairs.
+        """
+        return [(key, value) for key, value in self._key_value_pairs.items()]
 
 
 @config.command(
-    name='env',
-    help='Display the configuration as environment variables. This can be '
-    + 'used in automations to get the configuration for the project.',
-    short_help='Display the configuration as environment variables.',
+    name='list',
+    help='List the configuration.',
+    short_help='List the configuration',
 )
-def cli_config_env(
+def cli_config_list(
     ctx: typer.Context,
     prefix: str = typer.Option(
-        default='SLOUGH', help='The prefix for the variables.'
+        default='slough', help='The prefix for the configuration variables.'
+    ),
+    profile: str = typer.Option(
+        '_default', help='Profile to use for the configuration.'
     ),
 ) -> None:
-    """Show configuration as environment variables.
+    """Show configuration as key-value pairs.
 
     Args:
         ctx (typer.Context): Typer context.
         prefix (str): Prefix for the environment variables
+        profile (str | None): Profile to use for the configuration.
     """
-    console, _, config, _ = get_context_data_config(ctx)
-    config_model = config.model_dump()
-    # We set the console width to 1024 to prevent line wrapping
-    console.width = 1024
-    console.print(convert_to_envvars(config_model, prefix), end='')
+    slough: Slough = ctx.obj.slough
+    visitor = KeyValueConfigVisitor(prefix=prefix)
+    slough.config.visit(visitor)
 
+    cfg_profile = slough.get_profile_with_all(profile_name=profile)
+    cfg_profile.visit(visitor)
 
-@config.command(
-    name='convert',
-    help='Convert the configurationfile to a different format. This can be '
-    + 'useful when you need to convert a YAML file to JSON or visa versa.',
-    short_help='Convert the configuration to a different format.',
-)
-def cli_config_convert(
-    ctx: typer.Context,
-    target: ConvertTarget = typer.Argument(
-        help='Target format to convert to.'
-    ),
-) -> None:
-    """Convert configuration to specific output formats.
-
-    Args:
-        ctx (typer.Context): Typer context.
-        target (ConvertTarget): Target format.
-    """
-    _, slough, _, cfgfile = get_context_data_config(ctx)
-
-    # Check if conversion is valid
-    if (
-        cfgfile.suffix.lower() in ('.yaml', '.yml')
-        and target == ConvertTarget.YAML
-    ) or (cfgfile.suffix.lower() == '.json' and target == ConvertTarget.JSON):
-        raise ConfigConvertionAlreadyCorrectSufficError(
-            '[yellow]Configuration is already in this format.[/yellow]'
-        )
-
-    # Convert configuration
-    oldfile = cfgfile
-    slough.cfgfile = cfgfile.with_suffix(f'.{target.value}')
-    local_logger = logging.getLogger('cli_config_convert')
-    local_logger.info('Converting configuration to "%s"', slough.cfgfile)
-    slough.save()
-
-    # Remove old file
-    oldfile.unlink()
-
-
-@config.command(
-    name='generate-schema',
-    help='Generate a schema for the configuration file. This can be used to '
-    + 'validate the configuration file.',
-    short_help='Generate a schema for the configuration file.',
-)
-def cli_config_generate_schema(
-    ctx: typer.Context,
-    target_format: SchemaTarget = typer.Option(
-        SchemaTarget.JSON, help='Output format for the schema.'
-    ),
-) -> None:
-    """Generate a schema for the configuration file.
-
-    Args:
-        ctx (typer.Context): Typer context.
-        target_format (SchemaTarget): Target format.
-    """
-    console, _, config, _ = get_context_data_config(ctx)
-    schema = config.model_json_schema()
-    if target_format == SchemaTarget.JSON:
-        console.print_json(data=schema)
-    else:
-        console.print(yaml.dump(config.model_json_schema()))
+    output_data = DataSetOutput(['Setting', 'Value'])
+    output_data.data = sorted(visitor.key_value_pairs, key=lambda x: x[0])
+    output_data.out(ctx.obj.output_visitor)
