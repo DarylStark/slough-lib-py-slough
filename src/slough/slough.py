@@ -71,7 +71,7 @@ class Slough:
             bool: True if the exception was handled, otherwise False.
         """
         if exc_type is None:
-            self._storage_manager.save(self._config)
+            self.save()
         return exc_type is None
 
     @property

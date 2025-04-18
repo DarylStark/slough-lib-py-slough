@@ -31,8 +31,8 @@ def test_default_config(
 
 def test_saving_config(slough_object: Slough) -> None:
     """Test the saving of the configuration."""
-    slough_object.add_profile('my_new_profile')
-    slough_object.save()
+    with slough_object:
+        slough_object.add_profile('my_new_profile')
 
     # Reload the configuration
     slough_object = Slough(slough_object._storage_manager)  # noqa: SLF001
