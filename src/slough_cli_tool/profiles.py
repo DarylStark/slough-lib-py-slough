@@ -25,8 +25,8 @@ def add_profile(
         profile_name (str): The profile to add.
     """
     slough: Slough = ctx.obj.slough
-    slough.add_profile(profile_name)
-    slough.save()
+    with slough:
+        slough.add_profile(profile_name)
 
 
 @profiles.command(
@@ -67,8 +67,8 @@ def remove_profile(
         profile_name (str): The profile to remove.
     """
     slough: Slough = ctx.obj.slough
-    slough.remove_profile(profile_name)
-    slough.save()
+    with slough:
+        slough.remove_profile(profile_name)
 
 
 @profiles.command(
@@ -89,6 +89,6 @@ def rename_profile(
         new_name (str): The new name for the profile.
     """
     slough: Slough = ctx.obj.slough
-    slough.rename_profile(profile_name, new_name)
-    slough.save()
+    with slough:
+        slough.rename_profile(profile_name, new_name)
     typer.echo(f'Profile "{profile_name}" renamed to "{new_name}".')

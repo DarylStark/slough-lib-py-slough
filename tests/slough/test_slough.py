@@ -31,8 +31,8 @@ def test_default_config(
 
 def test_saving_config(slough_object: Slough) -> None:
     """Test the saving of the configuration."""
-    slough_object.add_profile('my_new_profile')
-    slough_object.save()
+    with slough_object:
+        slough_object.add_profile('my_new_profile')
 
     # Reload the configuration
     slough_object = Slough(slough_object._storage_manager)  # noqa: SLF001
@@ -122,3 +122,32 @@ def test_retrieving_profile_with_all(slough_object: Slough) -> None:
             'tag4',
         ]
     )
+
+
+def test_context_manager(slough_object: Slough) -> None:
+    """Test using the Slough object as a context manager.
+
+    Args:
+        slough_object (Slough): The Slough object to test.
+    """
+    with slough_object as s:
+        assert s is slough_object
+        assert s.config == slough_object.config
+        assert s.profile_list == slough_object.profile_list
+        assert s.get_profile('_default') == slough_object.get_profile(
+            '_default'
+        )
+        assert s.get_profile('test') == slough_object.get_profile('test')
+
+
+def test_context_manager_exception(
+    slough_object: Slough,
+) -> None:
+    """Test using the Slough object as a context manager with an exception.
+
+    Args:
+        slough_object (Slough): The Slough object to test.
+    """
+    with pytest.raises(ValueError), slough_object as _:
+        raise ValueError('Test exception')
+    assert not slough_object.is_default_config

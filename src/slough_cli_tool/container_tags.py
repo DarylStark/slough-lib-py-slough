@@ -31,8 +31,10 @@ def add_container_tags(
             Defaults to the default profile.
     """
     slough: Slough = ctx.obj.slough
-    slough.get_profile(profile).get_container_configuration().add_tags(tags)
-    slough.save()
+    with slough:
+        slough.get_profile(profile).get_container_configuration().add_tags(
+            tags
+        )
 
 
 @tags.command(
@@ -94,5 +96,7 @@ def remove_container_tags(
             Defaults to the default profile.
     """
     slough: Slough = ctx.obj.slough
-    slough.get_profile(profile).get_container_configuration().remove_tags(tags)
-    slough.save()
+    with slough:
+        slough.get_profile(profile).get_container_configuration().remove_tags(
+            tags
+        )

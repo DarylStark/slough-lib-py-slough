@@ -68,15 +68,14 @@ def cli_project_init(
     # Set the configuration in the `Slough` object
     local_logger: Logger = ctx.obj.logger
     local_logger.debug('Setting the configuration in the Slough object')
-    slough.config.project.name = title
-    slough.config.project.version = version
-    slough.config.project.authors = [
-        Author(name=author_name, email=author_email)
-    ]
-    slough.config.development_environment = development_environment
 
-    # Save the configuration
-    slough.save()
+    with slough:
+        slough.config.project.name = title
+        slough.config.project.version = version
+        slough.config.project.authors = [
+            Author(name=author_name, email=author_email)
+        ]
+        slough.config.development_environment = development_environment
 
 
 @project.command(
@@ -104,7 +103,5 @@ def cli_set_development_environment(
             environment.
     """
     slough: Slough = ctx.obj.slough
-    slough.config.development_environment = development_environment
-
-    # Save the configuration
-    slough.save()
+    with slough:
+        slough.config.development_environment = development_environment
