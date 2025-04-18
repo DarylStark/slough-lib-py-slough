@@ -1,6 +1,7 @@
 """Module with the Slough class."""
 
 import logging
+from types import TracebackType
 
 from slough_config.config_model import (
     Author,
@@ -44,6 +45,34 @@ class Slough:
                 authors=[Author(name='nobody', email='nobody@nobody.com')],
             )
         )
+
+    def __enter__(self) -> 'Slough':
+        """Enter the context manager.
+
+        Returns:
+            Slough: The Slough object.
+        """
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool:
+        """Exit the context manager.
+
+        Args:
+            exc_type (type): The type of the exception.
+            exc_value (Exception): The exception value.
+            traceback (TracebackType): The traceback object.
+
+        Returns:
+            bool: True if the exception was handled, otherwise False.
+        """
+        if exc_type is None:
+            self._storage_manager.save(self._config)
+        return exc_type is None
 
     @property
     def config(self) -> SloughConfig:
