@@ -4,7 +4,7 @@ from pathlib import Path
 
 import yaml
 
-from slough.exceptions import ConfigNogLoadedError
+from slough.exceptions import ConfigNotLoadedError
 from slough_config import DevelopmentEnvironment, SloughConfig
 
 from .storage_manager import StorageManager
@@ -66,6 +66,6 @@ class YAMLStorageManager(StorageManager):
             with open(self.file_path) as file:
                 return SloughConfig(**yaml.load(file, Loader=yaml.FullLoader))
         except FileNotFoundError as exc:
-            raise ConfigNogLoadedError(
+            raise ConfigNotLoadedError(
                 'Configuration file not found.'
             ) from exc

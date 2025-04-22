@@ -9,5 +9,5 @@ class StorageManagerError(SloughError):
     """Base exception for the storage manager."""
 
 
-class ConfigNogLoadedError(StorageManagerError):
+class ConfigNotLoadedError(StorageManagerError):
     """Exception raised when the configuration is not loaded."""
