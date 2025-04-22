@@ -110,6 +110,13 @@ class ContainerConfiguration(SloughConfigModel):
     """
 
     tags: list[str] = []
+    registry: str | None = Field(
+        default=None, pattern=r'^[a-zA-Z0-9.-]+(:\d+)?(\/[a-zA-Z._/-]+)?$'
+    )
+    image: str | None = Field(
+        default=None,
+        pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]+$',
+    )
 
     def visit(self, visitor: 'ConfigModelVisitor') -> None:
         """Visit the model element.

@@ -601,3 +601,94 @@ def test_combining_empty_configuration_profile_with_full_profile(
     )
     assert combined_profile.container is not None
     assert combined_profile.container.tags == ['test_tag']
+
+
+@pytest.mark.parametrize(
+    'registry',
+    [
+        'test-registry:5000',
+        'test-registry',
+        'localhost',
+        'docker.io',
+        'us-west1-docker.pkg.dev/my-project/',
+        'us-west1-docker.pkg.dev/my-project',
+        'us-west1-docker.pkg.dev/my-project/my-repo',
+    ],
+)
+def test_container_configuration_registry_regex(
+    container_configuration_default_model: ContainerConfiguration,
+    registry: str,
+) -> None:
+    """Test the container configuration registry regex.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        registry (str): The registry string to validate.
+    """
+    container_configuration_default_model.registry = registry
+
+
+@pytest.mark.parametrize(
+    'registry',
+    [
+        'wrong_hostname',
+        'hostname with spaces',
+        'https://with-protocol:1000',
+        'wrong_port:aap',
+    ],
+)
+def test_container_configuration_registry_regex_failing(
+    container_configuration_default_model: ContainerConfiguration,
+    registry: str,
+) -> None:
+    """Test the container configuration registry regex.
+
+    This tests the regexes that should fail.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        registry (str): The registry string to validate.
+    """
+    with pytest.raises(ValidationError):
+        container_configuration_default_model.registry = registry
+
+
+@pytest.mark.parametrize(
+    'image',
+    ['my-application', 'slough', 'my__application', 'my.application'],
+)
+def test_container_configuration_image_regex(
+    container_configuration_default_model: ContainerConfiguration,
+    image: str,
+) -> None:
+    """Test the container configuration image name regex.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        image (str): The image string to validate.
+    """
+    container_configuration_default_model.image = image
+
+
+@pytest.mark.parametrize(
+    'image',
+    ['my application', '_my_application', 'app:', 'app:latest'],
+)
+def test_container_configuration_image_regex_failing(
+    container_configuration_default_model: ContainerConfiguration,
+    image: str,
+) -> None:
+    """Test the container configuration image name regex.
+
+    This tests the regexes that should fail.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        image (str): The image string to validate.
+    """
+    with pytest.raises(ValidationError):
+        container_configuration_default_model.image = image
