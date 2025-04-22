@@ -1,7 +1,7 @@
 """Module with Mocks for the tests."""
 
 from slough import StorageManager
-from slough.exceptions import ConfigNogLoadedError
+from slough.exceptions import ConfigNotLoadedError
 from slough_config.config_model import SloughConfig
 
 
@@ -64,10 +64,10 @@ class MockStorageManagerFailing(StorageManager):
     def load(self) -> SloughConfig:
         """Load the configuration.
 
-        Raises the ConfigNogLoadedError to simulate a failure to load the
+        Raises the ConfigNotLoadedError to simulate a failure to load the
         configuration.
 
         Returns:
             SloughConfig: The configuration given in the constructor.
         """
-        raise ConfigNogLoadedError
+        raise ConfigNotLoadedError

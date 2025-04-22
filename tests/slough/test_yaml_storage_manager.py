@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from slough.exceptions import ConfigNogLoadedError
+from slough.exceptions import ConfigNotLoadedError
 from slough.yaml_storage_manager import YAMLStorageManager
 from slough_config.config_model import SloughConfig
 
@@ -58,5 +58,5 @@ def test_loading_a_configuration_no_existing_file(temp_folder: Path) -> None:
     config_file = temp_folder / 'slough.yml'
     manager = YAMLStorageManager(file_path=config_file)
 
-    with pytest.raises(ConfigNogLoadedError):
+    with pytest.raises(ConfigNotLoadedError):
         _ = manager.load()

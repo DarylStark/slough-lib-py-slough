@@ -10,7 +10,7 @@ from slough_config.config_model import (
     SloughConfig,
 )
 
-from .exceptions import ConfigNogLoadedError
+from .exceptions import ConfigNotLoadedError
 from .storage_manager import StorageManager
 
 
@@ -28,7 +28,7 @@ class Slough:
         self._is_default_config = False
         try:
             self._config = self._storage_manager.load()
-        except ConfigNogLoadedError:
+        except ConfigNotLoadedError:
             self._is_default_config = True
             self._config = self._get_default_config()
 
