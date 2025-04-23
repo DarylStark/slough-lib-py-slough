@@ -105,6 +105,16 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
             self._add_key_value_pair(
                 f'configuration.container.tag.{index}', tag
             )
+        if container_configuration.registry:
+            self._add_key_value_pair(
+                'configuration.container.registry',
+                container_configuration.registry,
+            )
+        if container_configuration.image:
+            self._add_key_value_pair(
+                'configuration.container.image',
+                container_configuration.image,
+            )
 
     def visit_config_profile(self, config_profile: ConfigProfile) -> None:
         """Visit the configuration profile.

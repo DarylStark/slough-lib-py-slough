@@ -134,11 +134,13 @@ class ContainerConfiguration(SloughConfigModel):
         Args:
             other (ContainerConfiguration): The other model to combine with.
         """
-        if other is None:
-            return self
-        return ContainerConfiguration(
-            tags=list(set(self.tags + other.tags)),
-        )
+        object_copy = self.model_copy(deep=True)
+        if other is not None:
+            object_copy.tags.extend(other.tags)
+            object_copy.tags = list(set(object_copy.tags))
+            object_copy.registry = other.registry or object_copy.registry
+            object_copy.image = other.image or object_copy.image
+        return object_copy
 
     def add_tags(self, tags: str | list[str]) -> None:
         """Add tags to the container configuration.
