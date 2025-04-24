@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 from .exceptions import (
     DefaultProfileError,
     DuplicateProfileNameError,
+    InvalidPlatformError,
     InvalidProfileNameError,
     ProfileNotFoundError,
 )
@@ -110,6 +111,17 @@ class ContainerConfiguration(SloughConfigModel):
     """
 
     tags: list[str] = []
+    registry: str | None = Field(
+        default=None, pattern=r'^[a-zA-Z0-9.-]+(:\d+)?(\/[a-zA-Z._/-]+)?$'
+    )
+    image: str | None = Field(
+        default=None,
+        pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]+$',
+    )
+    platforms: list[str] = Field(
+        default=[],
+        description='List of platforms to build for',
+    )
 
     def visit(self, visitor: 'ConfigModelVisitor') -> None:
         """Visit the model element.
@@ -127,11 +139,15 @@ class ContainerConfiguration(SloughConfigModel):
         Args:
             other (ContainerConfiguration): The other model to combine with.
         """
-        if other is None:
-            return self
-        return ContainerConfiguration(
-            tags=list(set(self.tags + other.tags)),
-        )
+        object_copy = self.model_copy(deep=True)
+        if other is not None:
+            object_copy.tags.extend(other.tags)
+            object_copy.tags = list(set(object_copy.tags))
+            object_copy.platforms.extend(other.platforms)
+            object_copy.platforms = list(set(object_copy.platforms))
+            object_copy.registry = other.registry or object_copy.registry
+            object_copy.image = other.image or object_copy.image
+        return object_copy
 
     def add_tags(self, tags: str | list[str]) -> None:
         """Add tags to the container configuration.
@@ -154,6 +170,44 @@ class ContainerConfiguration(SloughConfigModel):
             tags = [tags]
         tags = [tag.lower() for tag in tags]
         self.tags = list(filter(lambda t: t.lower() not in tags, self.tags))
+
+    def add_platforms(self, platforms: str | list[str]) -> None:
+        """Add platforms to the container configuration.
+
+        Args:
+            platforms (str | list[str]): The platform or platforms to add.
+        """
+        allowed_platforms = [
+            'linux/amd64',
+            'linux/arm64',
+            'linux/arm/v7',
+            'linux/arm/v6',
+            'linux/ppc64le',
+            'linux/s390x',
+            'linux/386',
+        ]
+        if isinstance(platforms, str):
+            platforms = [platforms]
+        for platform in platforms:
+            if platform not in allowed_platforms:
+                raise InvalidPlatformError(
+                    f'Invalid platform name: "{platform}".'
+                )
+        self.platforms.extend([platform.lower() for platform in platforms])
+        self.platforms = list(set(self.platforms))
+
+    def remove_platforms(self, platforms: str | list[str]) -> None:
+        """Remove platforms from the container configuration.
+
+        Args:
+            platforms (str | list[str]): The platform or platforms to remove.
+        """
+        if isinstance(platforms, str):
+            platforms = [platforms]
+        platforms = [platform.lower() for platform in platforms]
+        self.platforms = list(
+            filter(lambda p: p.lower() not in platforms, self.platforms)
+        )
 
 
 class ConfigProfile(SloughConfigModel):

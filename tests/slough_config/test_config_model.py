@@ -12,6 +12,7 @@ from slough_config.config_model import (
 from slough_config.exceptions import (
     DefaultProfileError,
     DuplicateProfileNameError,
+    InvalidPlatformError,
     InvalidProfileNameError,
     ProfileNotFoundError,
 )
@@ -601,3 +602,226 @@ def test_combining_empty_configuration_profile_with_full_profile(
     )
     assert combined_profile.container is not None
     assert combined_profile.container.tags == ['test_tag']
+
+
+@pytest.mark.parametrize(
+    'registry',
+    [
+        'test-registry:5000',
+        'test-registry',
+        'localhost',
+        'docker.io',
+        'us-west1-docker.pkg.dev/my-project/',
+        'us-west1-docker.pkg.dev/my-project',
+        'us-west1-docker.pkg.dev/my-project/my-repo',
+    ],
+)
+def test_container_configuration_registry_regex(
+    container_configuration_default_model: ContainerConfiguration,
+    registry: str,
+) -> None:
+    """Test the container configuration registry regex.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        registry (str): The registry string to validate.
+    """
+    container_configuration_default_model.registry = registry
+
+
+@pytest.mark.parametrize(
+    'registry',
+    [
+        'wrong_hostname',
+        'hostname with spaces',
+        'https://with-protocol:1000',
+        'wrong_port:aap',
+    ],
+)
+def test_container_configuration_registry_regex_failing(
+    container_configuration_default_model: ContainerConfiguration,
+    registry: str,
+) -> None:
+    """Test the container configuration registry regex.
+
+    This tests the regexes that should fail.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        registry (str): The registry string to validate.
+    """
+    with pytest.raises(ValidationError):
+        container_configuration_default_model.registry = registry
+
+
+@pytest.mark.parametrize(
+    'image',
+    ['my-application', 'slough', 'my__application', 'my.application'],
+)
+def test_container_configuration_image_regex(
+    container_configuration_default_model: ContainerConfiguration,
+    image: str,
+) -> None:
+    """Test the container configuration image name regex.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        image (str): The image string to validate.
+    """
+    container_configuration_default_model.image = image
+
+
+@pytest.mark.parametrize(
+    'image',
+    ['my application', '_my_application', 'app:', 'app:latest'],
+)
+def test_container_configuration_image_regex_failing(
+    container_configuration_default_model: ContainerConfiguration,
+    image: str,
+) -> None:
+    """Test the container configuration image name regex.
+
+    This tests the regexes that should fail.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        image (str): The image string to validate.
+    """
+    with pytest.raises(ValidationError):
+        container_configuration_default_model.image = image
+
+
+@pytest.mark.parametrize(
+    'platform_name',
+    [
+        'linux/amd64',
+        'linux/arm64',
+        'linux/arm/v7',
+        'linux/arm/v6',
+        'linux/ppc64le',
+        'linux/s390x',
+        'linux/386',
+    ],
+)
+def test_container_configuration_adding_one_platform(
+    container_configuration_default_model: ContainerConfiguration,
+    platform_name: str,
+) -> None:
+    """Test the container configuration adding one platform.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        platform_name (str): The name of the platform to add.
+    """
+    container_configuration_default_model.add_platforms(platform_name)
+    assert (
+        platform_name.lower()
+        in container_configuration_default_model.platforms
+    )
+
+
+@pytest.mark.parametrize(
+    'platforms',
+    [
+        ['linux/amd64', 'linux/arm64'],
+        ['linux/arm/v7', 'linux/arm/v6'],
+        ['linux/ppc64le', 'linux/s390x', 'linux/386'],
+    ],
+)
+def test_container_configuration_adding_platforms(
+    container_configuration_default_model: ContainerConfiguration,
+    platforms: list[str],
+) -> None:
+    """Test the container configuration adding multiple platforms.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        platforms (list[str]): The list of platforms to add.
+    """
+    container_configuration_default_model.add_platforms(platforms)
+    assert sorted(container_configuration_default_model.platforms) == sorted(
+        [platform_name.lower() for platform_name in platforms]
+    )
+
+
+@pytest.mark.parametrize(
+    'platform_name',
+    [
+        'linux/amd64',
+        'linux/arm64',
+        'linux/arm/v7',
+        'linux/arm/v6',
+        'linux/ppc64le',
+        'linux/s390x',
+        'linux/386',
+    ],
+)
+def test_container_configuration_removing_one_platform(
+    container_configuration_default_model: ContainerConfiguration,
+    platform_name: str,
+) -> None:
+    """Test the container configuration removing one platform.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        platform_name (str): The name of the platform to remove.
+    """
+    container_configuration_default_model.add_platforms(platform_name)
+    assert container_configuration_default_model.platforms == [
+        platform_name.lower()
+    ]
+    container_configuration_default_model.remove_platforms(platform_name)
+    assert container_configuration_default_model.platforms == []
+
+
+@pytest.mark.parametrize(
+    'platforms',
+    [
+        ['linux/amd64', 'linux/arm64'],
+        ['linux/arm/v7', 'linux/arm/v6'],
+        ['linux/ppc64le', 'linux/s390x', 'linux/386'],
+    ],
+)
+def test_container_configuration_removing_platforms(
+    container_configuration_default_model: ContainerConfiguration,
+    platforms: list[str],
+) -> None:
+    """Test the container configuration removing multiple platforms.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        platforms (list[str]): The list of platforms to remove.
+    """
+    container_configuration_default_model.add_platforms(platforms)
+    assert sorted(container_configuration_default_model.platforms) == sorted(
+        [platform_name.lower() for platform_name in platforms]
+    )
+    container_configuration_default_model.remove_platforms(platforms)
+    assert container_configuration_default_model.platforms == []
+
+
+@pytest.mark.parametrize(
+    'platform_name',
+    ['platform', 'linux', 'my platform', 'arm64', 'intel'],
+)
+def test_container_configuration_adding_invalid_platform(
+    container_configuration_default_model: ContainerConfiguration,
+    platform_name: str,
+) -> None:
+    """Test the container configuration adding invalid platform.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        platform_name (str): The name of the platform to add.
+    """
+    with pytest.raises(InvalidPlatformError):
+        container_configuration_default_model.add_platforms(platform_name)

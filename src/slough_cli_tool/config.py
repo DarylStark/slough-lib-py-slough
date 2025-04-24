@@ -28,7 +28,6 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
         Args:
             prefix (str): The prefix for the configuration variables.
         """
-        # self._key_value_pairs: list[tuple[str, str]] = []
         self._key_value_pairs: dict[str, str] = {}
         self._prefix: str = prefix
 
@@ -40,7 +39,6 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
             value (str): The value.
         """
         key = f'{self._prefix}.{key}'
-        # self._key_value_pairs.append((key, str(value)))
         self._key_value_pairs[key] = str(value)
 
     def visit_slough_config(self, config_model: SloughConfig) -> None:
@@ -104,6 +102,29 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
         for index, tag in enumerate(container_configuration.tags):
             self._add_key_value_pair(
                 f'configuration.container.tag.{index}', tag
+            )
+        if container_configuration.registry:
+            self._add_key_value_pair(
+                'configuration.container.registry',
+                container_configuration.registry,
+            )
+        if container_configuration.image:
+            self._add_key_value_pair(
+                'configuration.container.image',
+                container_configuration.image,
+            )
+
+        self._add_key_value_pair(
+            'configuration.container.platforms.count',
+            len(container_configuration.platforms),
+        )
+        self._add_key_value_pair(
+            'configuration.container.platforms',
+            ','.join(container_configuration.platforms),
+        )
+        for index, platform in enumerate(container_configuration.platforms):
+            self._add_key_value_pair(
+                f'configuration.container.platform.{index}', platform
             )
 
     def visit_config_profile(self, config_profile: ConfigProfile) -> None:
