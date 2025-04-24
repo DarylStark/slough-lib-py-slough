@@ -692,3 +692,58 @@ def test_container_configuration_image_regex_failing(
     """
     with pytest.raises(ValidationError):
         container_configuration_default_model.image = image
+
+
+@pytest.mark.parametrize(
+    'platform_name',
+    [
+        'linux/amd64',
+        'linux/arm64',
+        'linux/arm/v7',
+        'linux/arm/v6',
+        'linux/ppc64le',
+        'linux/s390x',
+        'linux/386',
+    ],
+)
+def test_container_configuration_adding_one_platform(
+    container_configuration_default_model: ContainerConfiguration,
+    platform_name: str,
+) -> None:
+    """Test the container configuration adding one platform.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        platform_name (str): The name of the platform to add.
+    """
+    container_configuration_default_model.add_platforms(platform_name)
+    assert (
+        platform_name.lower()
+        in container_configuration_default_model.platforms
+    )
+
+
+@pytest.mark.parametrize(
+    'platforms',
+    [
+        ['linux/amd64', 'linux/arm64'],
+        ['linux/arm/v7', 'linux/arm/v6'],
+        ['linux/ppc64le', 'linux/s390x', 'linux/386'],
+    ],
+)
+def test_container_configuration_adding_platforms(
+    container_configuration_default_model: ContainerConfiguration,
+    platforms: list[str],
+) -> None:
+    """Test the container configuration adding multiple platforms.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        platforms (list[str]): The list of platforms to add.
+    """
+    container_configuration_default_model.add_platforms(platforms)
+    assert sorted(container_configuration_default_model.platforms) == sorted(
+        [platform_name.lower() for platform_name in platforms]
+    )

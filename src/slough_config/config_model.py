@@ -117,6 +117,10 @@ class ContainerConfiguration(SloughConfigModel):
         default=None,
         pattern=r'^[a-zA-Z0-9][a-zA-Z0-9_.-]+$',
     )
+    platforms: list[str] = Field(
+        default=[],
+        description='List of platforms to build for',
+    )
 
     def visit(self, visitor: 'ConfigModelVisitor') -> None:
         """Visit the model element.
@@ -163,6 +167,17 @@ class ContainerConfiguration(SloughConfigModel):
             tags = [tags]
         tags = [tag.lower() for tag in tags]
         self.tags = list(filter(lambda t: t.lower() not in tags, self.tags))
+
+    def add_platforms(self, platforms: str | list[str]) -> None:
+        """Add platforms to the container configuration.
+
+        Args:
+            platforms (str | list[str]): The platform or platforms to add.
+        """
+        if isinstance(platforms, str):
+            platforms = [platforms]
+        self.platforms.extend([platform.lower() for platform in platforms])
+        self.platforms = list(set(self.platforms))
 
 
 class ConfigProfile(SloughConfigModel):
