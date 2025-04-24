@@ -1,5 +1,7 @@
 """Container platforms part of the CLI tool."""
 
+from enum import Enum
+
 import typer
 
 from slough.slough import Slough
@@ -9,6 +11,18 @@ from slough_cli_tool.cli_output_visitor import CLIOutputVisitor
 platforms = typer.Typer(no_args_is_help=True)
 
 
+class ContainerPlatforms(str, Enum):
+    """Container platforms for the CLI tool."""
+
+    LINUX_AMD64 = 'linux/amd64'
+    LINUX_ARM64 = 'linux/arm64'
+    LINUX_ARM_V7 = 'linux/arm/v7'
+    LINUX_ARM_V6 = 'linux/arm/v6'
+    LINUX_PPC64LE = 'linux/ppc64le'
+    LINUX_S390X = 'linux/s390x'
+    LINUX_386 = 'linux/386'
+
+
 @platforms.command(
     name='add',
     help='Add a container platform to a specific profile.',
@@ -16,7 +30,7 @@ platforms = typer.Typer(no_args_is_help=True)
 )
 def add_container_platforms(
     ctx: typer.Context,
-    platforms: list[str] = typer.Argument(
+    platforms: list[ContainerPlatforms] = typer.Argument(
         help='The platforms to add to the profile.'
     ),
     profile: str = typer.Option(
@@ -36,7 +50,9 @@ def add_container_platforms(
     with slough:
         slough.get_profile(
             profile
-        ).get_container_configuration().add_platforms(platforms)
+        ).get_container_configuration().add_platforms(
+            [platform.value for platform in platforms]
+        )
 
 
 @platforms.command(

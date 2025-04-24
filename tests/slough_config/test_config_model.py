@@ -753,11 +753,13 @@ def test_container_configuration_adding_platforms(
 @pytest.mark.parametrize(
     'platform_name',
     [
-        'test_tag1',
-        'test_TAG2',
-        'test_tag3',
-        'test_tag4',
-        'test_tag5',
+        'linux/amd64',
+        'linux/arm64',
+        'linux/arm/v7',
+        'linux/arm/v6',
+        'linux/ppc64le',
+        'linux/s390x',
+        'linux/386',
     ],
 )
 def test_container_configuration_removing_one_platform(
@@ -782,9 +784,9 @@ def test_container_configuration_removing_one_platform(
 @pytest.mark.parametrize(
     'platforms',
     [
-        ['test_tag1', 'test_tag2'],
-        ['test_TAG1', 'TEST_TAG2'],
-        ['a', 'b', 'c'],
+        ['linux/amd64', 'linux/arm64'],
+        ['linux/arm/v7', 'linux/arm/v6'],
+        ['linux/ppc64le', 'linux/s390x', 'linux/386'],
     ],
 )
 def test_container_configuration_removing_platforms(
