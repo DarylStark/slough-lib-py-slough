@@ -185,6 +185,11 @@ def temp_folder_with_slough_config(
             ],
         )
 
+        # Add container platforms to the `_default` profile
+        cli_runner.invoke(
+            app, ['container', 'platforms', 'add', 'linux/amd64']
+        )
+
         # Yield the created path
         yield Path(tmpdirname).resolve()
 

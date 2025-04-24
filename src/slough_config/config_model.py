@@ -143,6 +143,8 @@ class ContainerConfiguration(SloughConfigModel):
         if other is not None:
             object_copy.tags.extend(other.tags)
             object_copy.tags = list(set(object_copy.tags))
+            object_copy.platforms.extend(other.platforms)
+            object_copy.platforms = list(set(object_copy.platforms))
             object_copy.registry = other.registry or object_copy.registry
             object_copy.image = other.image or object_copy.image
         return object_copy

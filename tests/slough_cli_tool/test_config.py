@@ -35,6 +35,7 @@ def test_config_list(
     assert 'slough.configuration.container.tags' in result.stdout
     assert 'slough.configuration.container.tag.count' in result.stdout
     assert 'slough.development_environment' in result.stdout
+    assert 'slough.configuration.container.platforms.count' in result.stdout
 
 
 def test_config_list_without_dev_environment(
