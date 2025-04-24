@@ -6,6 +6,7 @@ import typer
 
 from slough import Slough
 
+from .container_platforms import platforms
 from .container_tags import tags
 
 container = typer.Typer(no_args_is_help=True)
@@ -15,6 +16,13 @@ container.add_typer(
     name='tags',
     help='Manage container tags in specific profiles.',
     short_help='Manage container tags.',
+)
+
+container.add_typer(
+    platforms,
+    name='platforms',
+    help='Manage container platforms in specific profiles.',
+    short_help='Manage container platforms.',
 )
 
 
