@@ -747,3 +747,59 @@ def test_container_configuration_adding_platforms(
     assert sorted(container_configuration_default_model.platforms) == sorted(
         [platform_name.lower() for platform_name in platforms]
     )
+
+
+@pytest.mark.parametrize(
+    'platform_name',
+    [
+        'test_tag1',
+        'test_TAG2',
+        'test_tag3',
+        'test_tag4',
+        'test_tag5',
+    ],
+)
+def test_container_configuration_removing_one_platform(
+    container_configuration_default_model: ContainerConfiguration,
+    platform_name: str,
+) -> None:
+    """Test the container configuration removing one platform.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        platform_name (str): The name of the platform to remove.
+    """
+    container_configuration_default_model.add_platforms(platform_name)
+    assert container_configuration_default_model.platforms == [
+        platform_name.lower()
+    ]
+    container_configuration_default_model.remove_platforms(platform_name)
+    assert container_configuration_default_model.platforms == []
+
+
+@pytest.mark.parametrize(
+    'platforms',
+    [
+        ['test_tag1', 'test_tag2'],
+        ['test_TAG1', 'TEST_TAG2'],
+        ['a', 'b', 'c'],
+    ],
+)
+def test_container_configuration_removing_platforms(
+    container_configuration_default_model: ContainerConfiguration,
+    platforms: list[str],
+) -> None:
+    """Test the container configuration removing multiple platforms.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        platforms (list[str]): The list of platforms to remove.
+    """
+    container_configuration_default_model.add_platforms(platforms)
+    assert sorted(container_configuration_default_model.platforms) == sorted(
+        [platform_name.lower() for platform_name in platforms]
+    )
+    container_configuration_default_model.remove_platforms(platforms)
+    assert container_configuration_default_model.platforms == []

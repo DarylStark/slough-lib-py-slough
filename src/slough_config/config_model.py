@@ -179,6 +179,19 @@ class ContainerConfiguration(SloughConfigModel):
         self.platforms.extend([platform.lower() for platform in platforms])
         self.platforms = list(set(self.platforms))
 
+    def remove_platforms(self, platforms: str | list[str]) -> None:
+        """Remove platforms from the container configuration.
+
+        Args:
+            platforms (str | list[str]): The platform or platforms to remove.
+        """
+        if isinstance(platforms, str):
+            platforms = [platforms]
+        platforms = [platform.lower() for platform in platforms]
+        self.platforms = list(
+            filter(lambda p: p.lower() not in platforms, self.platforms)
+        )
+
 
 class ConfigProfile(SloughConfigModel):
     """Model for the configuration profile.
