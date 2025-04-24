@@ -12,6 +12,7 @@ from slough_config.config_model import (
 from slough_config.exceptions import (
     DefaultProfileError,
     DuplicateProfileNameError,
+    InvalidPlatformError,
     InvalidProfileNameError,
     ProfileNotFoundError,
 )
@@ -803,3 +804,22 @@ def test_container_configuration_removing_platforms(
     )
     container_configuration_default_model.remove_platforms(platforms)
     assert container_configuration_default_model.platforms == []
+
+
+@pytest.mark.parametrize(
+    'platform_name',
+    ['platform', 'linux', 'my platform', 'arm64', 'intel'],
+)
+def test_container_configuration_adding_invalid_platform(
+    container_configuration_default_model: ContainerConfiguration,
+    platform_name: str,
+) -> None:
+    """Test the container configuration adding invalid platform.
+
+    Args:
+        container_configuration_default_model (ContainerConfiguration): The
+            container configuration model to test.
+        platform_name (str): The name of the platform to add.
+    """
+    with pytest.raises(InvalidPlatformError):
+        container_configuration_default_model.add_platforms(platform_name)

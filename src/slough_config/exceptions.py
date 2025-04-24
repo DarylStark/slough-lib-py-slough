@@ -19,3 +19,7 @@ class DuplicateProfileNameError(SloughConfigError):
 
 class DefaultProfileError(SloughConfigError):
     """Exception raised when a default profile is being altered."""
+
+
+class InvalidPlatformError(SloughConfigError):
+    """Exception raised when a platform is invalid."""

@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 from .exceptions import (
     DefaultProfileError,
     DuplicateProfileNameError,
+    InvalidPlatformError,
     InvalidProfileNameError,
     ProfileNotFoundError,
 )
@@ -174,8 +175,22 @@ class ContainerConfiguration(SloughConfigModel):
         Args:
             platforms (str | list[str]): The platform or platforms to add.
         """
+        allowed_platforms = [
+            'linux/amd64',
+            'linux/arm64',
+            'linux/arm/v7',
+            'linux/arm/v6',
+            'linux/ppc64le',
+            'linux/s390x',
+            'linux/386',
+        ]
         if isinstance(platforms, str):
             platforms = [platforms]
+        for platform in platforms:
+            if platform not in allowed_platforms:
+                raise InvalidPlatformError(
+                    f'Invalid platform name: "{platform}".'
+                )
         self.platforms.extend([platform.lower() for platform in platforms])
         self.platforms = list(set(self.platforms))
 
