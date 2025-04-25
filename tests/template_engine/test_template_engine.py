@@ -8,7 +8,7 @@ from template_engine import TemplateEngine
 @pytest.mark.parametrize(
     'template_string, expected',
     [
-        ('Hello, {{ name }}!', 'Hello, World!'),
+        ('Hello, {{ name }}!', 'Hello, Alice!'),
         (
             'Hello, {{ name }}! Welcome to {{ place }}.',
             'Hello, Alice! Welcome to Wonderland.',
@@ -28,11 +28,10 @@ def test_template_strings_single_variable(
 ) -> None:
     """Test the template strings."""
     # Test with a simple template string
-    template_string = 'Hello, {{ name }}!'
-    context = {'name': 'World', 'place': 'Earth'}
+    context = {'name': 'Alice', 'place': 'Wonderland'}
     engine = TemplateEngine(context)
     result = engine.render(template_string)
-    assert result == 'Hello, World!'
+    assert result == expected
 
 
 def test_template_strings_multiple_variables() -> None:
