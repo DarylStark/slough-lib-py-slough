@@ -30,7 +30,7 @@ def test_config_list(
         ['config', 'list', '--profile', profile],
     )
     assert result.exit_code == 0
-    for index in range(0, 3):
+    for index in range(0, 4):
         assert f'slough.configuration.container.tag.{index}' in result.stdout
     assert 'slough.configuration.container.tags' in result.stdout
     assert 'slough.configuration.container.tag.count' in result.stdout

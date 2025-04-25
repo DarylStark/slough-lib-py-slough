@@ -184,6 +184,17 @@ def temp_folder_with_slough_config(
                 'dev',
             ],
         )
+        cli_runner.invoke(
+            app,
+            [
+                'container',
+                'tags',
+                'add',
+                '--profile',
+                '_default',
+                '{{ slough.project.version }}',
+            ],
+        )
 
         # Add container platforms to the `_default` profile
         cli_runner.invoke(
