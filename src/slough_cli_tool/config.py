@@ -12,6 +12,7 @@ from slough_config.config_model import (
     SloughConfig,
 )
 from slough_config.config_model_visitor import ConfigModelVisitor
+from template_engine.template_engine import TemplateEngine
 
 config = typer.Typer(no_args_is_help=True)
 
@@ -22,14 +23,16 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
     This visitor is used to output the configuration as key-value pairs.
     """
 
-    def __init__(self, prefix: str) -> None:
+    def __init__(self, prefix: str, template_engine: TemplateEngine) -> None:
         """Initialize the visitor.
 
         Args:
             prefix (str): The prefix for the configuration variables.
+            template_engine (TemplateEngine): The template engine instance.
         """
         self._key_value_pairs: dict[str, str] = {}
         self._prefix: str = prefix
+        self._template_engine: TemplateEngine = template_engine
 
     def _add_key_value_pair(self, key: str, value: str | int) -> None:
         """Add a key-value pair to the list.
@@ -91,15 +94,19 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
             container_configuration (ContainerConfiguration): The container
                 configuration model.
         """
+        tags = [
+            self._template_engine.render(tag)
+            for tag in container_configuration.tags
+        ]
         self._add_key_value_pair(
             'configuration.container.tag.count',
-            len(container_configuration.tags),
+            len(tags),
         )
         self._add_key_value_pair(
             'configuration.container.tags',
-            ','.join(container_configuration.tags),
+            ','.join(tags),
         )
-        for index, tag in enumerate(container_configuration.tags):
+        for index, tag in enumerate(tags):
             self._add_key_value_pair(
                 f'configuration.container.tag.{index}', tag
             )
@@ -167,7 +174,14 @@ def cli_config_list(
         profile (str | None): Profile to use for the configuration.
     """
     slough: Slough = ctx.obj.slough
-    visitor = KeyValueConfigVisitor(prefix=prefix)
+    template_engine = TemplateEngine(
+        context={
+            'slough': slough.config,
+        }
+    )
+    visitor = KeyValueConfigVisitor(
+        prefix=prefix, template_engine=template_engine
+    )
     slough.config.visit(visitor)
 
     cfg_profile = slough.get_profile_with_all(profile_name=profile)
