@@ -85,6 +85,24 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
             f'project.authors.{index}.email', author.email
         )
 
+    def _add_string_list(self, prefix: str, string_list: list[str]) -> None:
+        """Add a list of strings to the key-value pairs.
+
+        Args:
+            prefix (str): The prefix for the key-value pairs.
+            string_list (list[str]): The list of strings.
+        """
+        self._add_key_value_pair(
+            f'{prefix}.count',
+            len(string_list),
+        )
+        self._add_key_value_pair(
+            prefix,
+            ','.join(string_list),
+        )
+        for index, item in enumerate(string_list):
+            self._add_key_value_pair(f'{prefix}.{index}', item)
+
     def visit_container_configuration(
         self, container_configuration: ContainerConfiguration
     ) -> None:
@@ -94,44 +112,56 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
             container_configuration (ContainerConfiguration): The container
                 configuration model.
         """
-        tags = [
-            self._template_engine.render(tag)
-            for tag in container_configuration.tags
-        ]
-        self._add_key_value_pair(
-            'configuration.container.tag.count',
-            len(tags),
+        tags = self._convert_templated_string_list(
+            container_configuration.tags
         )
-        self._add_key_value_pair(
-            'configuration.container.tags',
-            ','.join(tags),
-        )
-        for index, tag in enumerate(tags):
-            self._add_key_value_pair(
-                f'configuration.container.tag.{index}', tag
-            )
-        if container_configuration.registry:
-            self._add_key_value_pair(
-                'configuration.container.registry',
-                container_configuration.registry,
-            )
+        platforms = container_configuration.platforms
+        self._add_string_list('configuration.container.tags', tags)
+        self._add_string_list('configuration.container.platforms', platforms)
+        self._add_container_registry(container_configuration)
+        self._add_container_image(container_configuration)
+
+    def _convert_templated_string_list(
+        self, string_list: list[str]
+    ) -> list[str]:
+        """Convert a list of strings using the template engine.
+
+        Args:
+            string_list (list[str]): The list of strings to convert.
+
+        Returns:
+            list[str]: The converted list of strings.
+        """
+        return [self._template_engine.render(string) for string in string_list]
+
+    def _add_container_image(
+        self, container_configuration: ContainerConfiguration
+    ) -> None:
+        """Add the container image to the key-value pairs.
+
+        Args:
+            container_configuration (ContainerConfiguration): The container
+                configuration model.
+        """
         if container_configuration.image:
             self._add_key_value_pair(
                 'configuration.container.image',
                 container_configuration.image,
             )
 
-        self._add_key_value_pair(
-            'configuration.container.platforms.count',
-            len(container_configuration.platforms),
-        )
-        self._add_key_value_pair(
-            'configuration.container.platforms',
-            ','.join(container_configuration.platforms),
-        )
-        for index, platform in enumerate(container_configuration.platforms):
+    def _add_container_registry(
+        self, container_configuration: ContainerConfiguration
+    ) -> None:
+        """Add the container registry to the key-value pairs.
+
+        Args:
+            container_configuration (ContainerConfiguration): The container
+                configuration model.
+        """
+        if container_configuration.registry:
             self._add_key_value_pair(
-                f'configuration.container.platform.{index}', platform
+                'configuration.container.registry',
+                container_configuration.registry,
             )
 
     def visit_config_profile(self, config_profile: ConfigProfile) -> None:
