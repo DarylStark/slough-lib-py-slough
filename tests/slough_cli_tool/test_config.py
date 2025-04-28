@@ -31,9 +31,9 @@ def test_config_list(
     )
     assert result.exit_code == 0
     for index in range(0, 4):
-        assert f'slough.configuration.container.tag.{index}' in result.stdout
+        assert f'slough.configuration.container.tags.{index}' in result.stdout
     assert 'slough.configuration.container.tags' in result.stdout
-    assert 'slough.configuration.container.tag.count' in result.stdout
+    assert 'slough.configuration.container.tags.count' in result.stdout
     assert 'slough.development_environment' in result.stdout
     assert 'slough.configuration.container.platforms.count' in result.stdout
 
@@ -72,9 +72,9 @@ def test_config_list_as_env(
     )
     assert result.exit_code == 0
     for index in range(0, 3):
-        assert f'SLOUGH_CONFIGURATION_CONTAINER_TAG_{index}' in result.stdout
+        assert f'SLOUGH_CONFIGURATION_CONTAINER_TAGS_{index}' in result.stdout
     assert 'SLOUGH_CONFIGURATION_CONTAINER_TAGS' in result.stdout
-    assert 'SLOUGH_CONFIGURATION_CONTAINER_TAG_COUNT' in result.stdout
+    assert 'SLOUGH_CONFIGURATION_CONTAINER_TAGS_COUNT' in result.stdout
     assert 'SLOUGH_DEVELOPMENT_ENVIRONMENT' in result.stdout
 
 
@@ -94,11 +94,11 @@ def test_config_list_as_exported_env(
     assert result.exit_code == 0
     for index in range(0, 3):
         assert (
-            f'export SLOUGH_CONFIGURATION_CONTAINER_TAG_{index}='
+            f'export SLOUGH_CONFIGURATION_CONTAINER_TAGS_{index}='
             in result.stdout
         )
     assert 'export SLOUGH_CONFIGURATION_CONTAINER_TAGS=' in result.stdout
-    assert 'export SLOUGH_CONFIGURATION_CONTAINER_TAG_COUNT=' in result.stdout
+    assert 'export SLOUGH_CONFIGURATION_CONTAINER_TAGS_COUNT=' in result.stdout
     assert 'export SLOUGH_DEVELOPMENT_ENVIRONMENT=' in result.stdout
 
 
