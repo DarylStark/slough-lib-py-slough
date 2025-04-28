@@ -15,7 +15,7 @@ After this, the application can be used. You can run the unit tests with the fol
 uv run pytest
 ```
 
-You can also activate the created virtaul environment with the following command:
+You can also activate the created virtual environment with the following command:
 
 ```bash
 source .venv/bin/activate
