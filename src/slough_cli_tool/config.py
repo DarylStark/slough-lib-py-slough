@@ -100,8 +100,8 @@ class KeyValueConfigVisitor(ConfigModelVisitor):
             prefix,
             ','.join(string_list),
         )
-        for index, platform in enumerate(string_list):
-            self._add_key_value_pair(f'{prefix}.{index}', platform)
+        for index, item in enumerate(string_list):
+            self._add_key_value_pair(f'{prefix}.{index}', item)
 
     def visit_container_configuration(
         self, container_configuration: ContainerConfiguration
