@@ -1,3 +1,10 @@
+# [1.0.0-beta.4](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2025-07-03)
+
+
+### Bug Fixes
+
+* Fix CD title. ([5a44e94](https://github.com/DarylStark/slough-lib-py-slough/commit/5a44e94a2d45b35592a314d881eb082243fb8273))
+
 # [1.0.0-beta.3](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2025-07-03)
 
 
