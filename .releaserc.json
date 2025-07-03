@@ -2,7 +2,7 @@
     "branches": [
         "main",
         {
-            "name": "feature/building-package",
+            "name": "dev",
             "prerelease": "beta"
         }
     ],
