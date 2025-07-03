@@ -16,7 +16,7 @@ jobs:
         with:
           version: "latest"
       - uses: actions/checkout@v2
-      - name: Run tests
+      - name: Build and publish
         run: |
           uv build
           uv publish
