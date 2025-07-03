@@ -1,3 +1,10 @@
+# [1.0.0-beta.3](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2025-07-03)
+
+
+### Features
+
+* Add publishing of package. ([e709cf9](https://github.com/DarylStark/slough-lib-py-slough/commit/e709cf99d239a379ba68cdeee436a5646438b7d6))
+
 # [1.0.0-beta.2](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2025-07-03)
 
 
