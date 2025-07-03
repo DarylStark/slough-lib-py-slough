@@ -1,3 +1,11 @@
+# [1.0.0-beta.5](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2025-07-03)
+
+
+### Features
+
+* Rename back. ([a876a14](https://github.com/DarylStark/slough-lib-py-slough/commit/a876a1438ee46b2b8221199e95899d602348ef4a))
+* Rename package to `slough` ([49e002a](https://github.com/DarylStark/slough-lib-py-slough/commit/49e002a1704b62abaac04e6586e3d7df352009be))
+
 # [1.0.0-beta.4](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2025-07-03)
 
 
