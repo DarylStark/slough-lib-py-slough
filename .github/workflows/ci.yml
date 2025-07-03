@@ -1,12 +1,15 @@
 ---
+name: CI
+
 on:
-  push:
+  workflow_call:
 
 jobs:
   linting:
-    name: Code linting
+    name: Linting
     runs-on: ubuntu-latest
     steps:
+      # TODO: Add formatting test
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v5
         with:
