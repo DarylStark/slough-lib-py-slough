@@ -1,3 +1,10 @@
+# [1.0.0-beta.2](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2025-07-03)
+
+
+### Features
+
+* Better workflow trigger for tags. ([217d7b4](https://github.com/DarylStark/slough-lib-py-slough/commit/217d7b4d6d4dbecea51f434b8a9c9a230e668c8e))
+
 # 1.0.0-beta.1 (2025-07-03)
 
 
