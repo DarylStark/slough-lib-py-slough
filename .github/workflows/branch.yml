@@ -1,0 +1,10 @@
+---
+name: Branch
+
+on:
+  push:
+
+jobs:
+  ci:
+    if: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/dev' }}
+    uses: ./.github/workflows/ci.yml

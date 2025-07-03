@@ -1,10 +1,12 @@
 ---
+name: CI
+
 on:
-  push:
+  workflow_call:
 
 jobs:
   linting:
-    name: Code linting
+    name: Linting
     runs-on: ubuntu-latest
     steps:
       - name: Install the latest version of uv

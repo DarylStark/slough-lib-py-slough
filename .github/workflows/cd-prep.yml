@@ -1,10 +1,7 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
-      - dev
+  workflow_call:
 
 permissions:
   contents: write
