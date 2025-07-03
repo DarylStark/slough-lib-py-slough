@@ -1,5 +1,5 @@
 [project]
-name = "slough-cli-tool"
+name = "slough"
 version = "1.0.0-beta.4"
 description = "Add your description here"
 readme = "README.md"
