@@ -1,3 +1,10 @@
+# [1.0.0-beta.2](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2025-07-03)
+
+
+### Bug Fixes
+
+* Update permissions for GitHub token. ([6f2fd26](https://github.com/DarylStark/slough-lib-py-slough/commit/6f2fd2646d1cfd50864ddfe88fa3300e32b7a9fe))
+
 # 1.0.0-beta.1 (2025-07-03)
 
 
