@@ -1,3 +1,10 @@
+# [1.0.0-beta.7](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2025-07-03)
+
+
+### Features
+
+* Add more dev containers. ([ba9eb6c](https://github.com/DarylStark/slough-lib-py-slough/commit/ba9eb6cf130ac4bda8418827faee57e9397798ca))
+
 # [1.0.0-beta.6](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2025-07-03)
 
 
