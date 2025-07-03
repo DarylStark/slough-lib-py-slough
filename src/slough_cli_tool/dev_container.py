@@ -15,6 +15,10 @@ DEV_CONTAINER_IMAGES = {
     DevEnv.PYTHON_GENERIC: 'dast1986/slough-dev-dc-python',
     DevEnv.RUST_GENERIC: 'dast1986/slough-dev-dc-rust',
     DevEnv.GENERIC: 'dast1986/slough-dev-dc-generic-base',
+    DevEnv.LISP_SCHEME_GENERIC: 'dast1986/slough-dev-dc-lisp-scheme',
+    DevEnv.JAVA_GENERIC: 'dast1986/slough-dev-dc-java',
+    DevEnv.ASM6502_GENERIC: 'dast1986/slough-dev-dc-asm-6502',
+    DevEnv.ESP32_GENERIC: 'dast1986/slough-dev-dc-esp32',
 }
 
 

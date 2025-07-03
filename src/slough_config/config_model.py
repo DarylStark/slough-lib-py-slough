@@ -101,6 +101,10 @@ class DevelopmentEnvironment(str, Enum):
     NODEJS_GENERIC = 'nodejs-generic'
     PYTHON_GENERIC = 'python-generic'
     RUST_GENERIC = 'rust-generic'
+    LISP_SCHEME_GENERIC = 'lisp-scheme-generic'
+    JAVA_GENERIC = 'java-generic'
+    ASM6502_GENERIC = 'asm6502-generic'
+    ESP32_GENERIC = 'esp32-generic'
 
 
 class ContainerConfiguration(SloughConfigModel):
