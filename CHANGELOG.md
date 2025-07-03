@@ -1,3 +1,10 @@
+# [1.0.0-beta.6](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2025-07-03)
+
+
+### Features
+
+* Add variable for UV publishing. ([e3871c6](https://github.com/DarylStark/slough-lib-py-slough/commit/e3871c63c40b617dc6bd41f8d98af4e1f74188b3))
+
 # [1.0.0-beta.5](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2025-07-03)
 
 
