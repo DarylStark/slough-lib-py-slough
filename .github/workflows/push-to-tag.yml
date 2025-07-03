@@ -1,12 +1,17 @@
----
+name: Test on Tag
+
 on:
-  push:
-    tags: 
-      - 'v*'
+  workflow_run:
+    workflows: ["Push to dev or main"]
+    types:
+      - completed
 
 jobs:
   test:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Run tests
-        run: echo "Hi from tag!"
+        run: cat pyproject.toml
