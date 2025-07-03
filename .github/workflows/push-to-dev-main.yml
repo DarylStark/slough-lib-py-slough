@@ -17,3 +17,4 @@ jobs:
     uses: ./.github/workflows/ci.yml
   prep-deployment:
     uses: ./.github/workflows/cd-deploy-prep.yml
+    needs: ci
