@@ -1,0 +1,30 @@
+name: Publish docs
+
+on:
+  push:
+    branches:
+      - main
+      - issue-54/feature/documentation
+    
+jobs:
+  publish-docs:
+    name: Publish docs
+    runs-on: ubuntu-latest
+    steps:     
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+      - uses: actions/checkout@v2
+      - name: Build and publish
+        run: |
+          uv run sphinx-build docs/source docs/build
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'docs/build/html'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
