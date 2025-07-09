@@ -30,3 +30,15 @@ You can specify what tags should be used for the container image. This is done b
 -   ``list``; list all tags for the container image.
 
 By giving a profile with ``--profile``, you can specify for what profile the tags are added. This way, you can add specific tags to, for instance, only production or development branches.
+
+Platforms
+---------
+
+You can specify for what platforms the image has to be build. This is done by using the ``slough container platforms`` subcommand. You have several subcommands to this subcommand:
+
+
+-   ``add``; add a platform to the container image.
+-   ``remove``; remove a platform from the container image.
+-   ``list``; list all configured platforms for the container image.
+
+By giving a profile with ``--profile``, you can specify for what profile the platforms are added. This way, you can add specific platforms to, for instance, only production or development branches.
