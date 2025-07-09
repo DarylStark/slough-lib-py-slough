@@ -5,7 +5,10 @@ on:
     branches:
       - main
       - issue-54/feature/documentation
-    
+
+permissions:
+  id-token: write
+
 jobs:
   publish-docs:
     name: Publish docs
