@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - issue-54/feature/documentation
 
 permissions:
   id-token: write
