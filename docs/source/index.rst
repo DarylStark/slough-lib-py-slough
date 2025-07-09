@@ -1,17 +1,15 @@
-.. Slough documentation master file, created by
-   sphinx-quickstart on Wed Jul  9 09:38:59 2025.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Slough documentation
 ====================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+This is the official documentation for the Slough tool. The Slough tool consist of two distinct components:
 
+-  A ``slough`` CLI tool that you can use to manage your Slough projects.
+-  A ``slough`` Python package that you can use to create Slough projects programmatically.
+
+This documentation describes how to use the Slough CLI tool.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   cli_tool/00-index
