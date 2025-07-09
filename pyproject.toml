@@ -90,6 +90,9 @@ testpaths = ['tests']
 [tool.mypy]
 python_version = '3.13'
 
+[tool.uv]
+package = true
+
 [[tool.uv.index]]
 name = "slough-lib-py-slough"
 url = "https://test.pypi.org/simple/"

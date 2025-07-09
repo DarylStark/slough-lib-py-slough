@@ -409,7 +409,7 @@ wheels = [
 [[package]]
 name = "slough-cli-tool"
 version = "1.0.0b7"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "jinja2" },
     { name = "pydantic" },
