@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build and publish
         run: |
-          uv run sphinx-build docs/source docs/build
+          uv run sphinx-build docs/source docs/build/html
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
