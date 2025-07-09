@@ -9,7 +9,6 @@ jobs:
     name: Linting
     runs-on: ubuntu-latest
     steps:
-      # TODO: Add formatting test
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v5
         with:
@@ -19,6 +18,9 @@ jobs:
         run: |
           uv run --frozen mypy .
       - uses: astral-sh/ruff-action@v3
+      - uses: astral-sh/ruff-action@v3
+        with:
+          args: "format --check --diff"
 
   unit-testing:
     name: Unit Testing
