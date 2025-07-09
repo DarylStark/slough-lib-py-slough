@@ -28,6 +28,11 @@ regexes_to_update: list[dict[str, str]] = [
         'pattern': r'__version__ = \'.+\'',
         'new_text': "__version__ = '{{ new_version }}'",
     },
+    {
+        'file': 'docs/source/conf.py',
+        'pattern': r'release = \'.+\'',
+        'new_text': "release = '{{ new_version }}'",
+    },
 ]
 
 if __name__ == '__main__':
