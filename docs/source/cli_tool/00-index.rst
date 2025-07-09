@@ -1,7 +1,7 @@
-Slough CLI tool
-===============
+CLI tool
+========
 
-This section describes the Slough CLI tool.
+This section describes the Slough CLI tool. The Slough CLI tool is used to create a Slough configuration file and add Dev Container configurations.
 
 .. toctree::
    :maxdepth: 2

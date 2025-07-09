@@ -12,4 +12,5 @@ This documentation describes how to use the Slough CLI tool.
    :maxdepth: 2
    :caption: Contents:
 
+   generic/00-index
    cli_tool/00-index

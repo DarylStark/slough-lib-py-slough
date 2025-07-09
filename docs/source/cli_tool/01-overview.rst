@@ -31,6 +31,12 @@ You can start the CLI tool by using the command `slough`. If you enter it withou
    │ profiles        Configuration profiles.                                                                       │
    ╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
+You can specify different output formats for the output of the CLI tool by using the ``--output`` option. You can specify any of the following:
+
+-   ``console`` (the default); print output as human readable text.
+-   ``env`` print output as Posix environment variables. This can be very useful to use in CI/CD for instance.
+-   ``exported-env`` print output as Posix environment variables with ``export`` prefixed. This can be very useful when you want to use the environment variables in subsceding commands.
+
 To get the current version for the ``slough`` CLI tool, give the ``version`` command:
 
 .. code-block:: bash
