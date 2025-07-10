@@ -8,7 +8,7 @@ The ``config`` command for the ``slough`` tool can be used to manage the configu
 Listing configuration
 ---------------------
 
-You can list the configuration for the current project with the subcommand ``ilst``. This gives you the ability to see what configuration is in effect. This also gives you the ability to export configuration to environment variables and use them in other programs. This can be very useful for CI/CD pipelines for example. By using the the global ``--ouput`` option, you can specify how the configuration should be outputted. For example:
+You can list the configuration for the current project with the subcommand ``list``. This gives you the ability to see what configuration is in effect. This also gives you the ability to export configuration to environment variables and use them in other programs. This can be very useful for CI/CD pipelines for example. By using the the global ``--ouput`` option, you can specify how the configuration should be outputted. For example:
 
 .. code-block :: bash
 
