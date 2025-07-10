@@ -1,3 +1,27 @@
+# [1.0.0-beta.8](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.7...v1.0.0-beta.8) (2025-07-10)
+
+
+### Bug Fixes
+
+* Add `uv` option that was missing. ([429579b](https://github.com/DarylStark/slough-lib-py-slough/commit/429579b0fe3c76779192d1a85d797fc28f3d1231))
+* Add permissions. ([55125aa](https://github.com/DarylStark/slough-lib-py-slough/commit/55125aa00ccd9beb6d2451f8d14b5695587422f6))
+* Add permissions. ([cc0ed96](https://github.com/DarylStark/slough-lib-py-slough/commit/cc0ed96e5afe57f88cc6f5e023067d1ab520b3f2))
+* Directory for docs. ([995abfd](https://github.com/DarylStark/slough-lib-py-slough/commit/995abfdfea52e3acddbcd12de72c771a22d32826))
+* Typo. ([f515799](https://github.com/DarylStark/slough-lib-py-slough/commit/f515799f790f1d649e8a20166765cac0a66f92aa))
+* Typo. ([632f517](https://github.com/DarylStark/slough-lib-py-slough/commit/632f517b519d727045da8f83bc0e95464cefdbcb))
+* Typo. ([c993fc8](https://github.com/DarylStark/slough-lib-py-slough/commit/c993fc863aa728c70fe8eac34cf4721099c622ff))
+* Typo. ([c7cd068](https://github.com/DarylStark/slough-lib-py-slough/commit/c7cd0680a46b531476df50d50a6d29cbfa3bde96))
+* Typo. ([882cd30](https://github.com/DarylStark/slough-lib-py-slough/commit/882cd30763858b0ecb39e2fe61f879733c12789e))
+* Typo. ([cb174ad](https://github.com/DarylStark/slough-lib-py-slough/commit/cb174ad6930b7eff0f6f5cc28560b3d365467237))
+* Typo. ([31b62c7](https://github.com/DarylStark/slough-lib-py-slough/commit/31b62c7fa9932e62df3cc48495a10e0080b732e3))
+* Typo. ([3fe7b3c](https://github.com/DarylStark/slough-lib-py-slough/commit/3fe7b3c1cf78948790d20482d9df8c6637e91bc7))
+
+
+### Features
+
+* Add doc publishing in CD. ([060dbae](https://github.com/DarylStark/slough-lib-py-slough/commit/060dbaeca364e82b3dd31f80eb9e9f3057b90116))
+* Add documentation about `project`. ([83859bb](https://github.com/DarylStark/slough-lib-py-slough/commit/83859bbf3e028fffd2766c34fb908f41e2cd9b8f))
+
 # [1.0.0-beta.7](https://github.com/DarylStark/slough-lib-py-slough/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2025-07-03)
 
 
