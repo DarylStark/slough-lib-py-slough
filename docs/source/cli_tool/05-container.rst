@@ -1,7 +1,7 @@
 Container
 =========
 
-The ``container`` command is used to manager settings for when you want to create a container image. Imagine you are creating a piece of software that is going to be containerized. You want to use a generic pipeline that doesn't contain any configuration for the container, because that would kill the reusability of the pipeline. Instead, the containerimage configuration should go into a seperate file. The ``slough`` tool can do that just for you.
+The ``container`` command is used to manage settings for when you want to create a container image. Imagine you are creating a piece of software that is going to be containerized. You want to use a generic pipeline that doesn't contain any configuration for the container, because that would kill the reusability of the pipeline. Instead, the containerimage configuration should go into a seperate file. The ``slough`` tool can do that just for you.
 
 Configuration options
 ---------------------
