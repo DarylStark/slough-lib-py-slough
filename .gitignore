@@ -9,3 +9,6 @@ htmlcov/
 coverage.lcov
 *.egg-info/
 docs/build/
+package.json
+package-lock.json
+node_modules/
