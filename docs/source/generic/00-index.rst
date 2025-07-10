@@ -10,7 +10,7 @@ This page describes the generic idea for a Slough project. When you start a new 
 
 To do this every time you start a new project is ridiculous. The Slough project is created to minimalize these steps for you. Slough defines one simple config file that you put inside your project root folder. This configfile contains your project details. When you have created this file, you can generate the configurationfiles for a Slough dev container in which the required tools are already installed. It also gives you the ability to export your configuration to the environment, so your CI/CD tools can use the correct information.
 
-The Slough configuration file is split into different profiles; each profile can have different configuration. This way, you can, for instance, creaet different configuration for development, acceptance and production.
+The Slough configuration file is split into different profiles; each profile can have different configuration. This way, you can, for instance, create different configuration for development, acceptance and production.
 
 The Slough project contains a few components:
 
